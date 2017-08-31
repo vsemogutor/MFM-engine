@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100" height="32" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	
+		<mx:Tile id="pnlItems" height="32" width="100%" tileWidth="30" tileHeight="30" verticalGap="3" horizontalGap="3" 
+			verticalScrollPolicy="off" horizontalScrollPolicy="off">		
+		</mx:Tile>	
+
+	<mx:Script>
+		<![CDATA[
+			import controls.ItemTypeTooltip;
+			import engine.items.InventoryItemType;
+			import engine.heros.Hero;
+			import engine.items.InventoryItem;
+			import engine.units.groups.UnitGroup;
+			import engine.units.UnitTypes;
+			import engine.units.Unit;
+			import mx.controls.Button;
+			import engine.game.Game;
+			import engine.userAction.UserActionOrderUnitCast;
+			import engine.userAction.UserActionBase;
+			import engine.spells.SpellType;
+			import sound.Sounds;
+			import engine.units.UnitOrders.UnitOrderCastSpell;
+			import engine.units.support.UnitSpellItem;
+			import __AS3__.vec.Vector;
+			import controls.ImageButton;
+			import controls.TypeTooltip;
+			import mx.events.ToolTipEvent;
+			
+			private var _group:UnitGroup;
+			
+			public function get dataSource():UnitGroup{
+				return _group;
+			}
+
+			public function set dataSource(value:UnitGroup):void{
+				if (_group && _group.selectedUnit != value.selectedUnit)
+				{
+					pnlItems.visible = false;
+				}
+				
+				_group = value;
+				refreshChildren();
+			}
+			
+			private function refreshChildren():void
+			{				
+				if (!_group)
+					return;
+					
+				var unit:Unit = _group.selectedUnit;
+				
+				if (!unit || !unit.isReady || !unit.isActive || !unit.fraction.isCurrentPlayer() || unit.type.type != UnitTypes.Hero)
+				{	
+					pnlItems.visible = false;
+					return;
+				}
+				
+				pnlItems.visible = true;
+				refreshItemsPanel(unit as Hero);
+			}
+		
+			private function refreshItemsPanel(unit:Hero):void
+			{
+				if (pnlItems.visible)
+				{					
+					var items:Vector.<InventoryItem> = unit.items;
+					var usableIndx:int;
+					for (var i:int = 0; i < items.length; ++i)
+					{
+						var item:InventoryItem = items[i];
+						if (item.type != InventoryItemType.USABLE)
+							continue;
+						
+						var spButton:ImageButton;
+						if (usableIndx < pnlItems.numChildren)
+						{
+							spButton = pnlItems.getChildAt(usableIndx) as ImageButton;
+						}
+						else 
+						{
+							spButton = new ImageButton();
+
+							spButton.toolTip = item.name + ". Click to use.";
+							pnlItems.addChild(spButton);
+						}
+						
+						spButton.onClickHandler = onItemSelectedClick;
+						spButton.clickSound = Sounds.autocastClick;			
+
+						spButton.data = item;
+						spButton.enabled = unit.canUseItem(item);
+						spButton.setImage(item.icon);
+						
+						spButton.visible = true;
+						usableIndx++;
+					}
+					
+					for (var i:int = usableIndx; i < pnlItems.numChildren; ++i)
+					{
+						pnlItems.getChildAt(i).visible = false;
+					}
+				}
+			}
+			
+			public function onItemSelectedClick(btn:Button):void
+			{
+				var item:InventoryItem = btn.data as InventoryItem;
+				var unit:Hero = _group.selectedUnit as Hero;
+				if (unit && item)
+				{
+					unit.useItem(item);
+				}
+			}			
+		]]>
+	</mx:Script>
+</mx:Box>

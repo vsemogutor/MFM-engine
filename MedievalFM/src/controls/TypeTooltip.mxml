@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="200"
+	implements="mx.core.IToolTip" styleName="tooltip" 
+	horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="{refresh()}">
+
+	<mx:Style source="..\styles\common.css"/>
+	
+	<mx:VBox backgroundColor="#152029" backgroundAlpha="0.7" width="100%" height="100%" 
+		paddingLeft="5" paddingTop="3">
+		<mx:Label id="txtTitle" styleName="labelWhite10"></mx:Label>
+		<mx:VBox id="pnlUnitDetails">
+			<mx:HBox horizontalGap="4" id="pnlCosts">
+				<mx:Box styleName="boxGoldInset">
+					<mx:Canvas width="10" height="10" styleName="gold"></mx:Canvas>				
+				</mx:Box>
+				<mx:Label id="txtGoldCost" styleName="labelGold10"></mx:Label>
+				<mx:Box styleName="boxGoldInset">
+					<mx:Canvas width="10" height="10" styleName="crystal"></mx:Canvas>
+				</mx:Box>
+				<mx:Label id="txtCrystalCost" styleName="labelGold10"></mx:Label>
+				<mx:HBox styleName="boxGoldInset" id="pnlPopulation" width="11">
+					<mx:Canvas id="imgPopulation" width="7" height="10" styleName="food"></mx:Canvas>	
+				</mx:HBox>
+				<mx:Label id="txtPopulationCost" styleName="labelGold10"></mx:Label>		
+			</mx:HBox>	
+			<mx:HBox horizontalGap="4" id="pnlDetails" verticalAlign="middle">
+				<mx:Box styleName="boxRed" width="5" height="5"></mx:Box>
+				<mx:Label id="txtHealth" styleName="labelGold10" height="12"></mx:Label>
+				<mx:Box styleName="boxBlue" width="5" height="5"></mx:Box>
+				<mx:Label id="txtMana" styleName="labelGold10" height="12"></mx:Label>									
+			</mx:HBox>			
+		</mx:VBox>
+	
+		<mx:HBox horizontalGap="4" id="pnlSpellDetails" verticalAlign="middle">
+			<mx:Box styleName="boxBlue" width="5" height="5" borderThickness="3"></mx:Box>
+			<mx:Label id="txtCost" styleName="labelGold10"></mx:Label>		
+		</mx:HBox>	
+		<mx:Text width="100%" id="txtText" selectable="false" styleName="labelWhite"></mx:Text>		
+	</mx:VBox>
+
+	<mx:Script>
+		<![CDATA[
+			import engine.util.Util;
+			import engine.spells.SpellType;
+			import engine.units.UnitTypes;
+			import engine.units.UnitProperties;
+			import engine.fraction.ResourceType;
+			import mx.core.IToolTip;
+			import mx.events.ToolTipEvent;
+			import engine.units.Unit;
+			import mx.controls.Button;
+			import engine.units.UnitType;
+			
+			private var _unitType:UnitType;
+			private var _spellType:SpellType;
+			private var _detailed:Boolean;
+			
+			private var _text:String;
+			private var _title:String;
+			
+	        public function get text():String { 
+	            return txtText.text; 
+	        } 
+	        public function set text(value:String):void {
+	        	txtText.text = value;
+	        } 
+				
+		    public function get title():String { 
+	            return txtTitle.text; 
+	        } 
+	        public function set title(value:String):void {
+	        	txtTitle.text = value;
+	        } 
+	        
+	        public function set dataSource(value:*):void
+	        {
+	        	if (value is UnitType)
+	        		_unitType = value;
+	        	else if (value is SpellType)
+	        		_spellType = value;
+	        }
+	        
+	        private function refresh():void
+	        {
+	        	pnlSpellDetails.visible = pnlSpellDetails.includeInLayout = (_spellType != null);
+	        	pnlUnitDetails.visible = pnlUnitDetails.includeInLayout = (_unitType != null);
+	        	
+	        	if (_unitType)
+	        	{
+		        	title = _unitType.locName;
+		        	text = _unitType.description;
+		        	
+		        	pnlDetails.visible = pnlDetails.includeInLayout = _detailed;
+		        	pnlCosts.visible = pnlCosts.includeInLayout = !_detailed;
+		        	
+		        	if (_detailed)
+		        	{
+		        		txtHealth.text = _unitType.properties[UnitProperties.MaxHealth].toString();
+		        		txtMana.text = _unitType.properties[UnitProperties.Mana].toString();
+		        	}
+		        	else
+		        	{
+		        		txtGoldCost.text = _unitType.costResources[ResourceType.Gold].toString();
+		        		txtCrystalCost.text = _unitType.costResources[ResourceType.Crystal].toString();
+		        				        		
+		        		pnlPopulation.visible = (_unitType.type != UnitTypes.Structure);
+		        		if (pnlPopulation.visible)
+		        			txtPopulationCost.text = _unitType.costResources[ResourceType.Population].toString();
+		        	}
+	        	}
+	        	else if (_spellType)
+	        	{
+		        	title = _spellType.locName;
+		        	text = _spellType.getDescription();
+		        	if (_spellType.cooldown)
+		        		text += "\r\nCooldown: " + Util.framesToSec(_spellType.cooldown) + " sec.";
+		        	
+		        	txtCost.text = _spellType.cost.toString();
+	        	}
+	        	
+	        	validateNow();
+	        }
+	        
+	        public static function create(evt:ToolTipEvent, detailed:Boolean=false):void
+	        {
+	        	var tooltip:TypeTooltip = new TypeTooltip();
+	        	var data:* = Button(evt.target).data;
+	        	
+	        	tooltip.dataSource = data;
+	        	tooltip._detailed = detailed;
+	        	evt.toolTip = tooltip;
+	        }
+	
+		    public static function createDetailed(evt:ToolTipEvent):void
+	        {
+				create(evt, true);
+	        }
+	                	        
+		    public static function show(evt:ToolTipEvent):void
+	        {   
+	        	evt.toolTip.y = evt.toolTip.parent.height - evt.toolTip.height - 120;
+	        	evt.toolTip.x = evt.toolTip.parent.width - evt.toolTip.width - 3;
+	        }     
+		]]>
+	</mx:Script>
+</mx:Canvas>

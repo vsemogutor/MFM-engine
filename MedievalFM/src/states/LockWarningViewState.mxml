@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" creationComplete="{init()}"
+	width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import engine.util.SiteLockUtil;
+			
+			private function init():void
+			{
+				var allowed:Array = SiteLockUtil.getAllowed();
+				for (var i:int = 0; i < allowed.length; ++i)
+					txtSiteName.text = allowed[i] + "\r\n";
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:Label text="This version of the game is locked to:" color="#FFFFFF" fontSize="17"></mx:Label>
+	<mx:Text id="txtSiteName" selectable="false" color="#FFFFFF" fontSize="27"></mx:Text>
+</mx:Module>

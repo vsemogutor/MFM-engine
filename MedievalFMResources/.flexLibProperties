@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexLibProperties version="1">
+<includeClasses>
+<classEntry path="resources.BitmapResources"/>
+<classEntry path="resources.MusicResources"/>
+<classEntry path="resources.StringResources"/>
+<classEntry path="resources.SoundResources"/>
+</includeClasses>
+<includeResources/>
+<namespaceManifests/>
+</flexLibProperties>

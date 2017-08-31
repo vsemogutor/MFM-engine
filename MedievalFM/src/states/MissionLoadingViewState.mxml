@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="100%" height="100%"
+	addedToStage="{create()}" creationComplete="{create()}">
+	
+	<mx:AnimateProperty id="showEffect" duration="1100" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:GlowFilter color="#1F1F00" id="glow" ></mx:GlowFilter>
+	<mx:GlowFilter color="#1F1F00" id="glow1" blurX="2" blurY="2" ></mx:GlowFilter>
+		
+	<mx:VBox id="pnlMain" styleName="startMenu" height="100%" width="100%" 
+		addedToStage="showEffect.play([pnlMain])" horizontalAlign="right">
+		
+		<mx:VBox width="50%" height="100%" verticalAlign="bottom" horizontalAlign="center">
+			<mx:Label id="txtName" styleName="headerGold" fontSize="18" filters="{[glow]}"></mx:Label>
+			<mx:Text width="100%" height="200" id="txtDescription" filters="{[glow1]}"
+				styleName="labelWhite11" selectable="false" >
+			</mx:Text>
+		</mx:VBox>
+		<mx:VBox width="100%" horizontalAlign="center" height="70">
+			<mx:Canvas width="60%">
+				<mx:ProgressBar id="progress" mode="manual" 
+					styleName="progressGoldTransparent" width="100%" 
+					label="" trackHeight="25" height="25">
+				</mx:ProgressBar>	
+				<mx:Label id="txtContinue" visible="false" text="{StringResources.get('ClickHereToContinue')}" 
+					styleName="headerWhite" click="onContinueClick(event)" width="100%" textAlign="center">
+				</mx:Label>	
+			</mx:Canvas>		
+		</mx:VBox>
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import engine.sound.SoundManager;
+			import mx.effects.easing.Linear;
+			import de.polygonal.ds.DA;
+			import mx.core.Application;
+			import engine.mission.Mission;
+			import resources.BitmapResources;
+			import engine.core.events.EngineEvents;
+			import engine.game.GameManager;
+			import engine.game.Game;
+			
+			private var _time:Date;
+			
+			private function create(evt:Event=null):void
+			{	
+				if (!this.processedDescriptors)
+					return;
+					
+				SoundManager.instance().stopAll();
+				
+				txtContinue.visible = false;
+				txtDescription.text = GameManager.instance().currentMission.description;
+				txtName.text = GameManager.instance().currentMission.name;
+				Game.create();				
+				Game.instance().addEventListener(EngineEvents.GAME_INITIALIZED, onGameInitialized);
+				Game.instance().init(BitmapResources.bitmaps);
+			}
+			
+			private function onGameInitialized(event:Event):void
+			{
+				this.invalidateDisplayList();
+				progress.setProgress(10, 100);
+				var mission:Mission = GameManager.instance().currentMission;
+				Game.instance().missionManager.addEventListener(EngineEvents.MISSION_LOADED, onMissionLoaded);
+				Game.instance().missionManager.addEventListener(EngineEvents.MAP_LOADED, onMapLoaded);
+				Game.instance().missionManager.startMission(mission);
+			}
+			
+			private function onMapLoaded(event:Event):void
+			{
+				progress.setProgress(200, 1000);
+			}
+			
+			private function onMissionLoaded(event:Event):void
+			{
+				progress.setProgress(400, 1000);
+				_time = new Date();
+				systemManager.stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			}
+			
+			private function onEnterFrame(evt:Event):void
+			{
+				if (!progress)
+					return;
+				
+				var time:Date = new Date();
+				var mseconds:Number = (time.seconds*1000 + time.milliseconds) - (_time.seconds*1000 + _time.milliseconds);
+				if (mseconds >= 0 && mseconds <= 700)
+				{			
+					progress.setProgress(400 + mseconds, 1000);
+				}
+				else
+				{
+					progress.setProgress(1000, 1000);
+					this.stage.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+					txtContinue.visible = true;
+				}
+			}
+			
+			private function onContinueClick(evt:Event):void
+			{
+				Application.application.currentState = UIGameState.PLAYING;
+			}
+		]]>
+	</mx:Script>
+</mx:Module>

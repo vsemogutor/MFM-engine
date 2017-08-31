@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="100%" height="100%"
+	backgroundColor="0x000000" styleName="genericPanel"
+	xmlns:cc="controls.*">
+	
+	<mx:AnimateProperty id="showEffect" duration="1000" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:VBox id="pnlMain" width="100%" height="100%" paddingLeft="20" 
+		paddingTop="30" verticalGap="30" addedToStage="showEffect.play([pnlMain])">
+		<mx:VBox width="100%" horizontalAlign="center">
+			<mx:Label styleName="headerWhite" text="{StringResources.get('Options')}">
+			</mx:Label>
+		</mx:VBox>
+	
+		<mx:VBox width="100%">
+			<mx:Label styleName="labelGold12" text="{StringResources.get('SoundVolume')}">
+			</mx:Label>
+			<mx:HSlider id="soundSlider" width="40%" change="onSoundVolumeChange(event)"
+				minimum="0" maximum="1" snapInterval="0.1" value="{_options.soundVolume}">
+			</mx:HSlider>	
+		</mx:VBox>
+		<mx:VBox width="100%">
+			<mx:Label styleName="labelGold12" text="{StringResources.get('MusicVolume')}">
+			</mx:Label>
+			<mx:HSlider id="musicSlider" width="40%" change="onMusicVolumeChange(event)" 
+				minimum="0" maximum="1" snapInterval="0.1" value="{_options.musicVolume}">
+			</mx:HSlider>	
+		</mx:VBox>	
+		<mx:VBox width="100%">
+			<mx:Label styleName="labelGold12" text="{StringResources.get('ScrollSpeed')}">
+			</mx:Label>
+			<mx:HSlider id="scrollSpeed" width="40%" change="onScrollSpeedChange(event)" 
+				minimum="8" maximum="96" snapInterval="8" value="{_options.scrollSpeed}">
+			</mx:HSlider>	
+		</mx:VBox>	
+		<mx:HBox width="100%">
+			<mx:Label styleName="labelGold12" text="{StringResources.get('UseSystemCursor')}">
+			</mx:Label>
+			<mx:CheckBox id="chkSystemCursor" change="onUseSystemCursorChange(event)" 
+				 selected="{_options.useSystemCursor}" toolTip="{StringResources.get('UseSystemCursorHelp')}">
+			</mx:CheckBox>	
+		</mx:HBox>
+		<mx:HBox width="100%">
+			<mx:Label styleName="labelGold12" text="{StringResources.get('ScrollWithWasd')}">
+			</mx:Label>
+			<mx:CheckBox id="chkScrollWithWasd" change="onScrollWithWasdChange(event)" 
+				 selected="{_options.scrollWithWasd}" toolTip="{StringResources.get('ScrollWithWasdHelp')}">
+			</mx:CheckBox>	
+		</mx:HBox>	
+		<mx:HBox width="100%">
+			<mx:Label styleName="labelGold12" text="{StringResources.get('ScrollWithMouse')}">
+			</mx:Label>
+			<mx:CheckBox id="chkScrollWithMouse" change="onScrollWithMouseChange(event)" 
+				 selected="{_options.scrollWithMouse}" toolTip="{StringResources.get('ScrollWithMouseHelp')}">
+			</mx:CheckBox>	
+		</mx:HBox>					
+		<mx:HBox width="100%">
+			<mx:Label styleName="labelGold12" text="Show Tutorial">
+			</mx:Label>
+			<mx:CheckBox id="chkTutorial" change="onShowTutorialChange(event)" 
+				 selected="{_options.showTutorial}">
+			</mx:CheckBox>	
+		</mx:HBox>				
+	</mx:VBox>
+
+	
+	<cc:ClickButton bottom="4" right="7" styleName="mainMenuButton" label="{StringResources.get('Back')}" click="onBackClick(event)">
+	</cc:ClickButton>
+
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import sound.Sounds;
+			import mx.effects.easing.Linear;
+			import engine.game.GameOptions;
+			import engine.game.GameManager;
+			import mx.events.SliderEvent;
+			import mx.core.Application;
+			
+			[Bindable]
+			private var _options:GameOptions = GameManager.instance().options;
+			
+			private function onBackClick(event:Event):void
+			{
+				Application.application.currentState = UIGameState.START_MENU;
+			}
+			
+			private function onMusicVolumeChange(event:SliderEvent):void
+			{
+				_options.musicVolume = event.value;
+				Sounds.play(Sounds.checkSound);
+			}	
+			
+			private function onScrollSpeedChange(event:SliderEvent):void
+			{
+				_options.scrollSpeed = event.value;
+			}
+			
+			private function onSoundVolumeChange(event:SliderEvent):void
+			{
+				_options.soundVolume = event.value;
+				Sounds.play(Sounds.checkSound);
+			}	
+			
+			private function onUseSystemCursorChange(event:Event):void
+			{
+				_options.useSystemCursor = chkSystemCursor.selected;
+				
+			}
+			
+			private function onShowTutorialChange(event:Event):void
+			{
+				_options.showTutorial = chkTutorial.selected;
+			}	
+			
+			private function onScrollWithWasdChange(event:Event):void
+			{
+				_options.scrollWithWasd = chkScrollWithWasd.selected;
+			}
+			
+			private function onScrollWithMouseChange(event:Event):void
+			{
+				_options.scrollWithMouse = chkScrollWithMouse.selected;
+			}													
+		]]>
+	</mx:Script>	
+</mx:Module>

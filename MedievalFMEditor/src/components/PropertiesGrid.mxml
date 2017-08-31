@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="210" height="100%"
+	verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	
+	<mx:Script>
+		<![CDATA[
+			import engine.util.StrUtil;
+			import engine.util.Util;
+			import engine.fraction.Fraction;
+			import engine.units.Unit;
+			import mx.events.ListEvent;
+			import engine.game.Game;
+			import mx.controls.ComboBox;
+			import mx.collections.SortField;
+			import mx.collections.Sort;
+			import mx.containers.HBox;
+			import mx.controls.TextArea;
+			import mx.controls.Text;
+			import mx.collections.ArrayCollection;
+			
+			private var _object:Object;
+			
+			public function get object():Object{
+				return _object;
+			}		
+	
+			public function set object(obj:Object):void{
+				_object = obj;
+			}	
+					
+			public function init(editable:Boolean = true, editableProps:Array=null):void
+			{
+				var array:ArrayCollection = getPropList(object);
+				
+				var sort:Sort = new Sort();
+				var name:SortField = new SortField();
+                name.name = "name";
+ 				var readonly:SortField = new SortField();
+                readonly.name = "editable";
+                           
+                sort.fields = [name, readonly];
+                array.sort = sort;
+                array.refresh();
+				
+				for (var i:int = 0; i < array.length; ++i)
+				{
+					var prop:PropertyDescription = array[i];
+					var hbox:HBox = new HBox();
+					
+					var txt:Text = new Text();
+					txt.height = 17;
+					txt.setStyle("fontWeight", "bold");
+					txt.text = prop.name + ":";
+					hbox.addChild(txt);
+					
+					if (StrUtil.endsWith(prop.type, "::Fraction"))
+					{
+						var ddl:ComboBox = new ComboBox();
+						ddl.dataProvider = Game.instance().fractionManager.fractions.toValSet().toArray();
+						ddl.labelField = "name";
+						ddl.addEventListener(ListEvent.CHANGE, onFractionChange);
+						ddl.selectedItem = (object as Unit).fraction;
+						ddl.width = 140;
+						hbox.addChild(ddl);
+						txt.setStyle("color", "#00FF00"); 				
+					}
+					else
+					{
+						var txtField:TextArea = new TextArea();
+						txtField.addEventListener(Event.CHANGE, onFieldChange);
+						txtField.height = 17;
+						txtField.name = prop.name;
+						try {
+							if (prop.val) txtField.text = prop.val.toString();
+							txtField.editable = prop.editable && editable 
+								&& (editableProps == null || editableProps.indexOf(prop.name) != -1);
+						} catch (e:Error) {
+							txtField.text = "error";
+							txtField.editable = false;
+						}
+						
+						if (txtField.editable)
+							txt.setStyle("color", "#00FF00");
+						
+						hbox.addChild(txtField);
+					}
+					
+					this.addChild(hbox);
+				}				
+			}
+			
+			private function onFieldChange(evt:Event):void
+			{
+				var txt:TextArea = TextArea(evt.target);
+				object[txt.name] = txt.text;
+			}
+			
+			private function onFractionChange(evt:Event):void
+			{
+				(object as Unit).setFraction(ComboBox(evt.target).selectedItem as Fraction);
+			}
+			
+			private function getPropList(obj:Object):ArrayCollection
+			{
+				var classAsXML:XML = describeType(obj);
+				var list : XMLList = classAsXML.*;
+				var propMap: ArrayCollection = new ArrayCollection();
+				var item : XML;
+				
+				for each (item in list) {
+				 	var itemName : String = item.name().toString();
+				 	switch(itemName) {
+				  		case "variable":
+				  			var prop:PropertyDescription = new PropertyDescription();
+				  			prop.type = item.@type.toString();
+				  			prop.name = item.@name.toString();
+				  			prop.val = obj[prop.name];
+				  			prop.editable = true;
+				  			propMap.addItem(prop);
+				  			break;
+				  		case "accessor":
+				  			var access:String = item.@access;
+				  			var prop:PropertyDescription = new PropertyDescription();
+				  			prop.type = item.@type.toString();
+				  			prop.name = item.@name.toString();
+				  			prop.editable = ((access == "readwrite") || (access == "writeonly"));
+				  			prop.val = obj[prop.name];
+				   			propMap.addItem(prop);
+				  			break;
+				  	}
+				}
+				
+				return propMap;
+			}
+		]]>
+	</mx:Script>	
+</mx:VBox>

@@ -1,0 +1,155 @@
+<localization language="en">
+	<GameName>Aeon Defense</GameName>
+	<Experience>Experience:</Experience>
+	<Inventory>Inventory</Inventory>
+	<Skills>Skills</Skills>
+	<AvaliableGold>Available Gold</AvaliableGold>
+	<NewGame>New Game</NewGame>
+	<CustomGame>Custom Game</CustomGame>
+	<HighScores>High Scores</HighScores>
+	<Achievements>Achievements</Achievements>
+	<Options>Options</Options>	
+	<Credits>Credits</Credits>
+	<MoreGames>More Games</MoreGames>		
+	<SoundVolume>Sound Volume</SoundVolume>
+	<MusicVolume>Music Volume</MusicVolume>
+	<ScrollSpeed>Scroll Speed</ScrollSpeed>
+	<UseSystemCursor>Use System Cursor</UseSystemCursor>
+	<UseSystemCursorHelp>Check this if you think that cursor is too slow.</UseSystemCursorHelp>	
+	<ScrollWithWasd>Scroll with WASD</ScrollWithWasd>
+	<ScrollWithWasdHelp>Enable scrolling with WASD. Disable this option if you want to use [A/S] as Attack-Stop hotkeys.</ScrollWithWasdHelp>	
+	<ScrollWithMouse>Scroll with mouse</ScrollWithMouse>
+	<ScrollWithMouseHelp>Enable scrolling with mouse.</ScrollWithMouseHelp>		
+	<Back>Back</Back>
+	<Next>Next</Next>	
+	<Previous>Previous</Previous>
+	<Skip>Skip</Skip>
+	<Done>Done</Done>
+	<Finish>Finish</Finish>		
+	<Return>Return</Return>		
+	<CreditsEngineAndGameDesign>MFM Catalytic Engine and Game Design</CreditsEngineAndGameDesign>	
+	<CreditsGameArt>Game Art</CreditsGameArt>
+	<CreditsMusic>Music</CreditsMusic>
+	<CreditsUI>Game UI art</CreditsUI>
+	<CreditsSound>Sound</CreditsSound>
+	<CreditsSpecialThanks>Special Thanks To</CreditsSpecialThanks>	
+	<HallOfFame>Hall Of Fame</HallOfFame>
+	<Missions>Missions</Missions>	
+	<Cancel>Cancel</Cancel>
+	<StartGame>Start Game</StartGame>
+	<Type>Type:</Type>
+	<MapSize>Map Size:</MapSize>
+	<Visibility>Visibility:</Visibility>
+	<Description>Description:</Description>
+	<Default>Default</Default>
+	<ClickHereToContinue>Click here to continue</ClickHereToContinue>
+	<Menu>Menu</Menu>
+	<Quests>Quests</Quests>
+	<Tutorial>Tutorial</Tutorial>
+	<Status>Status:</Status>
+	<Armor>Armor</Armor>
+	<Damage>Damage</Damage>
+	<Tips>Tips</Tips>
+	<Help>Help</Help>
+	<ReturnToGame>Return To Game</ReturnToGame>
+	<EndGame>End Game</EndGame>
+	<Restart>Restart</Restart>
+	<SurrenderAction>Surrender</SurrenderAction>
+	<GameMenu>Game Menu</GameMenu>
+	<ConfirmEndGame>Confirm End Game</ConfirmEndGame>
+	<Yes>Yes</Yes>
+	<No>No</No>
+	<EndGameConfirm>Are you sure you want to end game?</EndGameConfirm>
+	<TooltipFreeWorker>Select next free worker (W).</TooltipFreeWorker>
+	<TooltipAttack>Attack (A).</TooltipAttack>
+	<TooltipBuild>Build (B).</TooltipBuild>
+	<TooltipStop>Stop (S).</TooltipStop>
+	<TooltipMove>Move (M).</TooltipMove>
+	<TooltipRepair>Repair (R).</TooltipRepair>
+	<TooltipSelectHero>Select Hero (H).</TooltipSelectHero>
+	<InputUserName>Please input your name:</InputUserName>
+	<Hero>Hero</Hero>
+	<Total>Total:</Total>	
+	<Defeat>Defeat</Defeat>
+	<Surrender>Surrender</Surrender>
+	<Victory>Victory</Victory>	
+	<Continue>Continue</Continue>
+	<TimeElapsed>Time elapsed:</TimeElapsed>
+	<CrystalsCollected>Crystals collected:</CrystalsCollected>
+	<GoldCollected>Gold collected:</GoldCollected>
+	<BuildingsConstructed>Buildings constructed:</BuildingsConstructed>
+	<UnitsTrained>Units trained:</UnitsTrained>
+	<UnitsKilled>Units killed:</UnitsKilled>
+	<BuildingsDestroyed>Buildings destroyed:</BuildingsDestroyed>
+	<UnitsLost>Units lost:</UnitsLost>
+	<BuildingsLost>Buildings lost:</BuildingsLost>
+	<IgorNovikov>Igor Novikov (www.squirrelfm.com)</IgorNovikov>
+	<ArmorType>Armor type:</ArmorType>
+	<DamageReduction>Damage reduction:</DamageReduction>
+	<MovementSpeed>Movement speed:</MovementSpeed>
+	<DamageType>Damage type:</DamageType>
+	<Range>Range:</Range>
+	<AttackSpeed>Attack speed:</AttackSpeed>
+	<Details>Details:</Details>	
+	<SquirrelPresents>SquirrelFM presents</SquirrelPresents>	
+	<UnderDevelopment>Under Development</UnderDevelopment>
+	<FracPassive>Passive</FracPassive>
+	<FracPassiveAgressive>Agressive</FracPassiveAgressive>
+	<Optional>(Optional)</Optional>
+	<Completed>(Completed)</Completed>
+	<Rules>Rules</Rules>
+	<Controls>Controls</Controls>
+	<GoodLuck>That is all. Good luck!</GoodLuck>
+	<None>None</None>
+	<Fast>Fast</Fast>
+	<Normal>Normal</Normal>
+	<Slow>Slow</Slow>
+	<Melee>Melee</Melee>
+	<Close>Close</Close>
+	<Medium>Medium</Medium>
+	<Long>Long</Long>
+	<Piersing>Piersing</Piersing>
+	<Magic>Magic</Magic>
+	<Siedge>Siedge</Siedge>
+	<Astral>Astral</Astral>
+	<Heavy>Heavy</Heavy>	
+	<Fortified>Fortified</Fortified>
+	<Divine>Divine</Divine>
+	<HeroDamageDescription>Hero attacks do reduced damage to Fortified armor.</HeroDamageDescription>	
+	<PiersingDamageDescription>Piercing attacks do extra damage to Unarmored units and Light armor, and reduced damage to Fortified, Normal armor, and Heroes.</PiersingDamageDescription>
+	<MagicDamageDescription>Magic attacks do extra damage against Light and Heavy armor, and reduced damage to Normal, Fortified armor, and Heroes.</MagicDamageDescription>
+	<NormalDamageDescription>Normal attacks do extra damage against Normal armor, and reduced damage to Fortified armor.</NormalDamageDescription>
+	<SiedgeDamageDescription>Siege attacks do extra damage to Fortified armor and Unarmored units, and reduced damage to Normal armor and Heroes.</SiedgeDamageDescription>
+	<AstralDamageDescription>Astral attacks do full damage to all armor types.</AstralDamageDescription>	
+	<ArmorTypeNoneDescription>Unarmored takes extra damage from Piercing, and Siege attacks.</ArmorTypeNoneDescription>
+	<ArmorTypeNormalDescription>Normal armor takes extra damage from Normal attacks, reduces damage from Piercing, Magic, and Siege attacks.</ArmorTypeNormalDescription>
+	<ArmorTypeLightDescription>Light armor takes extra damage from Piercing and Magic attacks.</ArmorTypeLightDescription>
+	<ArmorTypeHeavyDescription>Heavy armor takes extra damage from Magic attacks.</ArmorTypeHeavyDescription>	
+	<ArmorTypeHeroDescription>Heroes take reduced damage from Piercing, Magic, Spell, and Siege attacks.</ArmorTypeHeroDescription>
+	<ArmorTypeFortifiedDescription>Fortified armor greatly reduces Piercing, Magic, Hero, and Normal attacks, but takes extra damage from Siege attacks.</ArmorTypeFortifiedDescription>	
+	<ArmorTypeDevineDescription>Fortified armor greatly reduces Piercing, Magic, Hero, and Normal attacks, but takes extra damage from Siege attacks.</ArmorTypeDevineDescription>
+	<HelpContent>
+[Keyboard arrows] - scroll screen.
+[Space Bar] - snap/unsnap camera to Hero.
+[Mouse click] - select units / smart action (if unit seected).
+[Ctrl + Mouse click] - select unit (if another selected).
+[Esc] - cancel selected action / game menu.
+[A] - attack.
+[M] - move.
+[S] - stop.
+[H] - select Hero.
+[1-9] - skills hotkeys.
+Double click on spell to activate.
+You can use unit control panel at the right bottom corner of the screen to order units to perform actions like move or attack.
+If you have problem with cursor moving too slow - go to options and check 'Use System Cursor'.
+	</HelpContent>
+	<HelpContentShort>
+* Keyboard arrows - scroll screen.
+* Left mouse click - select units / select units / smart action (if unit seected).
+* Ctrl + Left mouse click - select unit (if another selected).
+* Use unit control panel at the right bottom corner of the screen to order units to perform actions like move or attack.
+* Esc - cancel selected action.
+* Double click on spell to activate.
+You can get more detailed help by clicking 'Help' in game menu.
+	</HelpContentShort>	
+</localization>

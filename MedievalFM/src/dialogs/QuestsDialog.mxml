@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="500" height="500" creationComplete="{renderQuests()}">
+
+	<mx:Label styleName="headerWhite" text="{StringResources.get('Quests')}"></mx:Label>
+	
+	<mx:Tile id="lstQuests" width="100%" height="40%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	</mx:Tile>
+	
+	<mx:HBox width="100%">
+		<mx:Label id="txtName" styleName="labelGold14"></mx:Label>
+		<mx:Label id="txtOptional" styleName="labelWhite14" text="{StringResources.get('Optional')}"></mx:Label>		
+	</mx:HBox>
+	<mx:VBox width="100%" height="220" horizontalScrollPolicy="off" 
+		styleName="questDescriptionPanel">
+		<mx:Text id="txtDescription" selectable="false" width="100%" styleName="labelWhite10"></mx:Text>
+		<mx:VBox id="pnlDescription" horizontalScrollPolicy="off">
+		</mx:VBox>
+	</mx:VBox>
+	
+	<cc:ClickButton width="160" label="{StringResources.get('Done')}" styleName="menuButton" click="onReturnClick(event)">
+	</cc:ClickButton>
+	
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import controls.ClickButton;
+			import mx.containers.HBox;
+			import controls.TypeTooltip;
+			import mx.events.ToolTipEvent;
+			import controls.ImageButton;
+			import engine.quests.QuestDescriptionToken;
+			import __AS3__.vec.Vector;
+			import engine.quests.QuestDescription;
+			import mx.controls.Button;
+			import engine.game.Game;
+			
+			private var _curQuest:QuestDescription;
+			
+			public function show(parent:DisplayObject, quest:QuestDescription=null, closeHandler:Function=null):void
+			{
+				_curQuest = quest;
+				showDialog(parent, closeHandler);
+			}	
+			
+			private function renderQuests():void
+			{
+				var quests:Vector.<QuestDescription> = Game.instance().questManager.quests;
+				lstQuests.removeAllChildren();
+				for (var i:int = 0; i < quests.length; ++i)
+				{						
+					var quest:QuestDescription = quests[i];
+					var button:ClickButton = new ClickButton();
+					button.label = quest.locName;
+					button.styleName = "questButton";
+					button.width = (lstQuests.width - lstQuests.getStyle("verticalGap") - 10)/2;
+					button.addEventListener(MouseEvent.CLICK, onQuestSelected, false, 0, true);
+					button.data = quest;
+					button.enabled = !quest.completed;
+					if (quest.completed)
+						button.label += StringResources.get("Completed");
+
+					lstQuests.addChild(button);
+					
+					if ((_curQuest == null && i == 0) || (_curQuest && _curQuest == quest))
+					{
+						selectQuest(quest);
+						button.selected = true;
+					}
+				}
+			}
+			
+			private function onQuestSelected(evt:Event):void
+			{
+				var button:Button = (evt.target as Button);
+				var quest:QuestDescription = button.data as QuestDescription;
+				selectQuest(quest);
+				
+				for (var i:int = 0; i < lstQuests.numChildren; ++i)
+				{
+					var btn:Button = lstQuests.getChildAt(i) as Button;
+					btn.selected = (btn == button);
+				}
+			}
+			
+			private function selectQuest(quest:QuestDescription):void
+			{
+				txtName.text = quest.locName;
+				txtOptional.visible = quest.optional;
+				txtDescription.text = quest.description;
+				
+				pnlDescription.removeAllChildren();
+				for (var i:int = 0; i < quest.tokens.length; ++i)
+				{
+					var container:HBox = new HBox();
+					container.setStyle("verticalAlign", "middle");
+					var token:QuestDescriptionToken = quest.tokens[i];
+					if (token.unitType)
+					{
+						var unitButton:ImageButton = new ImageButton();
+						unitButton.toolTip = " ";
+						unitButton.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, TypeTooltip.createDetailed);
+						unitButton.addEventListener(ToolTipEvent.TOOL_TIP_SHOW, TypeTooltip.show);	
+						unitButton.data = token.unitType;		
+						unitButton.setImage(token.unitType.icon);
+										
+						container.addChild(unitButton);
+					}
+					if (token.spellType)
+					{
+						var spellButton:ImageButton = new ImageButton();
+						spellButton.toolTip = " ";
+						spellButton.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, TypeTooltip.create);
+						spellButton.addEventListener(ToolTipEvent.TOOL_TIP_SHOW, TypeTooltip.show);	
+						spellButton.data = token.spellType;		
+						spellButton.setImage(token.spellType.icon);
+										
+						container.addChild(spellButton);
+					}
+					if (token.text)
+					{
+						var label:Label = new Label();
+						label.text = token.text;
+						label.styleName = "labelWhite10";		
+										
+						container.addChild(label);
+					}
+					pnlDescription.addChild(container);					
+				}
+			}
+			
+			private function onReturnClick(evt:Event):void
+			{
+				close();
+			}
+		]]>
+	</mx:Script>
+	
+</DialogCommon>

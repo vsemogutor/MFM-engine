@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="100%" height="100%"
+	creationComplete="{slideDown(init)}"
+	xmlns:cc="controls.*"
+	enterFrame="onEnterFrame(event)"
+	addedToStage="{slideDown(init)}">
+
+
+        
+    <mx:Sequence repeatCount="0" id="glowEffect">
+	    <mx:Glow color="#F7D60D" alphaFrom="0.5" alphaTo="0.7" duration="1000"
+	    	blurXFrom="8" blurYFrom="8" blurXTo="14" blurYTo="14" 
+	    	easingFunction="{Linear.easeIn}"/>
+	    
+	   	<mx:Glow duration="1000" 
+	        alphaFrom="0.7" alphaTo="0.5" blurXFrom="14" blurXTo="8" 
+	        blurYFrom="14" blurYTo="8" color="#F7D60D"/>   	
+    </mx:Sequence>      
+    	
+	<mx:Zoom id="zoomIn" zoomHeightTo="1.1" zoomWidthTo="1.1">
+	</mx:Zoom>
+	<mx:Zoom id="zoomOut" zoomHeightTo="1" zoomWidthTo="1">
+	</mx:Zoom>
+	
+	<mx:AnimateProperty id="slide" duration="700" startDelay="150"  
+		property="y" fromValue="-420" toValue="110" easingFunction="{Sine.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:AnimateProperty id="up" duration="200"  
+		property="y" fromValue="110" toValue="70" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:AnimateProperty id="down" duration="200"  
+		property="y" fromValue="70" toValue="80" easingFunction="{Sine.easeOut}">
+	</mx:AnimateProperty>
+		
+	<mx:Canvas width="100%" height="100%" styleName="startMenu">
+		<mx:Canvas height="100%" width="9" styleName="verticalBorder" left="0" top="0">
+		</mx:Canvas>
+		<mx:Canvas height="100%" width="9" styleName="verticalBorder" right="0" top="0">
+		</mx:Canvas>
+			
+		<mx:VBox id="pnlMenu" enabled="false" width="280" backgroundColor="#000000" 
+			verticalGap="16" styleName="dialogCommon" disabledOverlayAlpha="0"
+			right="19" horizontalAlign="right" verticalAlign="middle" paddingTop="50" paddingBottom="30"
+			y="-420">
+			<mx:Box styleName="genericButtonBorder" width="91%">
+				<cc:ClickButton label="{StringResources.get('NewGame')}" width="100%" click="{slideUp(onStartClick)}" styleName="mainMenuButton"></cc:ClickButton>				
+			</mx:Box>
+<!--			<mx:Box styleName="genericButtonBorder" width="91%">
+				<cc:ClickButton label="Network Game" width="100%" styleName="mainMenuButton"></cc:ClickButton>
+			</mx:Box>-->
+<!--			<mx:Box styleName="genericButtonBorder" width="91%">
+				<cc:ClickButton label="{StringResources.get('HighScores')}" width="100%" click="{slideUp(onScoresClick)}" styleName="mainMenuButton"></cc:ClickButton>
+			</mx:Box>-->
+			<mx:Box styleName="genericButtonBorder" width="91%">
+				<cc:ClickButton label="{StringResources.get('Options')}" width="100%" click="{slideUp(onOptionsClick)}" styleName="mainMenuButton"></cc:ClickButton>
+			</mx:Box>
+			<mx:Box styleName="genericButtonBorder" width="91%">
+				<cc:ClickButton label="{StringResources.get('Credits')}" width="100%" click="{slideUp(onCreditsClick)}" styleName="mainMenuButton"></cc:ClickButton>
+			</mx:Box>
+<!--			<mx:Box styleName="genericButtonBorder" width="91%">
+				<cc:ClickButton label="Andkon Arcade" width="100%" click="{onMoreGamesClick()}" styleName="mainMenuButton"></cc:ClickButton>
+			</mx:Box>-->
+		</mx:VBox>
+		
+<!--		<mx:HBox id="pnlBranding" backgroundColor="#AAAAFF" width="250" height="79" 
+			backgroundAlpha="0.5" bottom="40" right="10" visible="false"
+			horizontalScrollPolicy="off" verticalScrollPolicy="off" verticalAlign="middle" horizontalAlign="center">
+			<mx:Image source="{Images.imageSponsorClass1}" width="155" buttonMode="true" 
+				rollOverEffect="zoomIn" rollOutEffect="zoomOut" click="{onMoreGamesClick()}">
+			</mx:Image>
+			<mx:VBox width="90" click="{onSponsorGamesClick()}"
+				horizontalScrollPolicy="off" verticalScrollPolicy="off" 
+				verticalGap="0" horizontalAlign="center">
+				<mx:Text text="Free website" selectable="false"></mx:Text>
+				<mx:Image source="{Images.imageSponsorClass2}" height="44" width="80"
+					rollOverEffect="zoomIn" rollOutEffect="zoomOut">
+				</mx:Image>
+				<mx:Text  text="games" selectable="false"></mx:Text>
+			</mx:VBox>			
+		</mx:HBox>-->
+		
+		<mx:Canvas id="flag" x="260" y="307" width="24" height="16"></mx:Canvas>
+		<mx:Image id="imgGameLogo" source="{Images.gameLogo}" top="40" left="30"></mx:Image>
+		<mx:Label text="MFM Catalytic 2.66.8" bottom="0" right="10" styleName="labelWhite12"></mx:Label>
+		<mx:Label text="SquirrelFM" bottom="0" left="10" styleName="labelWhite12"></mx:Label>		
+	</mx:Canvas>
+	
+	<mx:SoundEffect id="sndSlide" source="{Sounds.slideClass}" 
+		volumeFrom="{0.3*GameManager.instance().options.soundVolume}" 
+		volumeTo="{0.9*GameManager.instance().options.soundVolume}" 
+		duration="1267">		
+	</mx:SoundEffect>
+		
+	<mx:Script>
+		<![CDATA[
+			import kongregate.KongApi;
+			import resources.SoundResources;
+			import dialogs.UserNameDialog;
+			import resources.StringResources;
+			import engine.sound.SoundManager;
+			import com.greensock.TweenMax;
+			import resources.MusicResources;
+			import engine.core.events.GameEvent;
+			import engine.core.events.EngineEvents;
+			import engine.cursor.*;
+			import images.Images;
+			import sound.Sounds;
+			import engine.game.GameManager;
+			import mx.events.EffectEvent;
+			import mx.effects.easing.Sine;
+			import mx.effects.easing.Linear;
+			import mx.core.Application;
+			import engine.game.GameState;
+						
+			private var _posDown:Boolean;
+			
+			private function slideUp(after:Function=null):void
+			{	
+				_posDown = false;
+				
+				var downF:Function = function(evt0:Event):void {
+					var afterF:Function = function(evt1:Event):void {
+						slide.removeEventListener(EffectEvent.EFFECT_END, afterF);
+						down.stop();
+						if (after != null) after();					
+					};
+
+					down.removeEventListener(EffectEvent.EFFECT_END, downF);
+					slide.addEventListener(EffectEvent.EFFECT_END, afterF);
+					slide.play([pnlMenu], true);
+				};
+				
+				pnlMenu.enabled = false;
+				down.addEventListener(EffectEvent.EFFECT_END, downF);
+				sndSlide.play([pnlMenu], true);
+				down.play([pnlMenu]);
+			}		
+			
+			
+			private function slideDown(after:Function=null):void
+			{	
+				if (!this.processedDescriptors || _posDown)
+					return;
+					
+				_posDown = true;
+					
+				var upF:Function = function(evt0:Event):void {
+					var downF:Function = function(evt1:Event):void {
+						var afterF:Function = function(evt2:Event):void {
+							down.removeEventListener(EffectEvent.EFFECT_END, afterF);
+							if (after != null) after();
+							pnlMenu.enabled = true;
+							//pnlBranding.visible = true;
+							
+							//showUserNameDialog();
+						};
+						
+						up.removeEventListener(EffectEvent.EFFECT_END, downF);
+						down.addEventListener(EffectEvent.EFFECT_END, afterF);
+						down.play([pnlMenu]);			
+					};
+
+					slide.removeEventListener(EffectEvent.EFFECT_END, upF);
+					up.addEventListener(EffectEvent.EFFECT_END, downF);
+					up.play([pnlMenu]);
+				};
+				
+				glowEffect.play([imgGameLogo]);
+				slide.addEventListener(EffectEvent.EFFECT_END, upF);
+				sndSlide.play([pnlMenu]);
+				slide.play([pnlMenu]);
+			}
+			
+			private function init():void
+			{
+				GameManager.instance().options.load();
+				CursorManager.instance().addEventListener(EngineEvents.CURSOR_CHANGED, onCursorChanged);
+				CursorManager.instance().defaultCursor();
+				
+				if (!SoundManager.instance().backgroundMusic)
+				{
+					SoundManager.instance().playMusic(MusicResources.track1, int.MAX_VALUE, 2);
+					SoundManager.instance().loopSound(SoundResources.ambientWindLong, 0.4); 
+				}
+			}
+        			
+			private var _animDelay:int;
+			private var _curFrame:int;	
+			private var _backBuffer:BitmapData = new BitmapData(24, 16);	
+			protected function onEnterFrame(evt:Event):void
+			{
+				if (!this.processedDescriptors || !flag)
+					return;
+					
+				if (--_animDelay <= 0)
+				{
+					_backBuffer.copyPixels(Images.flagAnim.bitmapData, 
+						new Rectangle(_curFrame*_backBuffer.width, 0, (_curFrame+1)*_backBuffer.width, _backBuffer.height),
+						new Point(0, 0));
+					
+					flag.graphics.clear();
+					flag.graphics.beginBitmapFill(_backBuffer);
+					flag.graphics.drawRect(0, 0, _backBuffer.width, _backBuffer.height);
+					flag.graphics.endFill();
+					_animDelay = 7;
+					if ((++_curFrame)*_curFrame*_backBuffer.width >= Images.flagAnim.bitmapData.width)
+						_curFrame = 0;
+				}
+			}
+						
+			private function onStartClick():void
+			{
+				Application.application.currentState = UIGameState.HERO_SELECTION;
+			}
+			
+			private function onCreditsClick():void
+			{
+				Application.application.currentState = UIGameState.CREDITS;
+			}
+			
+			private function onOptionsClick():void
+			{
+				Application.application.currentState = UIGameState.OPTIONS;
+			}		
+			
+			private function onScoresClick():void
+			{
+				Application.application.currentState = UIGameState.SCORES;
+			}		
+			
+			private function onCustomGameClick():void
+			{
+				Application.application.currentState = UIGameState.CUSTOM_GAME;
+			}	
+			
+			private function onAchievementsClick():void
+			{
+				Application.application.currentState = UIGameState.ACHIEVEMENTS;
+			}
+			
+			private function onCursorChanged(evt:GameEvent):void
+			{				
+				cursorManager.removeAllCursors();
+				var type:int = evt.properties.type;
+				if (type == CursorType.NORMAL)
+				{
+					cursorManager.setCursor(Images.normalCursorClass);
+				}
+				else if (type == CursorType.NORMAL_ACTIVE)
+				{
+					cursorManager.setCursor(Images.normalActiveCursorClass);
+				}
+				else if (type == CursorType.ATTACK_ACTIVE)
+				{
+					cursorManager.setCursor(Images.attackActiveCursorClass);
+				}
+				else if (type == CursorType.ATTACK)
+				{
+					cursorManager.setCursor(Images.attackCursorClass);
+					cursorManager.currentCursorXOffset = 
+						cursorManager.currentCursorYOffset = -Images.attackCursorSize/2;
+				}
+				else if (type == CursorType.SELECT)
+				{
+					cursorManager.setCursor(Images.selectCursorClass);
+					cursorManager.currentCursorXOffset = 
+						cursorManager.currentCursorYOffset = -Images.selectCursorSize/2;
+				}
+				else if (type == CursorType.TRADE)
+				{
+					cursorManager.setCursor(Images.tradeCursorClass);
+					cursorManager.currentCursorXOffset = 
+						cursorManager.currentCursorYOffset = -Images.selectCursorSize/2;					
+				}						
+			}
+			
+ 			private function onMoreGamesClick():void
+			{
+				//navigateToURL(new URLRequest("http://www.andkon.com/arcade/"));
+			}
+			
+			/*
+			private function onSponsorGamesClick():void
+			{
+				navigateToURL(new URLRequest("http://www.flashninjaclan.com/fncgames.php"));
+			}	 */		
+			
+			private function showUserNameDialog():void
+			{
+				var nameObj:SharedObject = SharedObject.getLocal("userName");
+				
+				if (!nameObj.data.userName)
+				{
+					var dialog:UserNameDialog = new UserNameDialog();
+					dialog.showDialog(this, function():void
+					{
+						GameManager.instance().currentPlayer.name = dialog.userName;
+						nameObj.data.userName = dialog.userName;
+					});
+				}
+				else
+				{
+					GameManager.instance().currentPlayer.name = nameObj.data.userName;
+				}
+			}
+		]]>
+	</mx:Script>
+	
+</mx:Module>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:cc="controls.*"
+	layout="absolute" width="100%" height="100%"
+	styleName="startMenu" 	
+	creationComplete="{init()}">
+
+	<mx:AnimateProperty id="showEffect" duration="600" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:DropShadowFilter id="shadow" angle="0" distance="1">
+	</mx:DropShadowFilter>
+			
+	<mx:VBox width="100%" y="60" horizontalAlign="center">
+		<mx:Label styleName="headerGold" text="Game configuration" filters="{[shadow]}">
+		</mx:Label>			
+	</mx:VBox>
+
+	<mx:VBox id="pnlMenu" width="90%" height="70%" y="90" x="30" horizontalAlign="center" verticalAlign="middle"
+		addedToStage="showEffect.play([pnlMenu])">
+		
+		<mx:HBox width="100%" height="100%">
+			<mx:VBox width="100%" height="100%" styleName="dialogCommon" verticalGap="12" id="pnlPlayerTeam">
+				<mx:Label styleName="labelGold12" text="Light Forces" filters="{[shadow]}">
+				</mx:Label>	
+				
+				<mx:HBox>
+					<mx:ComboBox enabled="false" width="120" >
+						<mx:ArrayCollection>
+					         <mx:Object label="{GameManager.instance().currentPlayer.name}" data=""/>
+				      	</mx:ArrayCollection>				
+					</mx:ComboBox>	
+					<mx:ComboBox enabled="false" width="120">
+						<mx:ArrayCollection>
+					         <mx:Object label="{GameManager.instance().currentMission.stateBag.hero}" data=""/>
+				      	</mx:ArrayCollection>				
+					</mx:ComboBox>													
+				</mx:HBox>
+				
+				<mx:Repeater id="rptPlayerTeam">
+					<mx:HBox>
+						<mx:ComboBox change="onPlayerChange(event)" width="120">
+							<mx:ArrayCollection>
+						         <mx:Object label="Open" data="none" />
+						         <mx:Object label="Computer" data="computer" />
+					      	</mx:ArrayCollection>				
+						</mx:ComboBox>	
+						<mx:ComboBox enabled="false" width="120" change="onHeroChange(event)">
+							<mx:ArrayCollection>
+						         <mx:Object label="Random" data="random"/>
+						         <mx:Object label="Paladin" data="paladin"/>
+						         <mx:Object label="Mage" data="mage"/>	
+						         <mx:Object label="Lich" data="lich"/>
+						         <mx:Object label="Barbarian" data="barbar"/>	
+						         <mx:Object label="Rogue" data="rogue"/>							         			         					         			         				         
+					      	</mx:ArrayCollection>				
+						</mx:ComboBox>													
+					</mx:HBox>				
+				</mx:Repeater>
+		
+				
+				<mx:HBox>
+					<mx:ComboBox enabled="false" width="120">
+						<mx:ArrayCollection>
+					         <mx:Object label="Light Forces" data=""/>
+				      	</mx:ArrayCollection>				
+					</mx:ComboBox>	
+					<mx:ComboBox enabled="false" width="120">
+						<mx:ArrayCollection>
+					         <mx:Object label="None" data=""/>
+				      	</mx:ArrayCollection>				
+					</mx:ComboBox>													
+				</mx:HBox>												
+			</mx:VBox>
+		
+			<mx:VBox width="100%" height="100%" styleName="dialogCommon"  verticalGap="12" id="pnlEnemyTeam">	
+				<mx:Label color="#FF0000" fontSize="12" text="Dark Forces" filters="{[shadow]}">
+				</mx:Label>	
+				<mx:Repeater id="rptEnemyTeam">
+					<mx:HBox>
+						<mx:ComboBox change="onPlayerChange(event)" width="120">
+							<mx:ArrayCollection>
+						         <mx:Object label="Open" data="none" />
+						         <mx:Object label="Computer" data="computer" />
+					      	</mx:ArrayCollection>				
+						</mx:ComboBox>	
+						<mx:ComboBox enabled="false" width="120" change="onHeroChange(event)">
+							<mx:ArrayCollection>
+						         <mx:Object label="Random" data="random"/>
+						         <mx:Object label="Paladin" data="paladin"/>
+						         <mx:Object label="Mage" data="mage"/>	
+						         <mx:Object label="Lich" data="lich"/>
+						         <mx:Object label="Barbarian" data="barbar"/>
+						         <mx:Object label="Rogue" data="rogue"/>						         				         					         			         				         
+					      	</mx:ArrayCollection>				
+						</mx:ComboBox>													
+					</mx:HBox>				
+				</mx:Repeater>
+		
+				
+				<mx:HBox>
+					<mx:ComboBox enabled="false" width="120">
+						<mx:ArrayCollection>
+					         <mx:Object label="Dark Forces" data=""/>
+				      	</mx:ArrayCollection>				
+					</mx:ComboBox>	
+					<mx:ComboBox enabled="false" width="120">
+						<mx:ArrayCollection>
+					         <mx:Object label="None" data=""/>
+				      	</mx:ArrayCollection>				
+					</mx:ComboBox>													
+				</mx:HBox>						
+			</mx:VBox>			
+		</mx:HBox>
+	
+		<mx:HBox id="pnlGeneral" width="100%" height="20%" horizontalAlign="left" verticalAlign="middle"
+			styleName="genericPanelTransparent" paddingBottom="4">
+			<mx:Canvas backgroundAlpha="0.8" backgroundColor="0x152029" width="100%" height="100%">
+			<mx:HBox>
+				<mx:Label styleName="labelGold11" text="Start gold:" filters="{[shadow]}">
+				</mx:Label>	
+				<mx:ComboBox id="cmbStartMoney">
+					<mx:ArrayCollection>
+				         <mx:Object label="Normal" data="100"/>
+				         <mx:Object label="None" data="0"/>
+				         <mx:Object label="A lot" data="1000"/>
+			      	</mx:ArrayCollection>					
+				</mx:ComboBox>
+				<mx:Label styleName="labelGold11" text="Start level:" filters="{[shadow]}">
+				</mx:Label>					
+				<mx:ComboBox id="cmbStartLevel" toolTip="Starting level of your Hero.">
+					<mx:ArrayCollection>
+				         <mx:Object label="1" data="1"/>
+				         <mx:Object label="2" data="2"/>
+				         <mx:Object label="3" data="3"/>
+				         <mx:Object label="4" data="4"/>				         
+			      	</mx:ArrayCollection>					
+				</mx:ComboBox>	
+				<mx:Label styleName="labelGold11" text="Experience gain:" filters="{[shadow]}">
+				</mx:Label>					
+				<mx:ComboBox id="cmbExpGainRate" toolTip="Heroes leveling speed.">
+					<mx:ArrayCollection>
+				         <mx:Object label="150%" data="1.5"/>
+				         <mx:Object label="100%" data="1"/>
+				         <mx:Object label="200%" data="2"/>				         
+			      	</mx:ArrayCollection>					
+				</mx:ComboBox>							
+			</mx:HBox>
+			</mx:Canvas>			
+		</mx:HBox>
+				
+		<mx:HBox id="pnlDesc" width="100%" height="35%" horizontalAlign="center" verticalAlign="middle"
+			styleName="genericPanelTransparent" paddingBottom="4">
+			<mx:Canvas backgroundAlpha="0.8" backgroundColor="0x152029" width="100%" height="100%">
+				<mx:Text width="100%" height="100%" selectable="false" styleName="labelWhite11"
+					text="On this screen you can select how many Heroes will play in your and the opponent team. Your team is on the left and your oppenent team is on the right. Game may run slowly on old computers if a lot of heroes are added to the game.">
+				</mx:Text>				
+			</mx:Canvas>
+		</mx:HBox>		
+	</mx:VBox>	
+						
+	<mx:HBox id="pnlButtons" width="100%" bottom="50" horizontalAlign="center">
+		<cc:ClickButton styleName="mainMenuButton" width="100" label="Back" click="onBackClick(event)">
+		</cc:ClickButton>
+		<cc:ClickButton styleName="mainMenuButton" width="100" label="Next" click="onNextClick(event)">
+		</cc:ClickButton>	
+	</mx:HBox>
+			
+	<mx:Script>
+		<![CDATA[
+			import engine.fraction.FractionControllerType;
+			import engine.game.PlayerSlot;
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+			import mx.core.UIComponent;
+			import mx.controls.ComboBox;
+			import mx.events.DropdownEvent;
+			import sound.Sounds;
+			import mx.effects.easing.Sine;
+			import mx.effects.easing.Linear;
+			import mx.events.EffectEvent;
+			import mx.core.Application;
+			import engine.mission.Mission;
+			import engine.game.GameManager;
+			
+			private var _posDown:Boolean;
+			private var _mission:Mission;
+						
+			private function init():void
+			{
+				_mission = GameManager.instance().currentMission;
+				
+				rptPlayerTeam.dataProvider = _mission.playerTeams[0].slots;
+				rptEnemyTeam.dataProvider = _mission.playerTeams[1].slots;
+				
+				for (var i:int = 0; i < Math.min(3, _mission.playerTeams[1].slots.length); ++i)
+				{
+					var cmb:ComboBox = ComboBox(UIComponent(pnlEnemyTeam.getChildAt(i + 1)).getChildAt(0));
+					cmb.selectedIndex = 1;
+					onPlayerChange(cmb);
+				}
+				
+				for (var i:int = 1; i < Math.min(3, _mission.playerTeams[0].slots.length); ++i)
+				{
+					var cmb:ComboBox = ComboBox(UIComponent(pnlPlayerTeam.getChildAt(i + 1)).getChildAt(0));
+					cmb.selectedIndex = 1;
+					onPlayerChange(cmb);
+				}				
+			}
+			
+			private function onPlayerChange(evtOrTarget:Object):void
+			{
+				var cmb:ComboBox = (evtOrTarget is Event ? evtOrTarget.target as ComboBox : evtOrTarget as ComboBox);
+				
+				UIComponent(cmb.parent.getChildAt(cmb.parent.getChildIndex(cmb) + 1)).enabled = (cmb.selectedItem.data != "none");
+				
+				var slot:PlayerSlot;
+				var indx:int = cmb.parent.parent.getChildIndex(cmb.parent);
+				if (cmb.parent.parent == pnlPlayerTeam)
+				{
+					slot = _mission.playerTeams[0].slots[indx - 2];
+				}
+				else
+				{
+					slot = _mission.playerTeams[1].slots[indx - 1];
+				}
+				
+				slot.controllerType = (cmb.selectedItem.data != "none" ? FractionControllerType.Computer : FractionControllerType.Passive);
+			}
+
+			private function onHeroChange(evt:ListEvent):void
+			{
+				var cmb:ComboBox = evt.target as ComboBox;
+				var slot:PlayerSlot;
+				var indx:int = cmb.parent.parent.getChildIndex(cmb.parent);
+				if (cmb.parent.parent == pnlPlayerTeam)
+				{
+					slot = _mission.playerTeams[0].slots[indx - 2];
+				}
+				else
+				{
+					slot = _mission.playerTeams[1].slots[indx - 1];
+				}
+				
+				slot.hero = cmb.selectedItem.data;				
+			}
+
+			private function onNextClick(evt:Event):void	
+			{
+				_mission.stateBag.startMoney = parseInt(cmbStartMoney.selectedItem.data);
+				_mission.stateBag.startLevel = parseInt(cmbStartLevel.selectedItem.data);
+				_mission.expGainRate = parseFloat(cmbExpGainRate.selectedItem.data);
+				Application.application.currentState = UIGameState.MISSION_LOADING;				
+			}
+			
+			private function onBackClick(evt:Event):void	
+			{
+				Application.application.currentState = UIGameState.PRESETS;				
+			}
+												
+		]]>
+
+	</mx:Script>	
+</mx:Module>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flexLibProperties version="1">
+<includeClasses>
+<classEntry path="arena.Arena"/>
+<classEntry path="alderun.Waves"/>
+<classEntry path="alderun.Alderun"/>
+<classEntry path="alderun.TypesRepository"/>
+<classEntry path="common.AmbientSounds"/>
+<classEntry path="alderun.UnitTypesRepository"/>
+<classEntry path="arena.HeroesAi"/>
+<classEntry path="alderun.Fractions"/>
+<classEntry path="alderun.HeroesAi"/>
+<classEntry path="arena.InventoryItemsRepository"/>
+<classEntry path="packDescription.MissionPack"/>
+<classEntry path="arena.Waves"/>
+<classEntry path="arena.SkillTreeRepository"/>
+<classEntry path="alderun.InventoryItemsRepository"/>
+<classEntry path="alderun.SpellTypesRepository"/>
+<classEntry path="alderun.SkillTreeRepository"/>
+<classEntry path="alderun.CustomModelsRepository"/>
+</includeClasses>
+<includeResources/>
+<namespaceManifests/>
+</flexLibProperties>

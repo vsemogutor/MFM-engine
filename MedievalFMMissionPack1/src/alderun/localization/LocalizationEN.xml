@@ -1,0 +1,130 @@
+<localization language="en">
+<MissionName>Alderun</MissionName>
+<MissionDescription>Fight your way to destroy the enemy castle before he destroys yours! Inspired by w3 Three Corridirs map by ilPAL & ZigZagEr. With any questions please contact squirrelfm@gmail.com.</MissionDescription>
+<TilesetName>Rivers</TilesetName>
+<LblMain>Main</LblMain>
+<LblMainQuestDesc>Destroy enemy Castle. Do not let enemies to destroy your Castle.</LblMainQuestDesc>
+<LblRules>Game Rules</LblRules>
+<LblRulesDesc>*Basic*
+The purpose of the game is to defend your Castle and try to destroy the opponents Castle. The castles are located deep in both bases, which are located at the top right and bottom left corners of the map.
+*Heroes*
+You can control only your Hero and creatures your Hero summons. Heroes are highly skilled fighters with various magical abilities. Each of these heroes has skills and stats. Heroes start at level one. When a creep or hero is killed in an area around you, you gain experience. If you get enough experience you gain a level, which means that you gain extra attribute points and one skill point that can be used towards upgrading one of your unique abilities.
+The stats are called “Hero Attributes” and determine the basic strengths and weaknesses of a hero, one of these attributes is the “primary attribute” which determines your attack damage and generally the type of hero you control. The 3 Hero Attributes are:
+Strength: Each point enhances hit points and hit point regeneration.
+Agility: Each point enhances attack speed and armor.
+Intelligence: Each point enhances mana points and mana regeneration.
+*Items*
+You gain a minor amount of gold over time, but most of your gold will be gotten by landing the finishing blow on a hero or creep. With gold you can buy various items. Some of these items are offensive in nature while others are designed for survival. 
+</LblRulesDesc>
+<LblUndeadKing>Undead King</LblUndeadKing>
+<LblUndeadKingDesc>Undead King and 4 Undead Minions are spawned every 10 min in the middle of the map. Reward for killing Undead King is 1000 gold and 'Crown of Undead' item, but be aware that this is a very strong creature.</LblUndeadKingDesc>
+<LblDuels>Duels</LblDuels>
+<LblDuelsDesc>You can be summoned to a duel or skirmish. You can't leave the duel arena until You win or your hero dies. To win the duel you must defeat all enemy Heroes on the arena.</LblDuelsDesc>
+<LblDog>Dog</LblDog>
+<LblDogDesc>Protect the dog!</LblDogDesc>
+<WarnNextWaveIn>Next wave in {0} seconds</WarnNextWaveIn>
+<WarnWaveBegin>Wave {0} began</WarnWaveBegin>
+<FractPlayer>Player</FractPlayer>
+<FractAncientEvil>Ancient Evil</FractAncientEvil>
+<FractHolyGrounds>Holy Grounds</FractHolyGrounds>
+<SpImplosion>Implosion</SpImplosion>
+<SpImplosionDesc>Makes 15-17 damage initially and 10-11 damage over a second. Medium area of effect.</SpImplosionDesc>
+<SpWaterJet>Water Jet</SpWaterJet>
+<SpWaterJetDesc>Makes 42-74 blunt damage in small area. Has a 35% chance to cause 'Concussion' effect, sugnificantly slowing down target for 5 sec. This effect doesn't stack.</SpWaterJetDesc>
+<SpDispell>Dispell</SpDispell>
+<SpDispellDesc>Can be set as autocast spell. Dispells negative or positive effects from target for 5 seconds.</SpDispellDesc>
+<SpEathquake>Eathquake</SpEathquake>
+<SpEathquakeDesc>Can be set as autocast spell. Makes 50-70 damage to targets in the area and has a chance to slow enemies down. Medium range.</SpEathquakeDesc>
+<SpHeal>Heal</SpHeal>
+<SpHealDesc>Heals target for 100-150 hp.</SpHealDesc>
+<SpShield>Shield</SpShield>
+<SpShieldDesc>Increases armor by 15 and magic resistance by 50% fo 140 sec.</SpShieldDesc>
+<SpFortitudeAura>Fortitude Aura</SpFortitudeAura>
+<SpFortitudeAuraDesc>Increases armor by 4.</SpFortitudeAuraDesc>
+<SpActivateHolyGround>Activate Holy Ground</SpActivateHolyGround>
+<SpActivateHolyGroundDesc>Activates holy ground around the chapel, making 33% damage of total health (+21 damage over 1 sec) to all anemies in the large area around and slowing down undeads sugnificantly.</SpActivateHolyGroundDesc>
+<UMummyLord>Mummy Lord</UMummyLord>
+<UMummyLordDesc>Undead. Very strong melee unit. Highly resistant to magic and regenerates health.</UMummyLordDesc>
+<UShadowSpider>Shadow Spider</UShadowSpider>
+<UShadowSpiderDesc>Very strong melee unit. Due to its spectral nature very resistant to any forms of physical damage. Regenerates health.</UShadowSpiderDesc>
+<ULarva>Larva</ULarva>
+<ULarvaDesc>Strong melee unit. High health regeneration rate. Vunerable to fire.</ULarvaDesc>
+<USkeletonArcher>Skeleton Archer</USkeletonArcher>
+<USkeletonArcherDesc>Undead. Low physical and magic resistance.</USkeletonArcherDesc>
+<UIronSkeleton>Iron Skeleton</UIronSkeleton>
+<UIronSkeletonDesc>Undead. Hight armor and magic resistance.</UIronSkeletonDesc>
+<UNexus>Nexus</UNexus>
+<UNexusDesc>Powerful tower that uses frost nova as primary attack. Slows enemies down and has large splash efffect.</UNexusDesc>
+<UPaladin>Paladin</UPaladin>
+<UPaladinDesc>Paladin.</UPaladinDesc>
+<UTowerOfBlades>Tower of Blades</UTowerOfBlades>
+<UTowerOfBladesDesc>Basic tower type, shoots blades that have minor splash damage.</UTowerOfBladesDesc>
+<UPillarOfFireWind>Pillar of Fire Wind</UPillarOfFireWind>
+<UPillarOfFireWindDesc>Basic pillar, flamethrow attack at a very short range. When second socket is activated can cast 'Implosion'.</UPillarOfFireWindDesc>
+<UAncientProtector>Ancient Protector</UAncientProtector>
+<UAncientProtectorDesc>Ancient Protector can build basic types of defence towers.</UAncientProtectorDesc>
+<UOrcGhost>Orc Ghost</UOrcGhost>
+<UOrcGhostDesc>Hight move speed and medium resistance to magic.</UOrcGhostDesc>
+<UArrowTower>Arrow Tower</UArrowTower>
+<UArrowTowerDesc>Basic tower type,  shoots arrows.</UArrowTowerDesc>
+<UMummy>Mummy</UMummy>
+<UMummyDesc>Undead. High magic resistance. Regenerates.</UMummyDesc>
+<USkeleton>Skeleton</USkeleton>
+<USkeletonDesc>Undead. Weak melee unit. Resistant to magic.</USkeletonDesc>
+<UChapel>Chapel</UChapel>
+<UChapelDesc>Main building.</UChapelDesc>
+<UAncientAvenger>Ancient Avenger</UAncientAvenger>
+<UAncientAvengerDesc>Combat version of Ancient Protector.</UAncientAvengerDesc>
+<UVampireBat>Vampire Bat</UVampireBat>
+<UVampireBatDesc>Giant vampire bat. Regenerates health.</UVampireBatDesc>
+<UFallenHero>Fallen Hero</UFallenHero>
+<UFallenHeroDesc>Strong melee unit, medium resistance to magic.</UFallenHeroDesc>
+<UMagicTower>Magic Tower</UMagicTower>
+<UMagicTowerDesc>Fireball attack with large effect area. Can cast 'Dispell'.</UMagicTowerDesc>
+<UZombie>Zombie</UZombie>
+<UZombieDesc>Undead. Slow moving but resistant to magic.</UZombieDesc>
+<UPillarOfFireWindSock>Pillar of Fire Wind (Air Socket)</UPillarOfFireWindSock>
+<UPillarOfFireWindSockDesc>Basic pillar, flamethrow attack at a very short range. Can cast 'Implosion'.</UPillarOfFireWindSockDesc>
+<USwampLight>Swamp Light</USwampLight>
+<USwampLightDesc>Strong flying unit. Immune to magic.</USwampLightDesc>
+<UPillarOfChaos>Pillar of Chaos</UPillarOfChaos>
+<UPillarOfChaosDesc>Primary attack is 'Deny Life' spell. It doesn't do any direct damage but has a chance to instantly kill any target. Chance depends on targets resistance to magic, but even against targets with maximum resistance there is at least 1% chance.</UPillarOfChaosDesc>
+<UShadowDragon>Shadow Dragon</UShadowDragon>
+<UShadowDragonDesc>Very strong flying unit. Undead. Resistant to magic and physical damage. Can cast spells.</UShadowDragonDesc>
+<UPillarOfFrozenLightSock>Pillar of Frozen Light (Socket)</UPillarOfFrozenLightSock>
+<UPillarOfFrozenLightSockDesc>Has a 'Ray of Light' attack, does huge damage to undead and minor damage to all others. Can cast 'Water Jet'.</UPillarOfFrozenLightSockDesc>
+<UCannonTower>Cannon Tower</UCannonTower>
+<UCannonTowerDesc>Powerful defensive structure. Faster fire rate than Balista Tower. Has a medium splash effect area.</UCannonTowerDesc>
+<USkeletonSwordsman>Skeleton Swordsman</USkeletonSwordsman>
+<USkeletonSwordsmanDesc>Undead. Heavy armored melee unit. Medium magic resistance.</USkeletonSwordsmanDesc>
+<UPillarOfFrozenLight>Pillar of Frozen Light</UPillarOfFrozenLight>
+<UPillarOfFrozenLightDesc>Has a 'Ray of Light' attack, does huge damage to undead and minor damage to all others. When second socket is activated can cast 'Water Jet'.</UPillarOfFrozenLightDesc>
+<ULightningTower>Lightning Tower</ULightningTower>
+<ULightningTowerDesc>Powerful tower that makes damage to a single target.</ULightningTowerDesc>
+<UBalistaTower>Balista Tower</UBalistaTower>
+<UBalistaTowerDesc>Hurls massive rocks that have medium splash damage.</UBalistaTowerDesc>
+<UFlashGolem>Flash Golem</UFlashGolem>
+<UFlashGolemDesc>Very strong melee unit. Heavy armored.</UFlashGolemDesc>
+<UIceArrowsTower>Ice Arrows Tower</UIceArrowsTower>
+<UIceArrowsTowerDesc>Shoots ice shards that slows down enemies.</UIceArrowsTowerDesc>
+<UArcaneTower>Arcane Tower</UArcaneTower>
+<UArcaneTowerDesc>Powerfull single target tower. Burns target mana on each hit. Can cast 'Earth Quake'.</UArcaneTowerDesc>
+<UFarm>Farm</UFarm>
+<UFarmDesc></UFarmDesc>
+<UBalistaTowerUpgrade>Balista Tower Upgrade</UBalistaTowerUpgrade>
+<UBalistaTowerUpgradeDesc>Hurls massive rocks that have medium splash damage.</UBalistaTowerUpgradeDesc>
+<UPillarOfFrozenLightUpgrade>Pillar of Frozen Light Upgrade</UPillarOfFrozenLightUpgrade>
+<UPillarOfFrozenLightUpgradeDesc>Has a 'Ray of Light' attack, does huge damage to undead and minor damage to all others. When second socket is activated can cast 'Water Jet'.</UPillarOfFrozenLightUpgradeDesc>
+<UPillarOfFireWindSockUpgrade>Activate Air Socket</UPillarOfFireWindSockUpgrade>
+<UPillarOfFireWindSockUpgradeDesc>Gives the tower ablity to cast 'Implosion'.</UPillarOfFireWindSockUpgradeDesc>
+<UIceArrowsTowerUpgrade>Ice Arrows Tower Upgrade</UIceArrowsTowerUpgrade>
+<UIceArrowsTowerUpgradeDesc>Shoots ice shards that slows down enemies.</UIceArrowsTowerUpgradeDesc>
+<UArcaneTowerUpgrade>Arcane Tower Upgrade</UArcaneTowerUpgrade>
+<UArcaneTowerUpgradeDesc>Powerfull single target tower. Burns target mana on each hit. Can cast 'Earth Quake'.</UArcaneTowerUpgradeDesc>
+<UPillarOfFrozenLightSockUpgrade>Activate Water Socket</UPillarOfFrozenLightSockUpgrade>
+<UPillarOfFrozenLightSockUpgradeDesc>Gives the tower ablity to cast 'Water Jet'.</UPillarOfFrozenLightSockUpgradeDesc>
+<UMagicTowerUpgrade>Magic Tower Upgrade</UMagicTowerUpgrade>
+<UMagicTowerUpgradeDesc>Fireball attack with large effect area. Can cast 'Dispell'.</UMagicTowerUpgradeDesc>
+<ULightningTowerUpgrade>Lightning Tower Upgrade</ULightningTowerUpgrade>
+<ULightningTowerUpgradeDesc>Powerful tower that makes damage to a single target.</ULightningTowerUpgradeDesc>
+</localization>

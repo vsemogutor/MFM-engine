@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" width="100%" height="100%"
+	backgroundColor="#000000" creationComplete="init()" >
+		
+	<mx:VBox width="100%" height="100%" verticalAlign="middle" horizontalAlign="center">
+		<mx:Image id="splashMovie" click="{onClick()}" buttonMode="true" />
+	</mx:VBox>
+        
+	<mx:Script>
+		<![CDATA[
+			import flash.utils.setTimeout;
+			import mx.core.Application;
+			
+			[Embed(source="../../assets/branding/std as3.0 cs3.swf")]
+			private var splashClass:Class;
+			
+			private function onClick():void
+			{
+				//navigateToURL(new URLRequest("http://www.andkon.com/arcade/"));
+			}
+			
+			private function init():void
+			{				
+ 				splashMovie.source = splashClass;
+				setTimeout(function():void {
+						splashMovie.unloadAndStop(true);	
+						Application.application.currentState = UIGameState.LOGO;
+					}, 
+					4500
+				);
+			}		
+		]]>
+	</mx:Script>	
+</mx:Module>

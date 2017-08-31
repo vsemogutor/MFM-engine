@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="300" height="280"
+	xmlns:cc="controls.*">
+
+	<mx:Style source="..\styles\common.css"/>
+	
+	<mx:Label text="{StringResources.get('GameMenu')}" styleName="headerWhite"></mx:Label>
+	
+	<mx:Spacer height="20%"></mx:Spacer>
+	
+	<cc:ClickButton width="100%" label="{StringResources.get('Options')}" click="onOptionsClick(event)" styleName="menuButton">
+	</cc:ClickButton>
+	<cc:ClickButton width="100%" label="{StringResources.get('Help')}" click="onHelpClick(event)" styleName="menuButton">
+	</cc:ClickButton>	
+	<cc:ClickButton width="100%" label="{StringResources.get('Restart')}" click="onRestartClick(event)" styleName="menuButton">
+	</cc:ClickButton>
+	<cc:ClickButton width="100%" label="{StringResources.get('EndGame')}" click="onEndGameClick(event)" styleName="menuButton">
+	</cc:ClickButton>
+	
+	<mx:Spacer height="100%">
+	</mx:Spacer>
+	
+	<cc:ClickButton width="100%" label="{StringResources.get('ReturnToGame')}" click="onReturnClick(event)" styleName="menuButton">
+	</cc:ClickButton>
+	
+	<mx:AnimateProperty id="showEffect" duration="400" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:SoundEffect id="sndSlide" source="{Sounds.slideClass}" startTime="250"
+		volumeFrom="{0.3*GameManager.instance().options.soundVolume}" 
+		volumeTo="{0.9*GameManager.instance().options.soundVolume}" 
+		duration="1017">		
+	</mx:SoundEffect>
+		
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import engine.game.GameManager;
+			import mx.effects.easing.Linear;
+			import sound.Sounds;
+			import engine.game.GameResultType;
+			import textResources.TextResources;
+			import engine.game.Game;
+			import mx.events.CloseEvent;
+			import states.UIGameState;
+			import mx.core.Application;
+				
+			public override function showDialog(parent:DisplayObject, closeHandler:Function=null):void
+			{
+				super.showDialog(parent, closeHandler);
+				sndSlide.play([this]);
+				showEffect.play([this]);
+			}
+			
+			private function onReturnClick(evt:Event):void
+			{
+				close();
+			}
+
+			private function onHelpClick(evt:Event):void
+			{
+				var helpDialog:Information = new Information();
+				helpDialog.show(this, StringResources.get('Help'), TextResources.HELP_CONTENT);
+			}
+			
+			private function onOptionsClick(evt:Event):void
+			{
+				var dialog:OptionsDialog = new OptionsDialog();
+				dialog.showDialog(this);
+			}
+
+			private function onEndGameClick(evt:Event):void
+			{
+				var dialog:YesNoDialog = new YesNoDialog();
+				dialog.addEventListener(CloseEvent.CLOSE, function(closeEvent:CloseEvent):void {
+					if (closeEvent.detail == DialogResult.YES)
+					{
+						close();
+						Game.instance().stop(GameResultType.NONE, false);
+						Application.application.currentState = UIGameState.MISSION_RESULTS;
+					}
+				});
+				dialog.show(this, StringResources.get('ConfirmEndGame'), StringResources.get('EndGameConfirm'));
+			}	
+					
+			private function onRestartClick(evt:Event):void
+			{
+				close();
+				Game.instance().stop(GameResultType.NONE, false);
+				Application.application.currentState = UIGameState.MISSION_LOADING;
+			}	
+											
+		]]>
+	</mx:Script>
+	
+</DialogCommon>

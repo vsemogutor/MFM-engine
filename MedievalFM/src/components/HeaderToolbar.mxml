@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:cc="controls.*" width="100%" height="18" styleName="headerBar">
+
+	<mx:Style source="..\styles\common.css"/>
+    <mx:Style>        
+        .resBox {
+        	cornerRadius: 4;
+        	backgroundColor: #000000;
+        	borderStyle: solid;
+        	borderThickness:0;
+        	padding-left:2;
+        }    
+    </mx:Style>	
+    	
+	<mx:HBox width="100%" paddingLeft="3">
+		<cc:ClickButton id="btnMenu" label="{StringResources.get('Menu')}" width="80" click="onMenuClick(event)" styleName="menuButtonSmall" height="16">
+		</cc:ClickButton>
+		<cc:ClickButton id="btnQuests" label="{StringResources.get('Rules')}" width="80" click="onQuestsClick(event)" styleName="menuButtonSmall" height="16">
+		</cc:ClickButton>
+		<cc:ClickButton label="{StringResources.get('Help')}" enabled="true" width="80" styleName="menuButtonSmall" height="16" click="onTutorialClick(event)">
+		</cc:ClickButton>				
+	</mx:HBox>
+	<mx:HBox width="100%" horizontalAlign="right" paddingRight="3" horizontalGap="5">
+		<mx:HBox width="80" height="15" styleName="resBox" toolTip="{StringResources.get('AvaliableGold')}">
+			<mx:Canvas height="14" width="14" styleName="gold"></mx:Canvas>
+			<mx:Spacer width="100%"></mx:Spacer>
+			<mx:Label id="txtGold" styleName="labelWhite12"></mx:Label>			
+		</mx:HBox>
+
+<!--		<mx:HBox width="80" height="15" styleName="resBox" horizontalGap="0">
+			<mx:Canvas height="15" width="15" styleName="crystal"></mx:Canvas>
+			<mx:Spacer width="100%"></mx:Spacer>
+			<mx:Label id="txtCrystals" styleName="labelWhite12"></mx:Label>		
+		</mx:HBox>
+		
+		<mx:HBox width="80" height="15" styleName="resBox">
+			<mx:Canvas height="14" width="11" styleName="food"></mx:Canvas>
+			<mx:Spacer width="100%"></mx:Spacer>
+			<mx:Label id="txtPopulation" styleName="labelWhite12"></mx:Label>		
+		</mx:HBox>-->
+	</mx:HBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import textResources.TextResources;
+			import dialogs.MessageBoxDialog;
+			import resources.StringResources;
+			import dialogs.QuestsDialog;
+			import dialogs.Information;
+			import dialogs.InGameMenu;
+			import engine.core.events.GameEvents;
+			import engine.game.Game;
+			import engine.fraction.ResourceType;
+			import engine.fraction.Fraction;
+			
+			private var _fraction:Fraction;
+			
+			public function get dataSource():Fraction{
+				return _fraction;
+			}
+			
+			public function refresh(evt:Event):void
+			{
+				if (_fraction)
+				{
+					txtGold.text = _fraction.getResource(ResourceType.Gold).toString();
+/* 					txtCrystals.text = _fraction.getResource(ResourceType.Crystal).toString();
+					txtPopulation.text = _fraction.getResource(ResourceType.Population).toString() + "/"
+						+ _fraction.getResource(ResourceType.PopulationProduction).toString(); */
+				}
+			}
+			
+			public function init(fraction:Fraction):void
+			{
+				_fraction = fraction;
+				Game.instance().eventManager.addEventListener(GameEvents.FRACTION_RESOURCE_CHANGED, refresh);
+				refresh(null);
+			}
+			
+			private function onMenuClick(evt:Event):void
+			{
+				var menuDialog:InGameMenu = new InGameMenu();
+				menuDialog.showDialog(this.parent);
+			}
+			
+			private function onQuestsClick(evt:Event):void
+			{
+				var questsDialog:QuestsDialog = new QuestsDialog();
+				questsDialog.show(this.parent);
+			}
+			
+			private function onTutorialClick(evt:Event):void
+			{
+				var helpDialog:Information = new Information();
+				helpDialog.show(this.parent, StringResources.get('Help'), TextResources.HELP_CONTENT);
+			}
+		]]>
+	</mx:Script>
+</mx:HBox>

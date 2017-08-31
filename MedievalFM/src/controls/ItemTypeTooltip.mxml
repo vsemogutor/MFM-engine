@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="200"
+	implements="mx.core.IToolTip" styleName="tooltip" 
+	horizontalScrollPolicy="off" verticalScrollPolicy="off">
+
+	<mx:Style source="..\styles\common.css"/>
+	
+	<mx:VBox backgroundColor="#152029" backgroundAlpha="0.8" width="100%" height="100%" verticalGap="3">
+		<mx:Label id="txtItemName" styleName="labelGreen10"></mx:Label>
+		<mx:Label id="txtItemType" styleName="labelGreen" fontSize="9"></mx:Label>
+		<mx:Text id="txtDescription" width="100%" selectable="false" styleName="labelWhite" fontSize="9"></mx:Text>		
+		<mx:Label id="txtCost" styleName="labelGreen" fontSize="10"></mx:Label>
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import engine.fraction.ResourceType;
+			import engine.items.InventoryItemType;
+			import mx.controls.Image;
+			import mx.core.UIComponent;
+			import engine.items.InventoryItem;
+			import resources.StringResources;
+			import mx.formatters.NumberFormatter;
+			import engine.computers.ArmorAndDamage;
+			import textResources.TextResources;
+			import engine.util.Util;
+			import engine.units.DamageType;
+			import engine.units.UnitProperties;
+			import engine.game.Game;
+			import mx.events.ToolTipEvent;
+			import engine.units.Unit;
+			
+			private var _item:InventoryItem;
+			
+			public function get text():String { 
+	            return _item.description; 
+	        } 
+	        public function set text(value:String):void {
+	        } 
+				
+		    public function get title():String { 
+	            return _item.name; 
+	        } 
+	        public function set title(value:String):void {
+	        } 
+	        	        
+	        public function set dataSource(value:InventoryItem):void
+	        {
+	        	_item = value;
+	        }
+	        
+	        private function refresh():void
+	        {
+	        	if (_item)
+	        	{
+					txtItemName.text = _item.name;
+					txtDescription.text = _item.description;
+					txtItemType.text = InventoryItemType.getTypeName(_item.type);
+					txtCost.text = "Gold cost: " + _item.goldCost;
+					if (Game.instance().fractionManager.player.getResource(ResourceType.Gold) >= _item.goldCost)
+						txtCost.styleName = "labelGreen";
+					else
+						txtCost.styleName = "labelRed";
+	        	}
+	        }
+	        
+	        protected override function childrenCreated():void
+	        {
+	        	refresh();
+	        }
+	        
+	        public static function create(evt:ToolTipEvent):void
+	        {
+	        	if (evt.target.data)
+	        	{
+		        	var tooltip:ItemTypeTooltip = new ItemTypeTooltip();
+		        	
+		        	tooltip.dataSource = evt.target.data as InventoryItem;    		
+		        	evt.toolTip = tooltip;
+	        	}
+	        }
+	        	        
+		    public static function show(evt:ToolTipEvent):void
+	        {   
+	        	var control:DisplayObject = evt.target as DisplayObject;
+	        	var position:Point = control.localToGlobal(new Point(control.x, control.y));
+	        	evt.toolTip.y = position.y - evt.toolTip.height - 6;
+	        	evt.toolTip.x = position.x + control.width/2 - evt.toolTip.width/2;
+	        }     
+		]]>
+	</mx:Script>
+</mx:Canvas>

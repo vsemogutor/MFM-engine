@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="200"
+	implements="mx.core.IToolTip" styleName="tooltip" 
+	horizontalScrollPolicy="off" verticalScrollPolicy="off">
+
+	<mx:Style source="..\styles\common.css"/>
+	
+	<mx:VBox backgroundColor="#152029" backgroundAlpha="0.8" width="100%" height="100%" verticalGap="3">
+		<mx:Label id="txtItemName" styleName="labelGreen10"></mx:Label>
+		<mx:Text id="txtDescription" width="100%" selectable="false" styleName="labelWhite10"></mx:Text>
+		<mx:HBox id="panelRequiresLevel">
+			<mx:Label text="Requires level:" styleName="labelWhite10"></mx:Label>
+			<mx:Label id="txtReqLevel" styleName="labelGreen10"></mx:Label>
+		</mx:HBox>	
+		<mx:HBox id="panelRequiresSkill">
+			<mx:Label text="Requires:" styleName="labelWhite10"></mx:Label>
+			<mx:Label id="txtReqSkill" styleName="labelGreen10"></mx:Label>
+		</mx:HBox>
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import engine.heros.SkillTree;
+			import engine.heros.Skill;
+			import mx.events.ToolTipEvent;
+
+			private var _skill:Skill;
+			
+			public function get text():String { 
+	            return _skill.description; 
+	        } 
+	        public function set text(value:String):void {
+	        } 
+				
+		    public function get title():String { 
+	            return _skill.locName; 
+	        } 
+	        public function set title(value:String):void {
+	        } 
+	        	        
+	        public function set dataSource(value:Skill):void
+	        {
+	        	_skill = value;
+	        }
+	        
+	        private function refresh():void
+	        {
+	        	if (_skill)
+	        	{
+					txtItemName.text = _skill.locName;
+					txtDescription.text = _skill.getTooltipDescription();
+					
+					panelRequiresLevel.visible = panelRequiresLevel.includeInLayout = _skill.dependsOnLevel > 0;
+					if (panelRequiresLevel.visible)
+					{
+						txtReqLevel.text = _skill.dependsOnLevel.toString();
+					}
+					
+					panelRequiresSkill.visible = panelRequiresSkill.includeInLayout = (_skill.dependsOnSkill != null);
+					if (panelRequiresSkill.visible)
+					{
+						txtReqSkill.text = _skill.dependsOnSkill.locName;
+					}					
+	        	}
+	        }
+	        
+	        protected override function childrenCreated():void
+	        {
+	        	refresh();
+	        }
+	        
+	        public static function create(evt:ToolTipEvent):void
+	        {
+	        	if (evt.target.data && evt.target.data.skill)
+	        	{
+		        	var tooltip:SkillTooltip = new SkillTooltip();
+		        	
+		        	var skill:Skill = evt.target.data.skill as Skill;
+		        	tooltip.dataSource = skill;  
+		        	if (evt.target.data.hero)	
+		        		tooltip.dataSource = skill.getNextSkillLevel(evt.target.data.hero);
+		        	evt.toolTip = tooltip;
+	        	}
+	        }
+	        	        
+		    public static function show(evt:ToolTipEvent):void
+	        {   
+	        	var control:DisplayObject = evt.target as DisplayObject;
+	        	var position:Point = control.localToGlobal(new Point(control.x, control.y));
+	        	evt.toolTip.y = position.y - evt.toolTip.height - 6;
+	        	evt.toolTip.x = Math.max(1, position.x + control.width/2 - evt.toolTip.width/2);
+	        	if (evt.toolTip.x + evt.toolTip.width >= 640)
+	        		evt.toolTip.x = 640 - evt.toolTip.width - 1;
+	        }     
+		]]>
+	</mx:Script>
+</mx:Canvas>

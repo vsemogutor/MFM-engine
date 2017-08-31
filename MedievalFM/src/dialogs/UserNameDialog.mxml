@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="280" height="200">
+
+	
+	<mx:Text id="txtCaption" text="{StringResources.get('InputUserName')}" styleName="labelWhite14" width="100%" selectable="false" textAlign="center">
+	</mx:Text>
+		
+	<mx:TextInput id="txtName" text="Player" width="100%"></mx:TextInput>	
+
+	<mx:Spacer height="10">
+	</mx:Spacer>
+
+	<mx:Text width="100%" selectable="false" styleName="labelGold" fontSize="9" text="Please note: if you have mouse lagging problem - go to options and check 'Use system cursor'."></mx:Text>
+					
+	<mx:Spacer height="100%">
+	</mx:Spacer>
+	
+	<mx:HBox width="100%" horizontalAlign="center">
+		<cc:ClickButton width="60%" label="Ok" id="btnYes" styleName="menuButton" click="onYesClick(event)">
+		</cc:ClickButton>		
+	</mx:HBox>
+
+	<mx:Script>
+		<![CDATA[
+			import com.greensock.OverwriteManager;
+			import resources.StringResources;
+			import mx.core.UIComponent;
+			import mx.events.CloseEvent;
+			import engine.game.GameState;
+			import mx.managers.PopUpManager;
+			import engine.game.Game;
+			
+			public var result:int = DialogResult.NO;
+			[Bindable]
+			private var _caption:String;
+			
+			public var userName:String = "";
+			
+			public override function showDialog(parent:DisplayObject, closeHandler:Function=null):void
+			{
+				super.showDialog(parent, closeHandler);
+				
+				txtName.setFocus();
+				txtName.setSelection(0, txtName.text.length);
+			}
+			
+			public override function close():void
+			{
+				super.close();	
+					
+				var event:CloseEvent = new CloseEvent(Event.CLOSE);
+				event.detail = result;
+				dispatchEvent(event);
+			}	
+			
+			private function onYesClick(evt:Event):void
+			{				
+				result = DialogResult.YES;
+				userName = txtName.text;
+				close();
+			}			
+		]]>
+	</mx:Script>
+</DialogCommon>

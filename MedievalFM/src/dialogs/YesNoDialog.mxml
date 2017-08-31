@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="250" height="150">
+
+	<mx:Style source="..\styles\common.css"/>	
+	
+	<mx:Text id="txtCaption" text="{_caption}" styleName="labelWhite14" width="100%" selectable="false" textAlign="center">
+	</mx:Text>
+	<mx:Text id="txtSubCaption" text="{_subCaption}" styleName="labelGold10" width="100%" selectable="false" textAlign="center">
+	</mx:Text>
+		
+	<mx:Spacer height="100%">
+	</mx:Spacer>
+	
+	<mx:HBox width="100%">
+		<cc:ClickButton width="60%" label="{StringResources.get('Yes')}" id="btnYes" styleName="menuButton" click="onYesNoClick(event)">
+		</cc:ClickButton>
+		<cc:ClickButton width="60%" label="{StringResources.get('No')}" id="btnNo" styleName="menuButton" click="onYesNoClick(event)">
+		</cc:ClickButton>		
+	</mx:HBox>
+
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import mx.core.UIComponent;
+			import mx.events.CloseEvent;
+			import engine.game.GameState;
+			import mx.managers.PopUpManager;
+			import engine.game.Game;
+			
+			public var result:int = DialogResult.NO;
+			[Bindable]
+			private var _caption:String;
+			[Bindable]
+			private var _subCaption:String;
+			
+			
+			public function show(parent:DisplayObject, caption:String, subCaption:String = "", closeHandler:Function=null):void
+			{
+				_caption = caption;
+				_subCaption = subCaption;
+				
+				super.showDialog(parent, closeHandler);
+			}
+			
+			public override function close():void
+			{
+				if (_closeHandler != null)
+				{
+					_closeHandler(result);
+					_closeHandler = null;
+				}
+								
+				super.close();	
+					
+				var event:CloseEvent = new CloseEvent(Event.CLOSE);
+				event.detail = result;
+				dispatchEvent(event);
+			}	
+			
+			private function onYesNoClick(evt:Event):void
+			{				
+				result = (evt.target == btnYes ? DialogResult.YES : DialogResult.NO)
+				close();
+			}			
+		]]>
+	</mx:Script>
+</DialogCommon>

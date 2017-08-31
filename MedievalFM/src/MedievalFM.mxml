@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+	creationComplete="{onCreationComplete()}"
+	height="640" width="640" backgroundColor="0x000000"
+	xmlns:states="states.*"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off"
+	preloader="controls.CustomPreloader">
+	
+	<mx:Style source="..\styles\common.css"/>
+	
+	<mx:states>
+		<mx:State name="{UIGameState.START_MENU}">
+			<mx:AddChild relativeTo="{this}" position="first">
+				<states:StartMenuViewState id="startMenuViewState">
+				</states:StartMenuViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.PLAYING}">
+			<mx:AddChild>
+				<states:GameViewState id="gameViewState">
+				</states:GameViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.CREDITS}">
+			<mx:AddChild>
+				<states:CreditsViewState id="creditsViewState">
+				</states:CreditsViewState>
+			</mx:AddChild>
+		</mx:State>	
+		<mx:State name="{UIGameState.OPTIONS}">
+			<mx:AddChild>
+				<states:OptionsViewState id="optionsViewState">
+				</states:OptionsViewState>
+			</mx:AddChild>
+		</mx:State>	
+		<mx:State name="{UIGameState.SCORES}">
+			<mx:AddChild>
+				<states:ScoresViewState id="scoresViewState">
+				</states:ScoresViewState>
+			</mx:AddChild>
+		</mx:State>	
+		<mx:State name="{UIGameState.CUSTOM_GAME}">
+			<mx:AddChild>
+				<states:CustomGameViewState id="customGameViewState">
+				</states:CustomGameViewState>
+			</mx:AddChild>
+		</mx:State>	
+		<mx:State name="{UIGameState.MISSION_LOADING}">
+			<mx:AddChild>
+				<states:MissionLoadingViewState id="missionLoadingViewState">
+				</states:MissionLoadingViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.MISSION_RESULTS}">
+			<mx:AddChild>
+				<states:MissionResultViewState id="missionResultsViewState">
+				</states:MissionResultViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.LOGO}">
+			<mx:AddChild>
+				<states:LogoViewState id="logoViewState">
+				</states:LogoViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.ACHIEVEMENTS}">
+			<mx:AddChild>
+				<states:AchievementsViewState id="achievements">
+				</states:AchievementsViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.LOCK_WARNING}">
+			<mx:AddChild>
+				<states:LockWarningViewState id="lockWarning">
+				</states:LockWarningViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.SPONSOR_SPLASH}">
+			<mx:AddChild>
+				<states:SponsorSplashState id="sponsorSplash">
+				</states:SponsorSplashState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.HERO_SELECTION}">
+			<mx:AddChild>
+				<states:HeroSelectionState id="heroSelectionState">
+				</states:HeroSelectionState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.MISSION_CONFIGURATION}">
+			<mx:AddChild>
+				<states:MissionConfigurationViewState id="missionConfigurationState">
+				</states:MissionConfigurationViewState>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{UIGameState.PRESETS}">
+			<mx:AddChild>
+				<states:PresetsViewState id="presetsState">
+				</states:PresetsViewState>
+			</mx:AddChild>
+		</mx:State>					
+	</mx:states>
+	
+	<mx:transitions>
+		<mx:Transition fromState="{UIGameState.LOGO}" toState="{UIGameState.START_MENU}">
+			<mx:Dissolve target="{this}" alphaFrom="0" alphaTo="1" color="0xFFFFFF" duration="1000"></mx:Dissolve>
+		</mx:Transition>
+	</mx:transitions>
+
+	<mx:Script>
+		<![CDATA[
+			import apitech.Apitech;
+			import engine.util.PortalsUtil;
+			import mx.core.UIComponent;
+			import kongregate.KongApi;
+			import flash.utils.setTimeout;
+			import engine.scores.PlayerScoreProvider;
+			import engine.util.SiteLockUtil;
+			import packDescription.MissionPack;
+			import engine.game.GameManager;
+			import states.UIGameState;
+			import engine.util.Constants;
+			import engine.game.GameState;
+			import com.newgrounds.*;
+			
+			public function onCreationComplete():void
+			{			
+				//onComplete(null);
+				Application.application.addEventListener(Event.COMPLETE, onComplete);
+			}	
+			
+			public function onComplete(event:Event):void
+			{
+				if (SiteLockUtil.check())
+				{
+					if (PortalsUtil.isKongregate()) 
+						currentState = UIGameState.SPONSOR_SPLASH;
+					else currentState = UIGameState.LOGO;
+					
+					GameManager.instance().setMissionPack(new MissionPack());
+					var ui:UIComponent = new UIComponent();
+					this.addChild(ui);
+					ui.addChild(KongApi.instance);
+					
+ 					if (PortalsUtil.isKongregate())
+					{
+						KongApi.instance.init(root, onKongApiReady);
+					}	
+					else
+					{
+						API.connect(root, "27122:YudARnew", "");
+					} 
+					
+					PlayerScoreProvider.init();	
+					//Apitech.init(this, "Aeon Defense");			
+ 				}
+				else
+				{
+					currentState = UIGameState.LOCK_WARNING;
+				}
+				
+				Application.application.removeEventListener(Event.COMPLETE, onComplete);
+			}	
+
+			
+			private function onKongApiReady():void
+			{
+				GameManager.instance().currentPlayer.name = KongApi.services.getUsername();
+			}					
+		]]>
+	</mx:Script>
+
+		
+</mx:Application>

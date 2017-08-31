@@ -1,0 +1,149 @@
+<localization language="ru">
+	<GameName>Защита Древних</GameName>
+	<Experience>Опыт:</Experience>
+	<Inventory>Инвентарь</Inventory>
+	<Skills>Навыки</Skills>
+	<NewGame>Новая Игра</NewGame>
+	<CustomGame>Выбрать Сценарий</CustomGame>
+	<HighScores>Рекорды</HighScores>
+	<Achievements>Достижения</Achievements>
+	<Options>Настройки</Options>	
+	<Credits>Создатели</Credits>
+	<MoreGames>Еще Игры</MoreGames>	
+	<SoundVolume>Громкость Звука:</SoundVolume>
+	<MusicVolume>Громкость Музыки:</MusicVolume>
+	<ScrollSpeed>Скорость Прокрутки:</ScrollSpeed>
+	<Back>Назад</Back>
+	<Next>Далее</Next>
+	<Previous>Предыдущие</Previous>	
+	<Skip>Пропустить</Skip>
+	<Done>Готово</Done>
+	<Finish>Завершить</Finish>		
+	<Return>Вернутся</Return>	
+	<TooltipSelectHero>Выбрать Героя (H).</TooltipSelectHero>	
+	<CreditsEngineAndGameDesign>MedievalFM Engine и игровой дизайн</CreditsEngineAndGameDesign>	
+	<CreditsGameArt>Арт</CreditsGameArt>
+	<CreditsMusic>Музыка</CreditsMusic>
+	<CreditsUI>Арт: интерфейс</CreditsUI>
+	<CreditsSound>Звук</CreditsSound>	
+	<CreditsSpecialThanks>Отдельное спасибо:</CreditsSpecialThanks>	
+	<HallOfFame>Зал Славы</HallOfFame>
+	<Missions>Сценарии</Missions>	
+	<Cancel>Отменить</Cancel>
+	<StartGame>Начать Игру</StartGame>
+	<Type>Тип:</Type>
+	<Hero>Герой</Hero>
+	<MapSize>Размер Карты:</MapSize>
+	<Environment>Окружение:</Environment>
+	<AvaliableGold>Доступное Золото</AvaliableGold>
+	<Visibility>Видимость:</Visibility>
+	<Description>Описание:</Description>
+	<Default>По Умолчанию</Default>
+	<ClickHereToContinue>Нажмите здесь, чтобы продолжить</ClickHereToContinue>
+	<Menu>Меню</Menu>
+	<Quests>Задания</Quests>
+	<Tutorial>Обучение</Tutorial>
+	<Status>Статус:</Status>
+	<Armor>Защита</Armor>
+	<Damage>Урон</Damage>
+	<Tips>Подсказки</Tips>
+	<Help>Помощь</Help>
+	<ReturnToGame>Вернутся</ReturnToGame>
+	<EndGame>Закончить Игру</EndGame>
+	<Restart>Начать Заново</Restart>
+	<SurrenderAction>Сдаться</SurrenderAction>
+	<GameMenu>Меню</GameMenu>
+	<ConfirmEndGame>Подтвердить Выход</ConfirmEndGame>
+	<InputUserName>Введите Свое Имя:</InputUserName>
+	<Yes>Да</Yes>
+	<No>Нет</No>
+	<EndGameConfirm>Вы уверенны что хотите выйти?</EndGameConfirm>
+	<TooltipFreeWorker>Выбрать сдедующего свободного строителя (W).</TooltipFreeWorker>
+	<TooltipAttack>Атаковать (A).</TooltipAttack>
+	<TooltipBuild>Строить (B).</TooltipBuild>
+	<TooltipStop>Стоп (S).</TooltipStop>
+	<TooltipMove>Идти (M).</TooltipMove>
+	<TooltipLink>Соединить (L).</TooltipLink>
+	<TooltipRepair>Ремонтировать (R).</TooltipRepair>
+	<TooltipCancel>Отмена (Esc).</TooltipCancel>
+	<Total>Результат:</Total>	
+	<Defeat>Поражение</Defeat>
+	<Surrender>Капитуляция</Surrender>
+	<Victory>Победа</Victory>	
+	<Continue>Продолжить</Continue>
+	<TimeElapsed>Прошло времени:</TimeElapsed>
+	<CrystalsCollected>Собранно кристаллов:</CrystalsCollected>
+	<GoldCollected>Собранно золота:</GoldCollected>
+	<BuildingsConstructed>Построенно зданий:</BuildingsConstructed>
+	<UnitsTrained>Созданно юнитов:</UnitsTrained>
+	<UnitsKilled>Убито юнитов:</UnitsKilled>
+	<BuildingsDestroyed>Разрушенно зданий:</BuildingsDestroyed>
+	<UnitsLost>Потерянно юнитов:</UnitsLost>
+	<BuildingsLost>Потерянно зданий:</BuildingsLost>
+	<IgorNovikov>Игорь Новиков (squirrelfm@gmail.com)</IgorNovikov>
+	<ArmorType>Тип защиты:</ArmorType>
+	<DamageReduction>Уменьшение урона:</DamageReduction>
+	<MovementSpeed>Скорость движения:</MovementSpeed>
+	<DamageType>Тип повреждений:</DamageType>
+	<Range>Дистанция:</Range>
+	<AttackSpeed>Скорость атаки:</AttackSpeed>
+	<Details>Подробнее:</Details>	
+	<SquirrelPresents>Squirrel Workshop presents</SquirrelPresents>	
+	<UnderDevelopment>В разработке</UnderDevelopment>
+	<FracPassive>Нейтральный</FracPassive>
+	<FracPassiveAgressive>Враждебный</FracPassiveAgressive>
+	<Optional>(Необязательный)</Optional>
+	<Completed>(Завершено)</Completed>
+	<Rules>Правила</Rules>
+	<Controls>Управление</Controls>
+	<GoodLuck>Это все. Удачи!</GoodLuck>
+	<None>Отсутствует</None>
+	<Fast>Быстрая</Fast>
+	<Normal>Обычный(ая)</Normal>
+	<Slow>Медленная</Slow>
+	<Melee>Ближний бой</Melee>
+	<Close>Короткая</Close>
+	<Medium>Средняя</Medium>
+	<Long>Большая</Long>
+	<Piersing>Проникающий</Piersing>
+	<Magic>Магический</Magic>
+	<Siedge>Осадный</Siedge>
+	<Astral>Астральный</Astral>
+	<Heavy>Тяжелая</Heavy>	
+	<Fortified>Укрепленная</Fortified>
+	<Divine>Неуязвимость</Divine>
+	<PiersingDamageDescription>Наносит дополнительные поврежения незащищенным целям.</PiersingDamageDescription>
+	<MagicDamageDescription>Наносит дополнительные поврежения тяжело бронированным целям и целям без защиты.</MagicDamageDescription>
+	<NormalDamageDescription>Наносит обычный урон всем типам целей.</NormalDamageDescription>
+	<SiedgeDamageDescription>Наносит высокий урон целям с укрепленным типом защиты.</SiedgeDamageDescription>
+	<AstralDamageDescription>Игнорирует все типы брони, всегда наносит польный урон.</AstralDamageDescription>	
+	<ArmorTypeNoneDescription>Получает значительные дополнительные повреждения от обычных и проникающих атак. Получает дополнительные повреждения от магических атак. Повреждения от осадных атак значительно уменьшены.</ArmorTypeNoneDescription>
+	<ArmorTypeNormalDescription>Получает уменьшенные повреждения от осадных атак.</ArmorTypeNormalDescription>
+	<ArmorTypeHeavyDescription>Значительно уменьшает повреждения от проникающих и обычных атак. Получает повышенные повреждения от магических атак.</ArmorTypeHeavyDescription>	
+	<ArmorTypeFortifiedDescription>Значительно уменьшает повреждения от всех типов атак кроме осадных. Повреждения от осадных орудий значительно увеличенны.</ArmorTypeFortifiedDescription>	
+	<ArmorTypeDevineDescription>Повреждения от всех типов атак игнорируются практически полностью.</ArmorTypeDevineDescription>
+	<HelpContent>
+Стрелки клавиатуры - прокрутка экрана.
+Левая кнопка мыши - выбор юнита.
+Используйте панель управления войсками в правом нижнем углу чтобы отдавать комманды выделеным юнитам.
+Esc - отменит текущее действие.
+A - атаковать.
+M - двигатся.
+S - остановка.
+L - привязать.
+B - строить.
+R - ремонтировать.
+W - следующий свободный строитель
+Используйте двойной клик на иконке заклинания для активации автокаста.
+В игре есть ограниченная поддержка правой кнопки мыши для автоматической отдачи приказа юнитам в зависимости от того куда вы кликнули. В зависимости от сайта на котором вы играете и версии браузера поддержка может быть отключена. В таком случае используйте 'пробел' иди ctrl + левую кнопку мыши.
+	</HelpContent>
+	<HelpContentShort>
+* Стрелки клавиатуры - прокрутка экрана.
+* Левая кнопка мыши - выбор юнита.
+* 'Пробел' or 'Ctrl' + левая кнопка мыши - Умное Действие: выделенные юниты автоматически начнут двигаться, атаковать или ремонтировать в зависимости от того куда вы кликнули.
+* Используйте панель управления войсками в правом нижнем углу чтобы отдавать комманды выделеным юнитам.
+* Esc - отменит текущее действие.
+* Используйте двойной клик на иконке заклинания для активации автокаста.
+Вы можете просмотреть более детальную помощь кликнув 'Помощь' в главном меню.
+	</HelpContentShort>		
+</localization>

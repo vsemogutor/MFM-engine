@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:UIComponent xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+        import sound.Sounds;
+
+        import flash.display.GradientType;
+        import flash.filters.BevelFilter;
+        import flash.filters.BitmapFilterType;
+        import flash.geom.Matrix;
+
+        import mx.controls.Button;
+        import mx.core.UITextField;
+        import mx.events.FlexEvent;
+        import mx.skins.ProgrammaticSkin;
+
+
+        private const PUSH_OFFSET:int = 3;
+        private var bevel:BevelFilter = new BevelFilter();
+        private var backgroundFillColor:uint = 0x000039;
+        private var cornerRadius:Number;
+        private var text:UITextField;
+
+        [Bindable]
+        public var backgroundFillColor1:uint;
+        [Bindable]
+        public var backgroundFillColor2:uint;
+        [Bindable]
+        public var topOffset:int = 0;
+        [Bindable]
+        public var leftOffset:int = 0;
+
+        private function init():void {
+            bevel.distance = 2;
+            bevel.angle = 60;
+            bevel.highlightColor = 0x2130CE;
+            bevel.highlightAlpha = 0.7;
+            bevel.shadowAlpha = 0.8;
+            bevel.shadowColor = 0x000021;
+            bevel.blurX = 2;
+            bevel.blurY = 3;
+            bevel.strength = 4;
+            bevel.type = BitmapFilterType.INNER;
+            filters = [bevel];
+
+            cornerRadius = getStyle("cornerRadius");
+        }
+
+        protected override function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+            super.updateDisplayList(unscaledWidth, unscaledHeight);
+
+            graphics.clear();
+
+            graphics.beginFill(backgroundFillColor);
+            drawRoundRect(leftOffset, topOffset, unscaledWidth, unscaledHeight, {tl: cornerRadius, tr: cornerRadius, bl: cornerRadius, br: cornerRadius});
+            graphics.endFill();
+
+            var matrix:Matrix = new Matrix();
+            matrix.createGradientBox(unscaledWidth - 6, unscaledHeight - 8, 0, 2 + leftOffset, 3 + topOffset);
+            graphics.beginGradientFill(GradientType.RADIAL, [backgroundFillColor1, backgroundFillColor2], [1, 1], [50, 255], matrix);
+            graphics.drawRect(3 + leftOffset, 4 + topOffset, unscaledWidth - 6, unscaledHeight - 8)
+            graphics.endFill();
+
+            var textField:UITextField = getTextField();
+            if (textField) {
+                textField.y += topOffset;
+                textField.x += leftOffset;
+            }
+        }
+
+        private function getTextField():UITextField {
+            if (text)
+                return text;
+
+            for (var i:int = 0; i < parent.numChildren; ++i) {
+                var child:UITextField = parent.getChildAt(i) as UITextField;
+                if (child) {
+                    text = child;
+                    break;
+                }
+            }
+
+            return text;
+        }
+        ]]>
+	</mx:Script>
+	
+	<mx:states>
+		<mx:State name="up" enterState="invalidateDisplayList()">
+			<mx:SetProperty target="{this}" name="backgroundFillColor1" value="{0x00004D}"/>
+			<mx:SetProperty target="{this}" name="backgroundFillColor2" value="{0x000021}"/>			
+	    </mx:State>
+	    <mx:State name="over" enterState="invalidateDisplayList()">
+			<mx:SetProperty target="{this}" name="backgroundFillColor1" value="{0x2941EF}"/>
+			<mx:SetProperty target="{this}" name="backgroundFillColor2" value="{0x000039}"/>
+	    </mx:State>
+	    <mx:State name="down" enterState="invalidateDisplayList()"> 
+			<mx:SetProperty target="{this}" name="backgroundFillColor1" value="{0x000021}"/>
+			<mx:SetProperty target="{this}" name="backgroundFillColor2" value="{0x000021}"/>
+			<mx:SetProperty target="{this}" name="top" value="{PUSH_OFFSET}"/>
+			<mx:SetProperty target="{this}" name="left" value="{PUSH_OFFSET}"/>
+	    </mx:State>
+	    <mx:State name="disabled" enterState="invalidateDisplayList()">
+	    	<mx:SetProperty target="{this}" name="backgroundFillColor1" value="{0xCCCCCC}"/>
+			<mx:SetProperty target="{this}" name="backgroundFillColor2" value="{0xCCCCCC}"/>
+	    </mx:State>
+	    <mx:State name="selectedDisabled" basedOn="disabled">
+	    </mx:State>
+	    
+	    <mx:State name="selectedUp" basedOn="up">
+	    </mx:State>
+	    <mx:State name="selectedOver" basedOn="selectedUp">
+	    </mx:State>
+	    <mx:State name="selectedDown" basedOn="down">
+	    </mx:State>
+	</mx:states>
+    
+</mx:UIComponent>

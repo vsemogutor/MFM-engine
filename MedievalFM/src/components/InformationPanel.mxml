@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" styleName="genericPanel" 
+	paddingLeft="7" paddingTop="11" paddingRight="6" paddingBottom="3">
+	
+	<mx:DropShadowFilter id="shadow" angle="0" distance="1" strength="1" color="#634D10">
+	</mx:DropShadowFilter>
+	
+	<mx:VBox styleName="paperBorder" width="100%" height="100%" horizontalScrollPolicy="off" 
+		verticalScrollPolicy="off">
+		<mx:HBox width="100%" paddingLeft="10" paddingTop="10" horizontalAlign="center">
+			<mx:Label id="txtCaption" styleName="labelGold10" filters="{[shadow]}"></mx:Label>			
+		</mx:HBox>
+		<mx:VBox paddingLeft="10" width="100%" height="100%">
+			<mx:Text id="txtText" leading="0" selectable="false" styleName="labelWhite10" filters="{[shadow]}"></mx:Text>			
+		</mx:VBox>
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			public function set text(value:String):void {
+				txtText.text = value;
+			}
+			
+			public function set caption(value:String):void {
+				txtCaption.text = value;
+			}
+
+			public function change(caption:String, value:String):void 
+			{
+				txtCaption.text = caption;
+				txtText.text = value;
+			}			
+						
+		]]>
+	</mx:Script>
+</mx:Box>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="210" height="157">
+
+	<mx:Style source="..\styles\common.css"/>	
+	
+	<mx:Label id="txtCaption" text="{_caption}"  styleName="headerWhite"></mx:Label>
+	
+	<mx:Spacer id="spacer" height="19%"></mx:Spacer>
+
+	<cc:ClickButton id="btnRestart" width="63%" label="{StringResources.get('Restart')}" styleName="menuButton" click="onRestartClick(event)">
+	</cc:ClickButton>		
+	<cc:ClickButton id="btnReturn" width="63%" label="OK" styleName="menuButton" click="onReturnClick(event)">
+	</cc:ClickButton>
+	
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import engine.game.GameResultType;
+			import mx.managers.PopUpManager;
+			import engine.mission.MissionType;
+			import mx.core.Application;
+			import states.UIGameState;
+			import engine.mission.Mission;
+			import engine.game.GameResults;
+			import engine.game.GameManager;
+			import mx.core.UIComponent;
+			
+			[Bindable]
+			private var _caption:String;
+			
+			public function show(parent:DisplayObject, results:GameResults, closeHanfler:Function=null):void
+			{
+				_caption = results.result;
+				super.showDialog(parent, closeHanfler);
+				
+				btnRestart.visible = btnRestart.includeInLayout = (results.result == GameResultType.DEFEAT);	
+				if (btnRestart.visible)
+				{
+					btnReturn.label = StringResources.get('SurrenderAction');
+					spacer.percentHeight = 10;
+				}
+				validateNow();
+			}	
+			
+			private function onReturnClick(evt:Event):void
+			{
+				PopUpManager.removePopUp(this);
+				_parent.visible = true;
+				
+				var currentMission:Mission = GameManager.instance().currentMission;
+				var mission:Mission = GameManager.instance().missionPack.getNext(currentMission);
+				GameManager.instance().selectMission(mission);
+				
+				if (currentMission.type != MissionType.CINEMATIC)
+				{
+					Application.application.currentState = UIGameState.MISSION_RESULTS;
+				}
+				else
+				{
+					if (mission)
+						Application.application.currentState = UIGameState.MISSION_LOADING;
+					else
+						Application.application.currentState = UIGameState.CUSTOM_GAME;
+				}
+			}
+			
+			private function onRestartClick(evt:Event):void
+			{
+				close();
+				Application.application.currentState = UIGameState.MISSION_LOADING;
+			}
+		]]>
+	</mx:Script>
+	
+</DialogCommon>

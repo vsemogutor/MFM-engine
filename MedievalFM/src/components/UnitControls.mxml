@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="115" height="100%"
+	xmlns:cc="controls.*" styleName="actionPanel">
+
+	<mx:Style source="..\styles\common.css"/>		
+	<mx:Style>
+		.btnMove, .btnBuild, .btnAttack, .btnRepair, .btnStand, .btnLink {
+			skin: ClassReference("skins.ImageButtonSkin");
+		}
+
+		.btnBuild {
+			image: Embed("../../assets/building_ico.png");
+		}
+		
+		.btnAttack {
+			image: Embed("../../assets/attack_ico.png");
+		}
+
+		.btnRepair {
+			image: Embed("../../assets/repair_ico.png");
+		}	
+		
+		.btnStand {
+			image: Embed("../../assets/stand_ico.png");
+		}	
+		
+		.btnMove {
+			image: Embed("../../assets/move_ico.png");
+		}	
+		
+		.btnCancel {
+			image: Embed("../../assets/cancel_ico.png");
+		}	
+		
+		.btnLink {
+		/* 	image: Embed("../../assets/link_ico.png"); */
+		}				
+	</mx:Style>	
+		
+	<mx:Canvas id="pnlUnitControls" width="100%" height="100%">
+		<mx:Tile id="pnlCommands" height="100%" width="100%" tileWidth="30" tileHeight="30" verticalGap="3" horizontalGap="3">
+			<cc:ImageButton id="btnMove" quickButton="m" styleName="btnMove" click="onMoveClick(event)" toolTip="{StringResources.get('TooltipMove')}"></cc:ImageButton>
+			<cc:ImageButton id="btnAttack" quickButton="a" styleName="btnAttack" click="onAttackClick(event)" toolTip="{StringResources.get('TooltipAttack')}"></cc:ImageButton>		
+			<cc:ImageButton id="btnStand" quickButton="s" styleName="btnStand" click="onStandClick(event)" toolTip="{StringResources.get('TooltipStop')}"></cc:ImageButton>		
+			<cc:ImageButton id="btnBuild" quickButton="b" styleName="btnBuild" click="onBuildClick(event)" toolTip="{StringResources.get('TooltipBuild')}"></cc:ImageButton>
+			<cc:ImageButton id="btnRepair" quickButton="r" styleName="btnRepair" toolTip="{StringResources.get('TooltipRepair')}" click="onRepairClick(event)"></cc:ImageButton>	
+			<cc:ImageButton id="btnLink" quickButton="l" styleName="btnLink" toolTip="{StringResources.get('TooltipLink')}" click="onLinkClick(event)"></cc:ImageButton>		
+		</mx:Tile>
+		<mx:Canvas id="pnlBuildList" height="100%" width="100%" visible="false">
+			<mx:Tile width="100%" height="100%" id="lstBuild" tileWidth="30" 
+				tileHeight="30" verticalGap="3" horizontalGap="3">
+			</mx:Tile>
+			<cc:ImageButton styleName="btnCancel" quickButton="esc" id="btnBuildCancel" click="onBuildCancelClick(event)" bottom="4" right="7"  toolTip="{StringResources.get('TooltipCancel')}"></cc:ImageButton>
+		</mx:Canvas>		
+	</mx:Canvas>				
+
+
+	<mx:Script>
+		<![CDATA[
+			import engine.heros.Hero;
+			import resources.StringResources;
+			import mx.controls.TileList;
+			import sound.Sounds;
+			import mx.events.ToolTipEvent;
+			import controls.TypeTooltip;
+			import engine.units.groups.UnitGroup;
+			import mx.controls.Button;
+			import engine.units.UnitOrders.*;
+			import __AS3__.vec.Vector;
+			import engine.structures.Structure;
+			import engine.units.support.*;
+			import engine.game.Game;
+			import engine.userAction.*;
+			import engine.spells.*;
+			import engine.units.*;
+		
+			private var _group:UnitGroup;
+			private const ACTION_BUTTONS_COUNT:int = 6;
+			
+			public function get dataSource():UnitGroup{
+				return _group;
+			}
+
+			public function set dataSource(value:UnitGroup):void{
+				if (_group && _group.selectedUnit != value.selectedUnit)
+				{
+					reset();
+				}
+				
+				_group = value;
+				refreshChildren();
+			}
+			
+			public function reset():void
+			{
+				pnlCommands.visible = true;
+				pnlBuildList.visible = false;	
+			}
+						
+			private function refreshChildren():void
+			{				
+				if (!_group)
+					return;
+					
+				var unit:Unit = _group.selectedUnit;
+				
+				if (!unit || !unit.isReady || !unit.isActive || !unit.fraction.isCurrentPlayer())
+				{	
+					pnlUnitControls.visible = false;
+					return;
+				}
+				
+				if (_group.length > 1)
+					reset();
+				
+				pnlUnitControls.visible = true;
+				refreshCommandsPanel(unit);
+				refreshBuildPanel(unit, lstBuild);
+			} 
+			
+			private function refreshCommandsPanel(unit:Unit):void
+			{
+				if (pnlCommands.visible)
+				{
+					var singleSelection:Boolean = _group.length == 1;
+					btnBuild.visible = btnBuild.includeInLayout = unit.type.canBuild() && singleSelection && !(unit is Structure);
+					btnBuild.selected = unit.order is UnitOrderTrainUpgrade;
+					btnMove.visible = btnMove.includeInLayout = unit.type.canMove();
+					btnMove.selected = unit.order is UnitOrderMove;
+					btnAttack.visible = btnAttack.includeInLayout = unit.type.canAttack();
+					btnAttack.selected = unit.order is UnitOrderAttack;
+					btnStand.selected = unit.order is UnitOrderStand;
+					btnLink.visible = btnLink.includeInLayout = unit.type.canLink() && singleSelection;
+					btnLink.selected = unit.order is UnitOrderLink;
+					btnRepair.visible = btnRepair.includeInLayout = unit.type.canRepair && !(unit is Structure);
+					btnRepair.selected = unit.order is UnitOrderRepair;
+					
+					var spellsStartAt:int = ACTION_BUTTONS_COUNT;
+										
+					if (unit is Hero)
+					{
+						for (var i:int = spellsStartAt; i < pnlCommands.numChildren; ++i)
+						{
+							pnlCommands.getChildAt(i).visible = false;
+						}
+						return;
+					}
+					
+					if (unit is Structure)
+					{
+						spellsStartAt += refreshBuildPanel(unit, pnlCommands);
+					}
+					
+					var spells:Vector.<UnitSpellItem> = unit.getSpellList();
+					for (var i:int = 0; i < spells.length; ++i)
+					{
+						var spButton:ImageButton;
+						if (i + spellsStartAt < pnlCommands.numChildren)
+						{
+							spButton = pnlCommands.getChildAt(i + spellsStartAt) as ImageButton;
+						}
+						else 
+						{
+							spButton = new ImageButton();
+
+							spButton.toolTip = " ";
+							spButton.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, TypeTooltip.create);
+							spButton.addEventListener(ToolTipEvent.TOOL_TIP_SHOW, TypeTooltip.show);
+							pnlCommands.addChild(spButton);
+						}
+						
+						spButton.onClickHandler = onSpellSelectedClick;
+						spButton.onDoubleClickHandler = onSpellSetActiveClick;
+						
+						spButton.doubleClickSound = Sounds.autocastClick;
+										
+						var spellItem:UnitSpellItem = spells[i];
+						spButton.data = spellItem.type;
+						spButton.enabled = spellItem.avaliable;
+						spButton.setImage(spellItem.type.icon);
+						
+						var castOrder:UnitOrderCastSpell = unit.order as UnitOrderCastSpell;
+						spButton.active	= (spellItem.type == unit.activeSpell);
+						spButton.selected = spButton.active || (castOrder && castOrder.spellType == spellItem.type); 
+						spButton.visible = singleSelection;
+					}
+					
+					for (var i:int = spellsStartAt + spells.length; i < pnlCommands.numChildren; ++i)
+					{
+						pnlCommands.getChildAt(i).visible = false;
+					}
+				}
+			}
+			
+			private function refreshBuildPanel(unit:Unit, list:Tile):int
+			{
+				if (list != lstBuild || pnlBuildList.visible)
+				{
+					var builds:Vector.<UnitBuildItem> = unit.getBuildList();
+					var startPos:int = 0;
+					if (list == pnlCommands) startPos = ACTION_BUTTONS_COUNT;
+					
+					for (var i:int = 0; i < builds.length; ++i)
+					{
+						var bldButton:ImageButton;
+						if (i + startPos < list.numChildren)
+						{
+							bldButton = list.getChildAt(i + startPos) as ImageButton;
+						}
+						else 
+						{
+							bldButton = new ImageButton();
+							
+							bldButton.toolTip = " ";
+							bldButton.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, TypeTooltip.create);
+							bldButton.addEventListener(ToolTipEvent.TOOL_TIP_SHOW, TypeTooltip.show);							
+							list.addChild(bldButton);
+						}
+						
+						bldButton.onClickHandler = onBuildSelectedClick;
+						bldButton.onDoubleClickHandler = null;
+						bldButton.doubleClickSound = null;		
+														
+						var buildItem:UnitBuildItem = builds[i];
+						bldButton.data = buildItem.type;
+						bldButton.enabled = buildItem.enabled;
+						bldButton.selected = bldButton.active = false;
+						bldButton.visible = true;
+						bldButton.setImage(buildItem.type.icon);
+					}
+					
+					var len:int = list.numChildren;
+					for (var i:int = startPos + builds.length; i < len; ++i)
+					{
+						list.getChildAt(i).visible = false;
+					}
+					
+					return builds.length;
+				}
+				
+				return 0;
+			}
+						
+			public function onSpellSelectedClick(btn:Button):void
+			{
+				var spellType:SpellType = btn.data as SpellType;
+				var action:UserActionBase = new UserActionOrderUnitCast(
+					Game.instance().selectionManager.selectedUnitGroup, spellType);
+				Game.instance().userActionManager.setAction(action);
+			}
+			
+			public function onSpellSetActiveClick(btn:Button):void
+			{
+				var spellType:SpellType = btn.data as SpellType;
+				
+				// toggle?
+				if (spellType == Game.instance().selectionManager.selectedUnit.activeSpell)
+					spellType = null;
+				
+				Game.instance().selectionManager.selectedUnit.setActiveSpell(spellType);
+				Game.instance().userActionManager.defaultAction();
+			}
+			
+			public function onMoveClick(evt:Event):void
+			{
+				var action:UserActionBase = new UserActionOrderUnitMove(Game.instance().selectionManager.selectedUnitGroup);
+				Game.instance().userActionManager.setAction(action);
+			}
+			
+			public function onAttackClick(evt:Event):void
+			{
+				var action:UserActionBase = new UserActionOrderUnitAttack(Game.instance().selectionManager.selectedUnitGroup);
+				Game.instance().userActionManager.setAction(action);
+			}
+	
+			public function onStandClick(evt:Event):void
+			{
+				Game.instance().selectionManager.selectedUnitGroup.orderStand();
+			}
+						
+			public function onBuildClick(evt:Event):void
+			{
+				pnlCommands.visible = false;
+				pnlBuildList.visible = true;
+			}
+			
+			public function onBuildCancelClick(evt:Event):void
+			{
+				reset();
+			}
+			
+			public function onBuildSelectedClick(btn:Button):void
+			{
+				var buildType:UnitType = btn.data as UnitType;
+				var action:UserActionBase;
+				
+				if (Game.instance().selectionManager.selectedUnit is Structure)
+				{
+					action = new UserActionOrderUnitTrainUpgrade(
+						Game.instance().selectionManager.selectedUnitGroup, buildType);
+				}
+				else
+				{
+					action = new UserActionOrderUnitConstruct(
+						Game.instance().selectionManager.selectedUnitGroup, buildType);
+				}
+				Game.instance().userActionManager.setAction(action);
+			}
+			
+			public function onLinkClick(evt:Event):void
+			{
+				var action:UserActionBase = new UserActionOrderUnitLink(Game.instance().selectionManager.selectedUnitGroup);
+				Game.instance().userActionManager.setAction(action);
+			}
+			
+			public function onRepairClick(evt:Event):void
+			{
+				var action:UserActionBase = new UserActionOrderUnitRepair(Game.instance().selectionManager.selectedUnitGroup);
+				Game.instance().userActionManager.setAction(action);
+			}
+		]]>
+	</mx:Script>
+</mx:Box>

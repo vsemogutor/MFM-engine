@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:cc="controls.*"
+	layout="absolute" width="100%" height="100%"
+	styleName="startMenu" creationComplete="{init()}">
+	
+	<mx:DropShadowFilter id="shadow" angle="0" distance="1">
+	</mx:DropShadowFilter>
+	
+	<mx:HBox width="100%" top="50" horizontalAlign="center">
+		<mx:Label styleName="headerGold" text="Select Your Hero" filters="{[shadow]}">
+		</mx:Label>			
+	</mx:HBox>
+	
+	<mx:HBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<cc:ImageButton width="32" height="32" id="btnPrev" click="onPrevNextHero(event)">	
+		</cc:ImageButton>
+
+		<mx:VBox id="pnlMage" width="240" height="400" styleName="dialogCommon" mouseDown="selectPanel(event)"
+			horizontalAlign="center" verticalAlign="middle">
+			<mx:Image source="{BitmapResources.magePortrait}">
+			</mx:Image>	
+			
+			<mx:Label text="Mage" styleName="labelGold">				
+			</mx:Label>	
+			
+			<mx:Text width="100%" selectable="false" styleName="labelWhite" height="150"
+				text="Mages wield the elements of fire, frost, and arcane to destroy or neutralize their enemies."></mx:Text>			
+		</mx:VBox>	
+					
+		<mx:VBox id="pnlWarrior" width="240" height="400" styleName="dialogCommon" mouseDown="selectPanel(event)"
+			horizontalAlign="center" verticalAlign="middle"	alpha="0.4">
+			<mx:Image source="{BitmapResources.palladinPortrait}">
+			</mx:Image>		
+			
+			<mx:Label text="Paladin" styleName="labelGold">	
+			</mx:Label>	
+			
+			<mx:Text width="100%" selectable="false" styleName="labelWhite" height="150"
+				text="The Paladin is a holy knight, crusading in the name of good and order. Paladins are both skilled in melee combat and divine spellcasting."></mx:Text>	
+		</mx:VBox>
+		
+		<mx:VBox id="pnlLich" width="240" height="400" styleName="dialogCommon" mouseDown="selectPanel(event)"
+			horizontalAlign="center" verticalAlign="middle" visible="false" includeInLayout="false"
+			alpha="0.4">
+			<mx:Image source="{BitmapResources.lichPortrait}">
+			</mx:Image>	
+			
+			<mx:Label text="Lich" styleName="labelGold">				
+			</mx:Label>	
+			
+			<mx:Text width="100%" selectable="false" styleName="labelWhite" height="150"
+				text="The Lich is an undead mage. Liches are masters of the necromantic arts and capable of summoning undead to help them in combat."></mx:Text>			
+		</mx:VBox>	
+		
+		<mx:VBox id="pnlBarbar" width="240" height="400" styleName="dialogCommon" mouseDown="selectPanel(event)"
+			horizontalAlign="center" verticalAlign="middle" visible="false" includeInLayout="false"
+			alpha="0.4">
+			<mx:Image source="{BitmapResources.barbarPortrait}">
+			</mx:Image>	
+			
+			<mx:Label text="Barbarian" styleName="labelGold">				
+			</mx:Label>	
+			
+			<mx:Text width="100%" selectable="false" styleName="labelWhite" height="150"
+				text="The barbarian is one of the most dangerous and feared sights on the battlefield. Their combat style focuses on strength, aggression, and relentless assault."></mx:Text>			
+		</mx:VBox>		
+
+		<mx:VBox id="pnlRogue" width="240" height="400" styleName="dialogCommon" mouseDown="selectPanel(event)"
+			horizontalAlign="center" verticalAlign="middle" visible="false" includeInLayout="false"
+			alpha="0.4">
+			<mx:Image source="{BitmapResources.roguePortrait}">
+			</mx:Image>	
+			
+			<mx:Label text="Rogue" styleName="labelGold">				
+			</mx:Label>	
+			
+			<mx:Text width="100%" selectable="false" styleName="labelWhite" height="150"
+				text="Rogues are masters of stealth and assassination, passing by enemies unseen and striking from the shadows, then escaping from combat in the blink of an eye."></mx:Text>			
+		</mx:VBox>	
+					
+		<cc:ImageButton width="32" height="32" id="btnNext" click="onPrevNextHero(event)">	
+		</cc:ImageButton>
+	</mx:HBox>
+
+	<mx:HBox width="100%" bottom="70" horizontalAlign="center">
+		<cc:ClickButton styleName="mainMenuButton" width="100" label="Back" click="onBackClick(event)">
+		</cc:ClickButton>	
+		<cc:ClickButton styleName="mainMenuButton" width="100" label="Next" click="onNextClick(event)">
+		</cc:ClickButton>	
+	</mx:HBox>	
+	
+	<mx:Script>
+		<![CDATA[
+			import images.Images;
+			import engine.mission.Mission;
+			import engine.game.GameManager;
+			import mx.core.Application;
+			import mx.containers.Box;
+			import resources.BitmapResources;
+			
+			private var selectedPanel:Box;
+			private var panels:Array;
+			private var heroes:Array;
+			private var currentVisibleIndx:int;
+						
+			private function init():void
+			{
+				btnPrev.setImage(Images.leftButtonImage);
+				btnNext.setImage(Images.rightButtonImage);
+
+				panels = [pnlMage, pnlWarrior, pnlLich, pnlBarbar, pnlRogue];
+				selectedPanel = panels[0];
+				heroes = ["mage", "paladin", "lich", "barbar", "rogue"];
+				currentVisibleIndx = 0;
+			}
+			
+			private function selectPanel(evt:Event):void
+			{
+				selectedPanel = Box(evt.currentTarget);
+				selectedPanel.alpha = 1;
+				for (var i:int = 0; i < panels.length; ++i)
+				{
+					if (panels[i] != selectedPanel)
+					{
+						panels[i].alpha = 0.4;
+					}
+				}
+			}
+			
+			private function onNextClick(evt:Event):void	
+			{
+				var mission:Mission = GameManager.instance().missionPack.getMissions()[0];
+				mission.stateBag.hero = heroes[panels.indexOf(selectedPanel)];				
+				
+				GameManager.instance().selectMission(mission);
+				Application.application.currentState = UIGameState.PRESETS;				
+			}
+
+			private function onBackClick(evt:Event):void	
+			{
+				Application.application.currentState = UIGameState.START_MENU;				
+			}
+						
+			private function onPrevNextHero(evt:Event):void
+			{
+				if (evt.currentTarget == btnNext)
+					currentVisibleIndx += 2;
+				else
+					currentVisibleIndx -= 2;
+				
+				if (currentVisibleIndx > panels.length) currentVisibleIndx = 0;
+				else if (currentVisibleIndx < 0) currentVisibleIndx = 4;
+				
+				
+				for (var i:int = 0; i < panels.length; ++i)
+				{
+					panels[i].visible = panels[i].includeInLayout = ((i - currentVisibleIndx) <= 1) && i >= currentVisibleIndx;
+				}		
+				
+				validateNow();		
+			}
+				
+		]]>
+	</mx:Script>	
+</mx:Module>

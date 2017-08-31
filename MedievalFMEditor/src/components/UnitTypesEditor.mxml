@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" show="{init()}"
+	 backgroundColor="#FFFFFF" xmlns:components="components.*">
+		
+	<mx:HBox width="100%" height="100%" borderStyle="solid">
+		<mx:List height="100%" width="150" enabled="true" id="unitTypes" labelField="name" itemClick="onUnitSelected(event)"></mx:List>
+		
+		<mx:Accordion height="100%" width="100%">
+			<mx:VBox height="100%" width="100%" label="base:">
+				<mx:HBox>
+					<mx:Label text="name:"></mx:Label>
+					<components:ExTextInput id="txtName" name="name" change="onFieldChanged(event)"></components:ExTextInput>
+					<mx:Label text="id:"></mx:Label>
+					<components:ExTextInput id="txtId" name="id" change="onFieldChanged(event)"></components:ExTextInput>				
+					<mx:Button label="Copy" click="copyClick(event)"></mx:Button>
+					<mx:Button label="Remove" click="removeTypeClick(event)"></mx:Button>
+				</mx:HBox>
+				<mx:Label text="Description:"></mx:Label>
+				<mx:TextArea id="txtDescription" name="description" change="onFieldChanged(event)" height="40" width="100%"></mx:TextArea>
+				<mx:HBox>
+					<mx:Label text="Type:"></mx:Label>
+					<components:ExComboBox id="ddlType" name="type" change="onFieldChanged(event)" labelFunction="{UnitTypes.getTypeName}"></components:ExComboBox>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Model:"></mx:Label>
+					<components:ExComboBox id="ddlmodel" name="model" change="onFieldChanged(event)" labelField="name"></components:ExComboBox>				
+				</mx:HBox>
+				<components:ExCheckBox label="Is Upgrade:" name="isUpgrade" change="onFieldChanged(event)" id="chkIsUpgrade"></components:ExCheckBox>
+				<components:ExCheckBox label="Is Trader:" name="isTrader" change="onFieldChanged(event)" id="chkIsTrader"></components:ExCheckBox>
+				<components:ExCheckBox label="Is Flying:" name="isFlying" change="onFieldChanged(event)" id="chkIsFlying"></components:ExCheckBox>
+				<mx:HBox>
+					<mx:Label text="X Length:"></mx:Label>
+					<components:ExTextInput id="txtXLength" name="xLength" change="onFieldChanged(event)" restrict="123456789"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Y Length:"></mx:Label>
+					<components:ExTextInput id="txtYLength" name="yLength" change="onFieldChanged(event)" restrict="123456789"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Construction time:"></mx:Label>
+					<components:ExTextInput id="txtConstrTime" name="constructionTime" change="onFieldChanged(event)" restrict="0123456789"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Gold cost:"></mx:Label>
+					<components:ExTextInput state="{ResourceType.Gold}" name="costResources" 
+						id="txtGoldCost"  restrict="0123456789" change="onFieldChanged(event)"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Crystal cost:"></mx:Label>
+					<components:ExTextInput id="txtCrystalCost" restrict="0123456789"
+						state="{ResourceType.Crystal}" name="costResources" change="onFieldChanged(event)"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Population cost:"></mx:Label>
+					<components:ExTextInput id="txtPopulationCost" restrict="0123456789"
+						state="{ResourceType.Population}" name="costResources" change="onFieldChanged(event)"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Population production:"></mx:Label>
+					<components:ExTextInput id="txtPopulationProd" restrict="0123456789"
+						state="{ResourceType.PopulationProduction}" name="costResources" change="onFieldChanged(event)"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Gold bounty:"></mx:Label>
+					<components:ExTextInput state="{ResourceType.Gold}" name="bountyResources" 
+						id="txtGoldBounty"  restrict="0123456789" change="onFieldChanged(event)"></components:ExTextInput>				
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Crystal bounty:"></mx:Label>
+					<components:ExTextInput id="txtCrystalBounty" restrict="0123456789"
+						state="{ResourceType.Crystal}" name="bountyResources" change="onFieldChanged(event)"></components:ExTextInput>				
+				</mx:HBox>
+			</mx:VBox>
+			
+			<mx:VBox height="100%" width="100%" label="properties:">
+				<mx:HBox>
+					<mx:Label text="Max Health:"></mx:Label>
+					<components:ExTextInput id="txtMaxHealth" restrict="0123456789"
+						state="{UnitProperties.MaxHealth}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Health Regen:"></mx:Label>
+					<components:ExTextInput id="txtHealthRegen" restrict="0123456789"
+						state="{UnitProperties.HealthRegen}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Health Regen Rate:"></mx:Label>
+					<components:ExTextInput id="txtHealthRegenRate" restrict="0123456789"
+						state="{UnitProperties.HealthRegenRate}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>				
+				<mx:HBox>
+					<mx:Label text="Max Mana:"></mx:Label>
+					<components:ExTextInput id="txtMaxMana" restrict="0123456789"
+						state="{UnitProperties.MaxMana}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Mana Regen:"></mx:Label>
+					<components:ExTextInput id="txtManaRegen" restrict="0123456789"
+						state="{UnitProperties.ManaRegen}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Mana Regen Rate:"></mx:Label>
+					<components:ExTextInput id="txtManaRegenRate" restrict="0123456789"
+						state="{UnitProperties.ManaRegenRate}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Move Speed:"></mx:Label>
+					<components:ExTextInput id="txtMoveSpeed" restrict="0123456789"
+						state="{UnitProperties.MoveSpeed}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>		
+				<mx:HBox>
+					<mx:Label text="Sight Range:"></mx:Label>
+					<components:ExTextInput id="txtSightRange" restrict="0123456789"
+						state="{UnitProperties.SightRange}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Attack Speed:"></mx:Label>
+					<components:ExTextInput id="txtAttackSpeed" restrict="0123456789"
+						state="{UnitProperties.AttackSpeed}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Attack Delay:"></mx:Label>
+					<components:ExTextInput id="txtAttackDelay" restrict="0123456789"
+						state="{UnitProperties.AttackDelay}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>		
+				<mx:HBox>
+					<mx:Label text="Attack Range:"></mx:Label>
+					<components:ExTextInput id="txtAttackRange" restrict="0123456789"
+						state="{UnitProperties.AttackRange}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>	
+				<mx:HBox>
+					<mx:Label text="Attack Damage Min:"></mx:Label>
+					<components:ExTextInput id="txtAttackDmgMin" restrict="0123456789"
+						state="{UnitProperties.AttackDmgMin}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>	
+				<mx:HBox>
+					<mx:Label text="Attack Damage Max:"></mx:Label>
+					<components:ExTextInput id="txtAttackDmgMax" restrict="0123456789"
+						state="{UnitProperties.AttackDmgMax}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Attack Damage Range:"></mx:Label>
+					<components:ExTextInput id="txtAttackDmgRange" restrict="0123456789"
+						state="{UnitProperties.AttackDamageRange}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Attack Damage Type:"></mx:Label>
+					<components:ExComboBox id="ddlDmgType" labelFunction="{DamageType.getTypeName}"
+						state="{UnitProperties.AttackDmgType}" name="properties" 
+						change="onFieldChanged(event)"></components:ExComboBox>		
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Attack Spell:"></mx:Label>
+					<components:ExComboBox id="ddlAttackSpell" labelField="name" targetProp="id"
+						state="{UnitProperties.AttackSpell}" name="properties" change="onFieldChanged(event)"></components:ExComboBox>		
+				</mx:HBox>				
+				<mx:HBox>
+					<mx:Label text="Armor:"></mx:Label>
+					<components:ExTextInput id="txtArmor" restrict="0123456789"
+						state="{UnitProperties.Armor}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Armor type:"></mx:Label>
+					<components:ExComboBox id="ddlArmorType" labelFunction="{ArmorType.getTypeName}"
+						state="{UnitProperties.ArmorType}" name="properties" change="onFieldChanged(event)"></components:ExComboBox>		
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Magic resistance:"></mx:Label>
+					<components:ExTextInput id="txtMagicRes" restrict="0123456789"
+						state="{UnitProperties.MagicRes}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Astral resistance:"></mx:Label>
+					<components:ExTextInput id="txtAstralRes" restrict="0123456789"
+						state="{UnitProperties.AstralRes}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Projectile Speed:"></mx:Label>
+					<components:ExTextInput id="txtProjectileSpeed" restrict="0123456789"
+						state="{UnitProperties.ProjectileSpeed}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Projectile Behaviour:"></mx:Label>
+					<components:ExComboBox id="ddlProjectileBehaviour"
+						labelFunction="{ProjectileBehaviour.getTypeName}"
+						state="{UnitProperties.ProjectileBehaviour}" name="properties" change="onFieldChanged(event)"></components:ExComboBox>		
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Projectile Model:"></mx:Label>
+					<components:ExComboBox id="ddlProjectileModel" labelField="name" targetProp="id"
+						state="{UnitProperties.ProjectileModelId}" name="properties" change="onFieldChanged(event)"></components:ExComboBox>		
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Attack Visual Effect:"></mx:Label>
+					<components:ExComboBox id="ddlAttackVisualEffect" labelField="name" targetProp="id"
+						state="{UnitProperties.AttackVisualEffectId}" name="properties" change="onFieldChanged(event)"></components:ExComboBox>		
+				</mx:HBox>
+				<components:ExCheckBox id="IsMechanical" label="Is Mechanical"
+					state="{UnitProperties.IsMechanical}" name="properties" change="onFieldChanged(event)"></components:ExCheckBox>
+				<mx:HBox>
+					<mx:Label text="Cast Speed:"></mx:Label>
+					<components:ExTextInput id="txtCastSpeed" restrict="0123456789"
+						state="{UnitProperties.CastSpeed}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label text="Cast Delay:"></mx:Label>
+					<components:ExTextInput id="txtCastDelay" restrict="0123456789"
+						state="{UnitProperties.CastDelay}" name="properties" change="onFieldChanged(event)"></components:ExTextInput>			
+				</mx:HBox>
+			</mx:VBox>
+			
+			<mx:VBox height="100%" width="100%" label="spells:">
+				<mx:Label text="Spells:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstSpellList" labelField="name" width="70%"></mx:List>					
+					<mx:Button id="addSpell" label="Add" click="onAddSpellClick(event)"></mx:Button>
+				</mx:HBox>
+				<mx:Label text="Type Spells:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstTypeSpells" labelField="name" width="70%"></mx:List>
+					<mx:Button id="removeSpell" label="Remove" click="onRemoveSpellClick(event)"></mx:Button>					
+				</mx:HBox>
+				<mx:Label text="Active Spell:"></mx:Label>
+				<mx:HBox width="70%">
+					<components:ExComboBox id="ddlActiveSpell" labelField="name" width="70%" change="onActiveSpellChanged(event)"></components:ExComboBox>					
+					<mx:Button id="btnRemoveActiveSpell" label="Remove" click="onRemoveActiveSpell(event)"></mx:Button>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:VBox height="100%" width="100%" label="build list:">
+				<mx:Label text="Build types:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstBuildTypes" labelField="name" width="70%"></mx:List>					
+					<mx:Button id="addBuildType" label="Add" click="onAddBuildTypeClick(event)"></mx:Button>
+				</mx:HBox>
+				<mx:Label text="Type Build List:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstTypeBuildList" labelField="name" width="70%"></mx:List>						
+					<mx:Button id="removeBuildType" label="Remove" click="onRemoveBuildTypeClick(event)"></mx:Button>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:VBox height="100%" width="100%" label="dependencies:">
+				<mx:Label text="Dependency types:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstDependencyTypes" labelField="name" width="70%"></mx:List>					
+					<mx:Button id="addDependencyType" label="Add" click="onAddDependencyTypeClick(event)"></mx:Button>
+				</mx:HBox>
+				<mx:Label text="Type Dependency List:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstTypeDependencyList" labelField="name" width="70%"></mx:List>	
+					<mx:Button id="removeDependencyType" label="Remove" click="onRemoveDependencyTypeClick(event)"></mx:Button>
+				</mx:HBox>
+				
+			</mx:VBox>
+			<mx:VBox height="100%" width="100%" label="upgrade list:">
+				<mx:Label text="Upgrade types:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstUpgradeTypes" labelField="name" width="70%"></mx:List>					
+					<mx:Button id="addUpgradeType" label="Add" click="onAddUpgradeTypeClick(event)"></mx:Button>
+				</mx:HBox>
+				<mx:Label text="Type upgrade types:"></mx:Label>
+				<mx:HBox width="70%">
+					<mx:List id="lstTypeUpgradeList" labelField="name" width="70%"></mx:List>	
+					<mx:Button id="removeUpgradeType" label="Remove" click="onRemoveUpgradeTypeClick(event)"></mx:Button>
+				</mx:HBox>
+				
+			</mx:VBox>
+		</mx:Accordion>
+	</mx:HBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import engine.spells.SpellType;
+			import mx.events.DropdownEvent;
+			import engine.util.VectorCollection;
+			import engine.projectile.ProjectileBehaviour;
+			import engine.units.ArmorType;
+			import engine.units.DamageType;
+			import engine.units.UnitProperties;
+			import engine.fraction.ResourceType;
+			import mx.collections.ArrayCollection;
+			import mx.core.UITextField;
+			import mx.core.UIComponent;
+			import engine.units.UnitTypes;
+			import mx.controls.ComboBase;
+			import mx.controls.Button;
+			import engine.game.GameState;
+			import mx.managers.PopUpManager;
+			import mx.core.Application;
+			import engine.units.UnitType;
+			import engine.game.Game;
+			
+			private var selectedType:UnitType;
+			private var _game:Game;
+			public var isChanged:Boolean;
+			
+			private function init():void
+			{
+				_game = Game.instance();
+				unitTypes.dataProvider = _game.unitManager.unitTypes.toValSet().toArray().sortOn(["type", "name"]);
+			}
+			
+			private function onUnitSelected(evt:Event):void
+			{
+				selectedType = mx.controls.List(evt.target).selectedItem as UnitType;
+				loadUnitType(selectedType);
+			}
+			
+			private function loadUnitType(type:UnitType):void
+			{
+				txtName.text = selectedType.name;
+				txtId.text = selectedType.id.toString();
+				txtDescription.text = selectedType.description;
+				if (type.type == UnitTypes.Structure)
+					ddlmodel.dataProvider = _game.spriteRepository.getSprites("building").sortOn("name");
+				else
+					ddlmodel.dataProvider = _game.spriteRepository.getSprites("unit").sortOn("name");			
+				ddlmodel.selectedItem = _game.spriteRepository.getByName(selectedType.model.name, false);
+				ddlType.dataProvider = UnitTypes.types;
+				ddlType.selectedItem = selectedType.type;
+				chkIsUpgrade.selected = selectedType.isUpgrade;
+				chkIsUpgrade.selected = selectedType.isUpgrade;		
+				txtXLength.text = selectedType.xLength.toString();
+				txtYLength.text = selectedType.yLength.toString();
+				txtConstrTime.text = selectedType.constructionTime.toString();
+				txtGoldCost.text = selectedType.costResources[ResourceType.Gold].toString();
+				txtCrystalCost.text = selectedType.costResources[ResourceType.Crystal].toString();	
+				txtPopulationCost.text = selectedType.costResources[ResourceType.Population].toString();
+				txtPopulationProd.text = selectedType.costResources[ResourceType.PopulationProduction].toString();
+				
+				txtGoldBounty.text = selectedType.bountyResources[ResourceType.Gold].toString();					
+				txtCrystalBounty.text = selectedType.bountyResources[ResourceType.Crystal].toString();
+								
+				loadProperties(type);
+				loadSpells(type);		
+				loadBuildTypes(type);
+				loadDependencyTypes(type);
+				loadUpgradeTypes(type);
+			}
+
+			private function loadProperties(type:UnitType):void
+			{
+				txtMaxHealth.text = type.properties[UnitProperties.MaxHealth].toString();
+				txtMaxMana.text = type.properties[UnitProperties.MaxMana].toString();
+				txtHealthRegenRate.text = type.properties[UnitProperties.HealthRegenRate].toString();
+				txtManaRegenRate.text = type.properties[UnitProperties.ManaRegenRate].toString();
+				txtManaRegen.text = type.properties[UnitProperties.ManaRegen].toString();
+				txtHealthRegen.text = type.properties[UnitProperties.HealthRegen].toString();
+													
+				txtMoveSpeed.text = type.properties[UnitProperties.MoveSpeed].toString();
+				txtSightRange.text = type.properties[UnitProperties.SightRange].toString();
+				txtAttackSpeed.text = type.properties[UnitProperties.AttackSpeed].toString();
+				txtAttackDelay.text = type.properties[UnitProperties.AttackDelay].toString();
+				txtAttackRange.text = type.properties[UnitProperties.AttackRange].toString();								
+				txtAttackDmgRange.text = type.properties[UnitProperties.AttackDamageRange].toString();
+
+				txtAttackDmgMin.text = type.properties[UnitProperties.AttackDmgMin].toString();
+				txtAttackDmgMax.text = type.properties[UnitProperties.AttackDmgMax].toString();	
+				
+				ddlAttackSpell.dataProvider = _game.spellManager.spellTypes.toValSet().toArray().sortOn("name");
+				ddlAttackSpell.selectedItem = _game.spellManager.getSpellTypeById(type.properties[UnitProperties.AttackSpell]);
+				
+				ddlDmgType.dataProvider = DamageType.types;
+				ddlDmgType.selectedItem = type.properties[UnitProperties.AttackDmgType];
+				
+				txtArmor.text = type.properties[UnitProperties.Armor].toString();
+				ddlArmorType.dataProvider = ArmorType.types;
+				ddlArmorType.selectedItem = type.properties[UnitProperties.ArmorType];
+				
+				txtMagicRes.text = type.properties[UnitProperties.MagicRes].toString();
+				txtAstralRes.text = type.properties[UnitProperties.AstralRes].toString();
+				
+				txtProjectileSpeed.text = type.properties[UnitProperties.ProjectileSpeed].toString();
+				ddlProjectileBehaviour.dataProvider = ProjectileBehaviour.types;
+				ddlProjectileBehaviour.selectedItem = type.properties[UnitProperties.ProjectileBehaviour];
+				
+				ddlProjectileModel.dataProvider = _game.spriteRepository.getSprites("projectile").sortOn("name");			
+				ddlProjectileModel.selectedItem = _game.spriteRepository.getById(type.properties[UnitProperties.ProjectileModelId], false);
+
+				ddlAttackVisualEffect.dataProvider = _game.spriteRepository.getSprites("effect").sortOn("name");		
+				ddlAttackVisualEffect.selectedItem = _game.spriteRepository.getById(type.properties[UnitProperties.AttackVisualEffectId], false);			
+			
+				IsMechanical.selected = Boolean(type.properties[UnitProperties.IsMechanical]);
+				
+				chkIsFlying.selected = type.isFlying;
+				chkIsTrader.selected = type.isTrader;
+				
+				txtCastSpeed.text = type.properties[UnitProperties.CastSpeed].toString();
+				txtCastDelay.text = type.properties[UnitProperties.CastDelay].toString();				
+			}		
+			
+			private function loadSpells(type:UnitType):void
+			{
+				lstSpellList.dataProvider = _game.spellManager.spellTypes.toValSet().toArray().sortOn("name");
+				lstTypeSpells.dataProvider = new VectorCollection(type.spellList);
+				ddlActiveSpell.dataProvider = selectedType.getAutocastSpells();
+				ddlActiveSpell.selectedItem = type.activeSpell;
+			}
+
+			private function loadBuildTypes(type:UnitType):void
+			{
+				if (!type.isUpgrade)
+				{
+					if (type.type == UnitTypes.Structure)
+						lstBuildTypes.dataProvider = _game.unitManager.getUnitTypes([UnitTypes.Unit, UnitTypes.Hero]).sortOn(["type", "name"]);
+					else
+						lstBuildTypes.dataProvider = _game.unitManager.getUnitTypes([UnitTypes.Structure]).sortOn(["type", "name"]);
+				}
+				
+				lstTypeBuildList.dataProvider = new VectorCollection(selectedType.getBuildList(false));
+			}
+			
+			private function loadUpgradeTypes(type:UnitType):void
+			{
+				if (type.type == UnitTypes.Structure)
+					lstUpgradeTypes.dataProvider = _game.unitManager.getUnitTypes([UnitTypes.Structure]).sortOn(["type", "name"]);
+				else if (type.type == UnitTypes.Unit)
+					lstUpgradeTypes.dataProvider = _game.unitManager.getUnitTypes([UnitTypes.Unit]).sortOn(["type", "name"]);
+				
+				lstTypeUpgradeList.dataProvider = new VectorCollection(selectedType.getBuildList(true));
+			}
+
+			private function loadDependencyTypes(type:UnitType):void
+			{
+				lstDependencyTypes.dataProvider = _game.unitManager.unitTypes.toValSet().toArray().sortOn(["type", "name"]);
+				lstTypeDependencyList.dataProvider = new VectorCollection(selectedType.dependencies);
+			}
+									
+			private function onAddSpellClick(evt:Event):void
+			{
+				if (lstSpellList.selectedItem && selectedType.spellList.indexOf(lstSpellList.selectedItem) == -1)
+				{
+					selectedType.spellList.push(lstSpellList.selectedItem);
+					lstTypeSpells.dataProvider = new VectorCollection(selectedType.spellList);
+					ddlActiveSpell.dataProvider = selectedType.getAutocastSpells();
+					ddlActiveSpell.selectedItem = selectedType.activeSpell;
+				}
+			}
+
+			private function onRemoveSpellClick(evt:Event):void
+			{
+				if (lstSpellList.selectedItem)
+				{
+					if (lstTypeSpells.selectedItem == ddlActiveSpell.selectedItem)
+					{
+						selectedType.activeSpell = null;
+						ddlActiveSpell.selectedItem = null;
+					}
+					
+					var indx:int = selectedType.spellList.indexOf(lstSpellList.selectedItem);
+					selectedType.spellList.splice(indx, 1);
+					lstTypeSpells.dataProvider = new VectorCollection(selectedType.spellList);
+					ddlActiveSpell.dataProvider = selectedType.getAutocastSpells();
+				}
+			}
+						
+			private function onAddBuildTypeClick(evt:Event):void
+			{
+				if (lstBuildTypes.selectedItem && selectedType.buildList.indexOf(lstBuildTypes.selectedItem) == -1)
+				{
+					selectedType.buildList.push(lstBuildTypes.selectedItem);
+					lstTypeBuildList.dataProvider = new VectorCollection(selectedType.getBuildList(false));
+				}
+			}
+
+			private function onRemoveBuildTypeClick(evt:Event):void
+			{
+				if (lstTypeBuildList.selectedItem)
+				{
+					var indx:int = selectedType.buildList.indexOf(lstTypeBuildList.selectedItem);
+					selectedType.buildList.splice(indx, 1);
+					lstTypeBuildList.dataProvider = new VectorCollection(selectedType.getBuildList(false));
+				}
+			}
+			
+			private function onAddUpgradeTypeClick(evt:Event):void
+			{
+				if (lstUpgradeTypes.selectedItem && selectedType.buildList.indexOf(lstUpgradeTypes.selectedItem) == -1)
+				{
+					selectedType.buildList.push(lstUpgradeTypes.selectedItem);
+					lstTypeUpgradeList.dataProvider = new VectorCollection(selectedType.getBuildList(true));
+				}
+			}
+
+			private function onRemoveUpgradeTypeClick(evt:Event):void
+			{
+				if (lstTypeUpgradeList.selectedItem)
+				{
+					var indx:int = selectedType.buildList.indexOf(lstTypeUpgradeList.selectedItem);
+					selectedType.buildList.splice(indx, 1);
+					lstTypeUpgradeList.dataProvider = new VectorCollection(selectedType.getBuildList(true));
+				}
+			}
+						
+			private function onAddDependencyTypeClick(evt:Event):void
+			{
+				if (lstDependencyTypes.selectedItem && selectedType.dependencies.indexOf(lstDependencyTypes.selectedItem) == -1)
+				{
+					selectedType.dependencies.push(lstDependencyTypes.selectedItem);
+					lstTypeDependencyList.dataProvider = new VectorCollection(selectedType.dependencies);
+				}
+			}
+
+			private function onRemoveDependencyTypeClick(evt:Event):void
+			{
+				if (lstTypeDependencyList.selectedItem)
+				{
+					var indx:int = selectedType.dependencies.indexOf(lstTypeDependencyList.selectedItem);
+					selectedType.dependencies.splice(indx, 1);
+					lstTypeDependencyList.dataProvider = new VectorCollection(selectedType.dependencies);
+				}
+			}
+						
+			private function onActiveSpellChanged(evt:Event):void
+			{
+				selectedType.activeSpell = ddlActiveSpell.selectedItem as SpellType;
+			}
+			
+			private function onRemoveActiveSpell(evt:Event):void
+			{
+				selectedType.activeSpell = null;
+				ddlActiveSpell.selectedItem = null;
+			}
+			
+			private function onFieldChanged(evt:Event):void
+			{
+				isChanged = true;
+				
+				var name:String;
+				var state:Object;
+				var value:Object;
+				var targetProp:String;
+				
+				if (evt.target.hasOwnProperty("name"))
+					name = evt.target.name;
+				if (evt.target.hasOwnProperty("state"))
+					state = evt.target.state;
+				if (evt.target.hasOwnProperty("targetProp"))	
+					targetProp = evt.target.targetProp;
+				
+				if (evt.target is ExTextInput)
+					value = ExTextInput(evt.target).text;
+				else if (evt.target is ExCheckBox)
+					value = ExCheckBox(evt.target).selected;
+				else if (evt.target is ExComboBox)
+					value = ExComboBox(evt.target).selectedItem;
+				else if (evt.target is TextArea)
+					value = TextArea(evt.target).text;		
+				
+				if (name)
+				{
+					try
+					{
+						if (state == null)
+						{
+							selectedType[name] = value;
+						}
+						else
+						{
+							if (targetProp)
+								selectedType[name][state] = value[targetProp];
+							else
+								selectedType[name][state] = value;
+						}
+					} 
+					catch (error:Error)
+					{
+						trace(error.message);
+					}
+				}
+			}
+			
+			private function copyClick(evt:Event):void
+			{
+				_game.unitManager.addUnitType(selectedType.clone());
+				init();
+			}
+
+			private function removeTypeClick(evt:Event):void
+			{
+				_game.unitManager.unitTypes.clr(selectedType.id);
+				init();
+			}			
+		]]>
+	</mx:Script>
+</mx:VBox>

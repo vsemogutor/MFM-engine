@@ -1,0 +1,143 @@
+﻿<localization language="ru">
+<MissionName>Темнолесье</MissionName>
+<MissionDescription>Небольшая часовня стоит на краю очень старого леса. Говорят ее построили здесь для защиты от древнего зла которое дремлет в этом лесу. Узкая полоска святой земли, она кажется справлялась со своей задачей. До сегодняшнего дня..</MissionDescription>
+<TilesetName>Темные Земли</TilesetName>
+<WarnMonsterEscaped>Один из монстров покинул лес!</WarnMonsterEscaped>
+<WarnMonstersEscaped>Внимание! {0} монстров из {1} выбрались из леса.</WarnMonstersEscaped>
+<LblMonstersEscaped>Врагов пропущено: </LblMonstersEscaped>
+<LblMonstersKilled>Врагов уничтожено: </LblMonstersKilled>
+<LblWaveNumber>Номер волны: </LblWaveNumber>
+<LblDetails>Подробности:</LblDetails>
+<LblWaves>Волны</LblWaves>
+<LblWavesDesc>Описание волн. Наведите курсор на иконку с монстром чтобы увидеть его описание. Вы всегда можете вызвать это меню нажав на кнопку 'Задания'.</LblWavesDesc>
+<LblWave1>Волна 1: Скелет - 20</LblWave1>
+<LblWave2>Волна 2: Скелет лучник - 30</LblWave2>
+<LblWave3>Волна 3: Скелет мечник - 25</LblWave3>
+<LblWave4>Волна 4: Зомби - 30</LblWave4>
+<LblWave5>Волна 5: Летучая мышь - 35</LblWave5>
+<LblWave6>Wave 6: Мумия - 20</LblWave6>
+<LblWave7>Wave 7: Болотный огонь - 25</LblWave7>
+<LblWave8>Wave 8: Теневой паук - 20</LblWave8>
+<LblWave9>Wave 9: Железный скелет - 25</LblWave9>
+<LblWave10>Wave 10: Ларва - 30</LblWave10>
+<LblWave11>Wave 11: Лорд мумий - 25</LblWave11>
+<LblWave12>Wave 12: Орк призрак - 25</LblWave12>
+<LblWave13>Wave 13: Падший герой - 20</LblWave13>
+<LblWave14>Wave 14: Голем плоти - 30</LblWave14>
+<LblWave15_1>Wave 15: Теневой дракон - 1</LblWave15_1>
+<LblWave15_2>+Wave 15: Железный скелет - 10</LblWave15_2>
+<LblMain>Основное</LblMain>
+<LblMainQuestDesc>Переживите все волны. Не дайте монстрам покинуть лес.</LblMainQuestDesc>
+<LblAdditionalInfo>Дополнительная информация</LblAdditionalInfo>
+<LblAdditionalQuestDesc>Вы можете использовать заклинание 'Сила Святой Земли' в часовне. Используйте его мудро - это заклинание требует долгого времени для перезарядки. Не забывайте использовать коллоны. Коллона Замезшего Света очень эффективна против нежити.
+</LblAdditionalQuestDesc>
+<WarnNextWaveIn>Следующая волна через {0} секунд</WarnNextWaveIn>
+<WarnWaveBegin>Волна {0} началась</WarnWaveBegin>
+<DlgKeeper>Хранитель часовни</DlgKeeper>
+<DlgKeeper1>Пришло время нашей последней схватки. Мы не должны позволить злу покинуть лес.</DlgKeeper1>
+<WarnDragon>Не дайте Теневому Дракону покинуть лес!</WarnDragon>
+<DlgKeeper2>Мы загнали зло назад в лес. Мир спасен. На время...</DlgKeeper2>
+<FractPlayer>Игрок</FractPlayer>
+<FractAncientEvil>Древнее зло</FractAncientEvil>
+<FractHolyGrounds>Святые земли</FractHolyGrounds>
+<SpImplosion>Имплозия</SpImplosion>
+<SpImplosionDesc>Наносит 15-17 ед. поврежений вначале и 10-11 ед. повреждений через секунду. Срежняя область поражения.</SpImplosionDesc>
+<SpWaterJet>Гидроудар</SpWaterJet>
+<SpWaterJetDesc>Наносит 42-74 ед. повреждений. Имеет 35% шанс оглушить цель, значительно ее замедляя. Этот эффект не складывается.</SpWaterJetDesc>
+<SpDispell>Развеять чары</SpDispell>
+<SpDispellDesc>Может быть установленно для автоматического применения. Снимает негативные и позитивные эффекты с целей в небольшом радиусе и не дает накладывать их на 5 секундж.</SpDispellDesc>
+<SpEathquake>Землетрясение</SpEathquake>
+<SpEathquakeDesc>Может быть установленно для автоматического применения. Наносит 50-70 повреждений целям в области применения и имеет шанс замедлить цели. Средняя область применения.</SpEathquakeDesc>
+<SpHeal>Лечение</SpHeal>
+<SpHealDesc>Лечит цель на 100-150 ед. здоровья.</SpHealDesc>
+<SpShield>Щит</SpShield>
+<SpShieldDesc>Увеличивает защиту на 15 и магическое сопротивление на 50% на 140 сек.</SpShieldDesc>
+<SpFortitudeAura>Аура выносливости</SpFortitudeAura>
+<SpFortitudeAuraDesc>Увеличивает защиту на 4 ед.</SpFortitudeAuraDesc>
+<SpActivateHolyGround>Сила Святой Земли</SpActivateHolyGround>
+<SpActivateHolyGroundDesc>Наносит всем врагам в большой области вокруг часовни урон равный 33% от полного здоровья монстра (+21 урона через 1 сек.). Также значительно замедляет нежить.</SpActivateHolyGroundDesc>
+<UMummyLord>Мумия Лорд</UMummyLord>
+<UMummyLordDesc>Нежить. Очень сильный юнит ближнего боя. Высокая сопротивляемость к магии. Регенерирует.</UMummyLordDesc>
+<UShadowSpider>Теневой паук</UShadowSpider>
+<UShadowSpiderDesc>Очень сильный юнит ближнего боя. Благодаря своей спектральной натуре устойчив к физическим повреждениям. Регенерирует здоровье.</UShadowSpiderDesc>
+<ULarva>Ларва</ULarva>
+<ULarvaDesc>Сильный юнит ближнего боя. Быстро регенерирует здоровье. Уязвим к огненным повреждениям.</ULarvaDesc>
+<USkeletonArcher>Скелет лучник</USkeletonArcher>
+<USkeletonArcherDesc>Нежить. Низкая физическая и магическая защита.</USkeletonArcherDesc>
+<UIronSkeleton>Железный скелет</UIronSkeleton>
+<UIronSkeletonDesc>Нежить. Высокая броня и защита от магии.</UIronSkeletonDesc>
+<UNexus>Нексус</UNexus>
+<UNexusDesc>Сильная башня атакующая льдом. Замедляет врагов, имеет большой радиус повреждений.</UNexusDesc>
+<UPaladin>Палладин</UPaladin>
+<UPaladinDesc>Палладин.</UPaladinDesc>
+<UTowerOfBlades>Башня Лезвий</UTowerOfBlades>
+<UTowerOfBladesDesc>Базовый тип башни, стреляет лезвиями которые наносят повреждения в небольшой области.</UTowerOfBladesDesc>
+<UPillarOfFireWind>Коллона Огненного Ветра</UPillarOfFireWind>
+<UPillarOfFireWindDesc>Базовый тип коллоны, огненная атака на очень коротком расстоянии. Когда активирован второй сокет может применять заклинание 'Имплозия'.</UPillarOfFireWindDesc>
+<UAncientProtector>Древний Защитник</UAncientProtector>
+<UAncientProtectorDesc>Древний Защитник может строить базовые типы защитных башен.</UAncientProtectorDesc>
+<UOrcGhost>Орк призрак</UOrcGhost>
+<UOrcGhostDesc>Высокая скорость передвижения и средняя сопротивляемость к магии.</UOrcGhostDesc>
+<UArrowTower>Башня лучников</UArrowTower>
+<UArrowTowerDesc>Базовый тип башни. Атакует стрелами.</UArrowTowerDesc>
+<UMummy>Мумия</UMummy>
+<UMummyDesc>Нежить. Высокое сопротивление к магии. Регенерирует.</UMummyDesc>
+<USkeleton>Скелет</USkeleton>
+<USkeletonDesc>Нежить. Слабый юнит ближнего боя. Устойчивый к магии.</USkeletonDesc>
+<UChapel>Часовня</UChapel>
+<UChapelDesc>Главное здание.</UChapelDesc>
+<UAncientAvenger>Древний Мститель</UAncientAvenger>
+<UAncientAvengerDesc>Боевая версия Древнего Защитника.</UAncientAvengerDesc>
+<UVampireBat>Вампир</UVampireBat>
+<UVampireBatDesc>Гигантская мышь вампир. Регенерирует.</UVampireBatDesc>
+<UFallenHero>Падший герой</UFallenHero>
+<UFallenHeroDesc>Сильный юнит ближнего боя. Средняя броня.</UFallenHeroDesc>
+<UMagicTower>Магическая башня</UMagicTower>
+<UMagicTowerDesc>Атака огненным шаром с большим радиусом действия. Может применять заклинание 'Развеять чары'.</UMagicTowerDesc>
+<UZombie>Зомби</UZombie>
+<UZombieDesc>Нежить. Медленно передвигается но устойчив к магии.</UZombieDesc>
+<UPillarOfFireWindSock>Коллона Огненного Ветра (Сокет Ветра)</UPillarOfFireWindSock>
+<UPillarOfFireWindSockDesc>Базовый тип коллоны, огненная атака на очень коротком расстоянии. Может применять заклинание 'Имплозия'.</UPillarOfFireWindSockDesc>
+<USwampLight>Болотный огонек</USwampLight>
+<USwampLightDesc>Сильный летающий юнит. Полностью неуязвим для магии.</USwampLightDesc>
+<UPillarOfChaos>Коллона Хаоса</UPillarOfChaos>
+<UPillarOfChaosDesc>Главная атака - заклинание 'Отнять Жизнь'. Не наносит прямого урона но имеет шанс мгновенно убить любую цель. Шанс зависит от сопротивления цели, но даже для целей с максимальным сопротивлением всегда есть 1% шанс что заклинание сработает.</UPillarOfChaosDesc>
+<UShadowDragon>Теневой Дракон</UShadowDragon>
+<UShadowDragonDesc>Очень сильное летающее существо. Нежить. Устойчив к магическому и физическому урону. Может применять заклинания.</UShadowDragonDesc>
+<UPillarOfFrozenLightSock>Коллона Ледяного Света (Сокет Воды)</UPillarOfFrozenLightSock>
+<UPillarOfFrozenLightSockDesc>Основная атака - 'Солнечный луч', наносит большие повреждения нежити и незначительные всем остальным. Может применять заклинание 'Гидроудар'.</UPillarOfFrozenLightSockDesc>
+<UCannonTower>Пушечная башня</UCannonTower>
+<UCannonTowerDesc>Мощное оборонительное сооружение. Более высокая скорость стрельбы чем у балисты. Наносит повреждения в среднем радиусе от точки попадания.</UCannonTowerDesc>
+<USkeletonSwordsman>Скелет Мечник</USkeletonSwordsman>
+<USkeletonSwordsmanDesc>Нежить. Бронированный юнит ближнего боя. Средняя устойчивость к магии.</USkeletonSwordsmanDesc>
+<UPillarOfFrozenLight>Коллона Ледяного Света</UPillarOfFrozenLight>
+<UPillarOfFrozenLightDesc>Основная атака - 'Солнечный луч', наносит большие повреждения нежити и незначительные всем остальным. Когда активирован второй сокет может применять заклинание 'Гидроудар'.</UPillarOfFrozenLightDesc>
+<ULightningTower>Башня Молний</ULightningTower>
+<ULightningTowerDesc>Мощное оборонительное сооружение, наносит повреждения одиночной цели.</ULightningTowerDesc>
+<UBalistaTower>Башня с балистой</UBalistaTower>
+<UBalistaTowerDesc>Швыряет огромные камни наносящие урон вокруг точки попадания.</UBalistaTowerDesc>
+<UFlashGolem>Голем Плоти</UFlashGolem>
+<UFlashGolemDesc>Очень сильный юнит ближнего боя. Тяжелобронирован.</UFlashGolemDesc>
+<UIceArrowsTower>Башня Ледяных Стрел</UIceArrowsTower>
+<UIceArrowsTowerDesc>Атакует ледяными осколками которые замедляют цель.</UIceArrowsTowerDesc>
+<UArcaneTower>Башня Колдовства</UArcaneTower>
+<UArcaneTowerDesc>Мощное оборонительное сооружение, наносит повреждения одиночной цели. Сжигает ману цели с каждым попаданием. Может применять 'Землетрясение'.</UArcaneTowerDesc>
+<UFarm>Ферма</UFarm>
+<UFarmDesc></UFarmDesc>
+<UBalistaTowerUpgrade>Улучшение 'Башня с балистой'</UBalistaTowerUpgrade>
+<UBalistaTowerUpgradeDesc>Швыряет огромные камни наносящие урон вокруг точки попадания.</UBalistaTowerUpgradeDesc>
+<UPillarOfFrozenLightUpgrade>Улучшение 'Коллона Ледяного Света'</UPillarOfFrozenLightUpgrade>
+<UPillarOfFrozenLightUpgradeDesc>Основная атака - 'Солнечный луч', наносит большие повреждения нежити и незначительные всем остальным. Когда активирован второй сокет может применять заклинание 'Гидроудар'.</UPillarOfFrozenLightUpgradeDesc>
+<UPillarOfFireWindSockUpgrade>Активировать Сокет Ветра</UPillarOfFireWindSockUpgrade>
+<UPillarOfFireWindSockUpgradeDesc>Дает возможность применять заклинание 'Имплозия'.</UPillarOfFireWindSockUpgradeDesc>
+<UIceArrowsTowerUpgrade>Улучшение 'Башня Ледяных Стрел'</UIceArrowsTowerUpgrade>
+<UIceArrowsTowerUpgradeDesc>Атакует ледяными осколками которые замедляют цель.</UIceArrowsTowerUpgradeDesc>
+<UArcaneTowerUpgrade>Улучшение 'Башня Колдовства'</UArcaneTowerUpgrade>
+<UArcaneTowerUpgradeDesc>Мощное оборонительное сооружение, наносит повреждения одиночной цели. Сжигает ману цели с каждым попаданием. Может применять 'Землетрясение'.</UArcaneTowerUpgradeDesc>
+<UPillarOfFrozenLightSockUpgrade>Активировать Сокет Воды</UPillarOfFrozenLightSockUpgrade>
+<UPillarOfFrozenLightSockUpgradeDesc>Дает возможность применять заклинание 'Гидроудар'.</UPillarOfFrozenLightSockUpgradeDesc>
+<UMagicTowerUpgrade>Улучшение 'Магическая башня'</UMagicTowerUpgrade>
+<UMagicTowerUpgradeDesc>Атака огненным шаром с большим радиусом действия. Может применять заклинание 'Развеять чары'.</UMagicTowerUpgradeDesc>
+<ULightningTowerUpgrade>Улучшение 'Башня Молний'</ULightningTowerUpgrade>
+<ULightningTowerUpgradeDesc>Мощное оборонительное сооружение, наносит повреждения одиночной цели.</ULightningTowerUpgradeDesc>
+</localization>

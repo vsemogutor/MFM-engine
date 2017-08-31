@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:cc="controls.*"
+	layout="absolute" width="100%" height="100%"
+	styleName="startMenu" 	
+	creationComplete="{init()}">
+
+    <mx:Glow id="glow" color="#5D8EF2" alphaFrom="0.5" alphaTo="0.7" duration="300"
+    	blurXFrom="8" blurYFrom="8" blurXTo="16" blurYTo="16" 
+    	easingFunction="{Linear.easeIn}"/>
+	    	
+	<mx:DropShadowFilter id="shadow" angle="0" distance="1">
+	</mx:DropShadowFilter>
+		
+	<mx:AnimateProperty id="showEffect" duration="600" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:HBox width="100%" top="50" horizontalAlign="center">
+		<mx:Label styleName="headerGold" text="Select Game Mode" filters="{[shadow]}">
+		</mx:Label>			
+	</mx:HBox>
+	
+	<mx:VBox width="90%" id="pnlMenu" height="70%" top="160" x="30" horizontalAlign="center" verticalAlign="middle" addedToStage="showEffect.play([pnlMenu])">
+		<mx:HBox width="100%" height="200" horizontalAlign="center" verticalAlign="middle" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:Canvas id="pnlCasual" width="25%" height="100%" styleName="dialogCommon" mouseDown="selectPanel(event)">	
+				<mx:Image x="25" y="55" source="{Images.presetNormalClass}" alpha="0.3">
+				</mx:Image>	
+				<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">			
+					<mx:Label text="Casual" styleName="labelGold" fontSize="16" fontWeight="bold" filters="{[shadow]}">				
+					</mx:Label>
+				</mx:VBox>					
+			</mx:Canvas>	
+						
+			<mx:Canvas id="pnlNormal" width="25%" height="100%" styleName="dialogCommon" mouseDown="selectPanel(event)"	alpha="0.7">
+				<mx:Image x="25" y="55" source="{Images.presetNormalClass}" alpha="0.3">
+				</mx:Image>	
+				<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Normal" styleName="labelGold" fontSize="16" fontWeight="bold" filters="{[shadow]}">	
+					</mx:Label>	
+				</mx:VBox>	
+			</mx:Canvas>
+			
+			<mx:Canvas id="pnlHardcore" width="25%" height="100%" styleName="dialogCommon" mouseDown="selectPanel(event)" alpha="0.7">
+				<mx:Image x="25" y="55" source="{Images.presetNormalClass}" alpha="0.3">
+				</mx:Image>	
+				<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Hardcore" styleName="labelGold" fontSize="16" fontWeight="bold" filters="{[shadow]}">				
+					</mx:Label>	
+				</mx:VBox>			
+			</mx:Canvas>	
+			
+			<mx:Canvas id="pnlConfigure" width="25%" height="100%" styleName="dialogCommon" mouseDown="selectPanel(event)" alpha="0.7">
+				<mx:Image x="25" y="55" source="{Images.configureClass}" alpha="0.3">
+				</mx:Image>				
+				<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+					<mx:Label text="Configure" styleName="labelWhite" fontSize="16" fontWeight="bold" filters="{[shadow]}">				
+					</mx:Label>				
+				</mx:VBox>	
+			</mx:Canvas>		
+				
+		</mx:HBox>
+	
+		<mx:HBox id="pnlDesc" width="100%" height="35%" horizontalAlign="center" verticalAlign="middle"
+			styleName="genericPanelTransparent" paddingBottom="4">
+			<mx:VBox backgroundAlpha="0.8" backgroundColor="0x152029" width="100%" height="100%">
+				<mx:HBox>
+					<mx:Label width="100%" styleName="labelGold11" text="Casual:"></mx:Label>	
+					<mx:Label width="100%" styleName="labelWhite11"
+						text="3x3 game. 1000 gold at the beginning. You start at level 2. 200% experience gain.">
+					</mx:Label>						
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label width="100%" styleName="labelGold11" text="Normal:"></mx:Label>	
+					<mx:Label width="100%" styleName="labelWhite11"
+						text="3x3 game. 100 gold at the beginning. 150% experience gain.">
+					</mx:Label>						
+				</mx:HBox>
+				<mx:HBox>
+					<mx:Label width="100%" styleName="labelGold11" text="Hardcore:"></mx:Label>	
+					<mx:Label width="100%" styleName="labelWhite11"
+						text="5x5 game. 0 gold at the beginning. 100% experience gain.">
+					</mx:Label>						
+				</mx:HBox>				
+				<mx:HBox>
+					<mx:Label width="100%" styleName="labelGold11" text="Configure:"></mx:Label>	
+					<mx:Label width="100%" styleName="labelWhite11"
+						text="configure your own game. Allows to select number of AI players and their classes.">
+					</mx:Label>						
+				</mx:HBox>													
+			</mx:VBox>
+		</mx:HBox>		
+	</mx:VBox>
+
+		
+	<mx:HBox width="100%" bottom="70" horizontalAlign="center">
+		<cc:ClickButton styleName="mainMenuButton" width="100" label="Back" click="onBackClick(event)">
+		</cc:ClickButton>	
+		<cc:ClickButton styleName="mainMenuButton" width="100" label="Next" click="onNextClick(event)">
+		</cc:ClickButton>	
+	</mx:HBox>			
+
+	<mx:Script>
+		<![CDATA[
+			import images.Images;
+			import engine.game.GameManager;
+			import mx.containers.Box;
+			import engine.fraction.FractionControllerType;
+			import engine.mission.Mission;
+			import mx.core.UIComponent;
+			import mx.effects.easing.Linear;
+			import mx.core.Application;
+
+			private var panels:Array;
+			private var selectedPanel:UIComponent;
+			private var _mission:Mission;
+												
+			private function init():void
+			{
+				panels = [pnlCasual, pnlNormal, pnlHardcore, pnlConfigure];
+				selectedPanel = panels[0];
+				
+				glow.play([selectedPanel]);		
+				
+				_mission = GameManager.instance().currentMission;						
+			}
+
+			private function selectPanel(evt:Event):void
+			{
+				for (var i:int = 0; i < panels.length; ++i)
+				{
+					panels[i].filters = [];
+					panels[i].alpha = 0.7;
+				}
+				
+				evt.currentTarget.alpha = 1;
+				glow.end();
+				glow.play([evt.currentTarget]);
+				selectedPanel = evt.currentTarget as UIComponent;
+			}
+						
+			private function onNextClick(evt:Event):void	
+			{
+				if (selectedPanel == pnlConfigure)
+				{
+					Application.application.currentState = UIGameState.MISSION_CONFIGURATION;	
+				}
+				else if (selectedPanel == pnlCasual)
+				{
+					_mission.stateBag.startMoney = 1000;
+					_mission.stateBag.startLevel = 2;
+					_mission.expGainRate = 2;
+						
+					for (var i:int = 0; i < _mission.playerTeams[0].slots.length; ++i)
+						_mission.playerTeams[0].slots[i].controllerType = (i >= 2 ? FractionControllerType.Passive : FractionControllerType.Computer);
+					
+					for (var i:int = 0; i < _mission.playerTeams[1].slots.length; ++i)
+						_mission.playerTeams[1].slots[i].controllerType = (i >= 3 ? FractionControllerType.Passive : FractionControllerType.Computer);
+													
+					Application.application.currentState = UIGameState.MISSION_LOADING;					
+				}
+				else if (selectedPanel == pnlNormal)
+				{
+					_mission.stateBag.startMoney = 100;
+					_mission.stateBag.startLevel = 1;
+					_mission.expGainRate = 1.5;
+						
+					for (var i:int = 0; i < _mission.playerTeams[0].slots.length; ++i)
+						_mission.playerTeams[0].slots[i].controllerType = (i >= 2 ? FractionControllerType.Passive : FractionControllerType.Computer);
+					
+					for (var i:int = 0; i < _mission.playerTeams[1].slots.length; ++i)
+						_mission.playerTeams[1].slots[i].controllerType = (i >= 3 ? FractionControllerType.Passive : FractionControllerType.Computer);
+													
+					Application.application.currentState = UIGameState.MISSION_LOADING;						
+				}
+				else
+				{
+					_mission.stateBag.startMoney = 0;
+					_mission.stateBag.startLevel = 1;
+					_mission.expGainRate = 1;
+						
+					for (var i:int = 0; i < _mission.playerTeams[0].slots.length; ++i)
+						_mission.playerTeams[0].slots[i].controllerType = FractionControllerType.Computer;
+					
+					for (var i:int = 0; i < _mission.playerTeams[1].slots.length; ++i)
+						_mission.playerTeams[1].slots[i].controllerType = FractionControllerType.Computer;
+													
+					Application.application.currentState = UIGameState.MISSION_LOADING;						
+				}			
+			}
+
+			private function onBackClick(evt:Event):void	
+			{
+				Application.application.currentState = UIGameState.HERO_SELECTION;				
+			}			
+		]]>
+	</mx:Script>	
+</mx:Module>

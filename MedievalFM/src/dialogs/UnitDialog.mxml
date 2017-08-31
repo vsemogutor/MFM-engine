@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="370" height="220">
+
+	<mx:Style source="..\styles\common.css"/>	
+	
+	<mx:VBox horizontalAlign="left" width="100%" paddingLeft="5" verticalAlign="middle">
+		<mx:Label id="txtCaption" text="{_caption}"  styleName="labelWhite14"></mx:Label>		
+	</mx:VBox>
+
+	<mx:HBox width="100%" height="100%">
+		<mx:Image id="imgUnitIcon"></mx:Image>
+		<mx:TextArea borderColor="0xF7D60D" borderStyle="solid" cornerRadius="4" borderThickness="2"
+			id="txtText" backgroundAlpha="0.1" backgroundColor="0x0000FF"
+			height="100%" width="100%" 
+			styleName="labelWhite11" horizontalScrollPolicy="off" 
+			editable="false" selectable="false" text="{_text}">
+		</mx:TextArea>
+	</mx:HBox>
+
+	
+	<cc:ClickButton width="40%" label="OK" styleName="menuButton" click="onReturnClick(event)">
+	</cc:ClickButton>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			
+			[Bindable]
+			private var _caption:String;
+			[Bindable]
+			private var _text:String;
+			
+			
+			public function show(parent:DisplayObject, caption:String, text:String, unitIcon:BitmapData, closeHanfler:Function=null):void
+			{
+				_caption = caption;
+				_text = text;
+				_modal = false;
+				_pauseGame = false;
+				
+				super.showDialog(parent, closeHanfler);
+
+				imgUnitIcon.source = unitIcon;
+				this.x = 70;
+				this.y = 78;
+			}	
+			
+			private function onReturnClick(evt:Event):void
+			{
+				close();
+			}
+		]]>
+	</mx:Script>
+	
+</DialogCommon>

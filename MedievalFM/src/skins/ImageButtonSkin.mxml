@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" 
+	creationComplete="init()"
+	verticalScrollPolicy="off" horizontalScrollPolicy="off">
+                      
+    <mx:GlowFilter id="glow" inner="true" color="{glowColor}" alpha="0.67" blurX="8" blurY="8" strength="4" >
+    </mx:GlowFilter>
+    
+    <mx:Glow id="glowEffect" inner="true" color="{glowColor}" alphaFrom="0.7" alphaTo="0.5"
+    	blurXFrom="8" blurYFrom="8" blurXTo="14" blurYTo="14" strength="4" duration="1000" 
+    	easingFunction="{Linear.easeIn}" repeatCount="0" repeatDelay="3000">
+    </mx:Glow>
+     
+	<mx:states>
+		<mx:State name="up">
+	    </mx:State>
+	    <mx:State name="over">
+	    </mx:State>
+	    <mx:State name="down">
+	    	<mx:SetProperty target="{image}" name="height" value="{image.height*0.95}"/> 
+	    	<mx:SetProperty target="{image}" name="width" value="{image.width*0.95}"/> 
+	    </mx:State>
+	    <mx:State name="selectedUp" enterState="{showEffect()}" exitState="{hideEffect()}">
+	    </mx:State>
+	    <mx:State name="selectedOver" basedOn="selectedUp">
+	    </mx:State>
+	    <mx:State name="selectedDown" basedOn="down">
+	    	<mx:SetProperty target="{image}" name="filters" value="{[glow]}"/>
+	    </mx:State>
+	    <mx:State name="disabled">
+	    	<mx:SetProperty target="{image}" name="alpha" value="0.35"/>
+	    </mx:State>
+	    <mx:State name="selectedDisabled" basedOn="disabled">
+	    </mx:State>
+    </mx:states>
+    
+   <mx:Canvas id="backgroundProgress" bottom="0" width="100%" backgroundColor="#000027" height="0"></mx:Canvas>
+   <mx:Image width="100%" height="100%" id="image" scaleContent="true" maintainAspectRatio="false"></mx:Image>
+   				    
+    <mx:Script>
+    	<![CDATA[
+    		import mx.effects.easing.Linear;
+    		import mx.controls.Button;
+    		import controls.ImageButton;
+    		import mx.core.BitmapAsset;
+    		
+    		[Bindable]
+    		public var glowColor:uint = 0x00AA00;
+    		
+    		[Bindable]
+    		public var active:Boolean;
+
+    		public var _progress:Number = 0;
+
+			[Bindable]
+			public function set progress(value:Number):void{
+				if (value != _progress)
+				{
+					if (value >= 1)
+					{
+						_progress = value;
+						backgroundProgress.height = 0;
+						super.validateNow();
+					}
+					else if (Math.abs(value - _progress) > 0.02)
+					{
+						_progress = value;	
+						backgroundProgress.height = _progress * this.height;
+						super.validateNow();
+					}
+				}
+			}
+			
+			public function get progress():Number{
+				return _progress;
+			}
+		    		    		
+    		public override function validateNow():void
+    		{
+    			init();
+    			super.validateNow();
+    		}
+    		
+    		private function init():void
+    		{	
+    			if (!parent || !image) return;
+    			
+    			var button:ImageButton = parent as ImageButton;
+    			if (button)
+    			{
+    				image.source = (parent as IStyleClient).getStyle("image") || button.image;
+    			}
+    			else
+    				image.source = (parent as IStyleClient).getStyle("icon");
+    		}
+    		
+    		private function showEffect():void
+    		{
+    			if (active)
+    				glowEffect.play([image], true);
+    			else
+    				image.filters = [glow];
+    		}
+    		
+    		private function hideEffect():void
+    		{
+    			glowEffect.stop();
+    			image.filters = [];
+    		}
+    	]]>
+    </mx:Script>
+
+</mx:Canvas>

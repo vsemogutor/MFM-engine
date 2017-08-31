@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="100%" height="100%" creationPolicy="all" 
+	xmlns:cc="controls.*"
+	creationComplete="{slideDown(init)}"
+	addedToStage="{slideDown(init)}">
+	
+	<mx:AnimateProperty id="slide" duration="900" startDelay="150"  
+		property="y" fromValue="-640" toValue="30" easingFunction="{Sine.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:AnimateProperty id="up" duration="200"
+		property="y" fromValue="30" toValue="10" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:AnimateProperty id="down" duration="200"
+		property="y" fromValue="10" toValue="20" easingFunction="{Sine.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:Canvas width="100%" height="100%" styleName="startMenu">
+		<mx:Canvas height="100%" width="9" styleName="verticalBorder" left="0" top="0">
+		</mx:Canvas>
+		<mx:Canvas height="100%" width="9" styleName="verticalBorder" right="0" top="0">
+		</mx:Canvas>
+		
+		<mx:HBox id="pnlMenu" right="9" horizontalAlign="right"
+			paddingTop="10" paddingBottom="20" paddingLeft="17"
+			disabledOverlayAlpha="0" enabled="false" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+			y="-640" width="100%" height="100%">
+			
+			<mx:Box styleName="dialogCommon" height="100%" width="60%">
+				<mx:HBox id="pnlMissions" height="100%" width="100%" visible="false">
+					<mx:Label text="{StringResources.get('Missions')}" styleName="headerWhite"></mx:Label>
+					<mx:Box styleName="genericPanelTransparent" width="100%">
+						<mx:List id="lstMissions" height="350" width="100%" styleName="genericControlTransparent" 
+							horizontalScrollPolicy="off" verticalScrollPolicy="on" borderStyle="none"
+							labelField="name"
+							itemClick="onMissionSelected(event)">
+						</mx:List>				
+					</mx:Box>				
+				</mx:HBox>
+			</mx:Box>
+			
+			<mx:VBox height="100%" width="40%" horizontalAlign="right">
+				<mx:Box height="65%" width="100%" styleName="dialogCommon" paddingTop="60">
+					<mx:VBox id="pnlDescription" visible="false" height="100%" width="100%" 
+						horizontalAlign="center" verticalGap="0">
+						<mx:Label id="txtMisionName" styleName="labelWhite14"></mx:Label>
+						<mx:HBox width="100%">
+							<mx:Label text="{StringResources.get('Type')}" styleName="labelGold12"></mx:Label>
+							<mx:Spacer width="100%"></mx:Spacer>
+							<mx:Label id="txtMissionType" styleName="labelWhite12"></mx:Label>					
+						</mx:HBox>
+						<mx:HBox width="100%">
+							<mx:Label text="{StringResources.get('MapSize')}" styleName="labelGold12"></mx:Label>
+							<mx:Spacer width="100%"></mx:Spacer>
+							<mx:Label id="txtMapSize" styleName="labelWhite12"></mx:Label>					
+						</mx:HBox>
+						<mx:HBox width="100%">
+							<mx:Label text="{StringResources.get('Environment')}" styleName="labelGold12"></mx:Label>
+							<mx:Spacer width="100%"></mx:Spacer>
+							<mx:Label id="txtTileset" styleName="labelWhite12"></mx:Label>					
+						</mx:HBox>
+						<mx:HBox width="100%">
+							<mx:Label text="{StringResources.get('Visibility')}" styleName="labelGold12"></mx:Label>
+							<mx:Spacer width="100%"></mx:Spacer>
+							<mx:ComboBox width="150" id="ddlVisibility" enabled="false" cornerRadius="4">
+							</mx:ComboBox>				
+						</mx:HBox>
+						<mx:VBox width="100%" verticalGap="0">
+							<mx:Label text="{StringResources.get('Description')}" styleName="labelGold12"></mx:Label>
+							<mx:Text id="txtDescription" styleName="labelWhite10" height="157"
+								selectable="false" width="100%">
+							</mx:Text>			
+						</mx:VBox>
+					</mx:VBox>			
+				</mx:Box>
+	
+				<mx:Spacer height="7%"></mx:Spacer>
+				
+				<mx:Box width="85%" styleName="dialogCommon" >
+					<mx:VBox id="pnlButtons" horizontalAlign="right" width="100%" visible="false">
+						<mx:Box styleName="genericButtonBorder" width="91%">
+							<cc:ClickButton id="btnStart" label="{StringResources.get('StartGame')}" click="{slideUp(onStartClick)}" 
+								enabled="false" width="100%" styleName="mainMenuButton"></cc:ClickButton>
+						</mx:Box>
+						<mx:Box styleName="genericButtonBorder" width="91%">
+							<cc:ClickButton label="{StringResources.get('Cancel')}" width="100%" click="{slideUp(onCancelClick)}" styleName="mainMenuButton"></cc:ClickButton>
+						</mx:Box>				
+					</mx:VBox>	
+				</mx:Box>	
+			</mx:VBox>	
+		</mx:HBox>
+	</mx:Canvas>
+	
+	<mx:SoundEffect id="sndSlide" source="{Sounds.slideClass}" 
+		volumeFrom="{0.3*GameManager.instance().options.soundVolume}" 
+		volumeTo="{0.9*GameManager.instance().options.soundVolume}" 
+		duration="1267">		
+	</mx:SoundEffect>
+
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import sound.Sounds;
+			import engine.mission.Mission;
+			import mx.events.ListEvent;
+			import engine.util.VectorCollection;
+			import engine.game.GameManager;
+			import mx.events.EffectEvent;
+			import mx.effects.easing.Sine;
+			import mx.effects.easing.Linear;
+			import mx.core.Application;
+			import engine.game.GameState;
+			
+			private var _posDown:Boolean;
+			
+			private function init():void
+			{
+				initMissionsList();
+			}
+			
+			private function initMissionsList():void
+			{
+				var missions:VectorCollection = new VectorCollection(GameManager.instance().missionPack.getMissions());
+				lstMissions.dataProvider = missions;
+				if (missions.length > 0) 
+				{
+					lstMissions.selectedIndex = 0;
+					onMissionSelected();
+				}
+			}
+			
+			public function onMissionSelected(evt:ListEvent = null):void
+			{
+				var mission:Mission = lstMissions.selectedItem as Mission;
+				refreshDescription(mission);
+				btnStart.enabled = mission.enabled;
+				GameManager.instance().selectMission(mission);
+			}
+			
+			
+			public function refreshDescription(mission:Mission):void
+			{
+				pnlDescription.visible = true;
+				txtMisionName.text = "* " + mission.name + " *";
+				txtMapSize.text = getMapSizeLabel(mission.mapXml.@width, mission.mapXml.@height);
+				txtTileset.text = mission.tilesetName;
+				ddlVisibility.dataProvider = [StringResources.get("Default")];
+				txtDescription.text = mission.description;
+				txtMissionType.text = mission.type;
+			}
+			
+			public function getMapSizeLabel(width:int, height:int):String
+			{
+				var size:int = width + height;
+				if (size <= 96)
+					return "Small";
+				else if (size <= 128)
+					return "Medium";
+				else
+					return "Big";
+			}
+			
+			private function slideUp(after:Function=null):void
+			{	
+				_posDown = false;
+				
+				var downF:Function = function(evt0:Event):void {
+					var afterF:Function = function(evt1:Event):void {
+						slide.removeEventListener(EffectEvent.EFFECT_END, afterF);
+						if (after != null) after();					
+					};
+
+					down.removeEventListener(EffectEvent.EFFECT_END, downF);
+					slide.addEventListener(EffectEvent.EFFECT_END, afterF);
+					slide.play([pnlMenu], true);
+				};
+				
+				pnlMenu.enabled = false;
+				pnlDescription.visible = false;
+				pnlMissions.visible = false;
+				pnlButtons.visible = false;
+				sndSlide.play([pnlMenu]);
+				down.addEventListener(EffectEvent.EFFECT_END, downF);
+				down.play([pnlMenu]);
+			}		
+			
+			
+			private function slideDown(after:Function=null):void
+			{	
+				if (!this.processedDescriptors || _posDown)
+					return;
+					
+				_posDown = true;
+				
+				var upF:Function = function(evt0:Event):void {
+					var downF:Function = function(evt1:Event):void {
+						var afterF:Function = function(evt2:Event):void {
+							down.removeEventListener(EffectEvent.EFFECT_END, afterF);
+							if (after != null) after();
+							pnlMenu.enabled = true;
+							pnlMissions.visible = true;
+							pnlButtons.visible = true;
+						};
+						
+						up.removeEventListener(EffectEvent.EFFECT_END, downF);
+						down.addEventListener(EffectEvent.EFFECT_END, afterF);
+						down.play([pnlMenu]);			
+					};
+
+					slide.removeEventListener(EffectEvent.EFFECT_END, upF);
+					up.addEventListener(EffectEvent.EFFECT_END, downF);
+					up.play([pnlMenu]);
+				};
+				
+				slide.addEventListener(EffectEvent.EFFECT_END, upF);
+				sndSlide.play([pnlMenu]);
+				slide.play([pnlMenu]);
+			}
+			
+			private function onStartClick():void
+			{
+				Application.application.currentState = UIGameState.MISSION_LOADING;
+			}
+			
+			private function onCancelClick():void
+			{
+				Application.application.currentState = UIGameState.START_MENU;
+			}
+		]]>
+	</mx:Script>		
+</mx:Module>

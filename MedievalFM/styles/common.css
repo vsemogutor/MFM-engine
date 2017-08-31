@@ -1,0 +1,321 @@
+/* CSS file */
+
+@font-face {
+    src: local("Trebuchet MS");
+    fontFamily: "common";
+    font-weight:bold;
+    unicodeRange: U+0000-U+00FF,U+20AC-U+20AC,U+0400-U+04FF;
+}
+
+.label, .menuButton, .labelWhite, .headerWhite, .headerGold, .headerGreen, .labelGold, .labelGreen, .labelWhite10, .labelWhite11,
+.labelWhite12, .labelWhite14,.labelGold10,.labelGold11,
+.labelGold12, .labelGold14, .labelGreen10, .labelGreen11, .labelGreen12, .labelGreen14 {
+	fontFamily: "common";
+	letterSpacing: 0.7;
+	font-weight:bold;
+}
+
+.labelGreen, .headerGreen, .labelGreen10, .labelGreen11, .labelGreen12, .labelGreen14  {
+	color: #5FFF01;
+}
+
+.labelRed {
+	color: #FF0001;
+}
+
+.labelWhite, .headerWhite, .labelWhite10,.labelWhite11, .labelWhite12, .labelWhite14 {
+   	color: #FFFFFF;
+}
+
+.labelGold, .headerGold, .labelGold10, .labelGold11, .labelGold12, .labelGold14 {
+   	color: #F7D60D;
+}
+
+.labelWhite10, .labelGold10, .labelGreen10 {
+   	font-size:10;
+}
+
+.headerWhite, .headerGold, .headerGreen {
+	font-size:16;
+}
+
+.labelWhite11, .labelGold11, .labelGreen11 {
+   	font-size:11;
+}
+
+.labelWhite12, .labelGold12, .labelGreen12 {
+   	font-size:12;
+}
+
+.labelWhite14, .labelGold14, .labelGreen14 {
+   	font-size:14;
+}
+
+.dialogCommon {
+	padding-bottom:10;
+	padding-top:35;
+	padding-left:20;
+	padding-right:20;
+	padding-bottom:15;
+	horizontalAlign: center;
+	backgroundColor: #333245;
+	modal-transparency-blur: 0;
+	modal-transparency:0.3;
+	modal-transparency-color: #000000;
+	border-skin: Embed(source="../assets/dialog_border.png", scaleGridTop="34", scaleGridBottom="96", scaleGridLeft="8", scaleGridRight="267");
+}
+
+.menuButton, .menuButtonSmall, .questButton {
+    fontSize: 12;
+	color: #FFFFFF;
+	text-roll-over-color:#FFFFFF;
+	text-selected-color:#FFFFFF;
+    skin: ClassReference('skins.InterfaceButtonSkinBordered');
+    corner-radius: 3;
+}
+
+.mainMenuButton{
+    fontSize: 12;
+	color: #F7D60D;
+	text-roll-over-color:#FFFFFF;
+	text-selected-color:#FFFFFF;
+    skin: ClassReference('skins.InterfaceButtonSkin');
+    corner-radius: 4;
+    padding-top:4;
+    padding-bottom:4;
+}
+
+.menuButtonSmall {
+    fontSize: 9;
+}
+
+.questButton {
+	backgroundAlpha: 0.2;
+	padding-top:4;
+    padding-bottom:4;
+}
+
+.menuButton {
+	backgroundAlpha: 0.5;
+}
+
+.actionPanel {
+	background-image: Embed("../assets/unit_action_panel.png");
+	padding-left:10;
+	padding-top:12;
+}
+
+.unitDetailsPanel {
+	border-skin: Embed("../assets/unit_details_panel.png", scaleGridTop="27", scaleGridBottom="29", scaleGridLeft="8", scaleGridRight="253");
+	padding-top: 17;
+	padding-left: 10;
+}
+
+.genericPanel, .genericButtonBorder {
+	border-skin: Embed("../assets/generic_panel.png", scaleGridTop="24", scaleGridBottom="25", scaleGridLeft="24", scaleGridRight="26");
+}
+
+.genericPanelTransparent {
+	border-skin: Embed("../assets/generic_panel_transparent.png", scaleGridTop="24", scaleGridBottom="25", scaleGridLeft="24", scaleGridRight="26");
+	padding-left: 8;
+	padding-right: 6;
+	padding-top: 11;
+	padding-bottom: 5;
+}
+.genericInnerPanle {
+	padding-left: 7;
+	padding-right: 5;
+	padding-top: 15;
+	horizontalAlign: center;
+}
+
+.genericButtonBorder {
+	padding-left: 10;
+	padding-right: 8;
+	padding-top: 10;
+	padding-bottom: 5;
+}
+
+.progress, .progressGold, .progressGoldTransparent {
+	track-skin: ClassReference('skins.RoundedBorderSkin');
+	bar-skin: ClassReference('skins.RoundedProgressBarSkin');
+	corner-radius: 5;
+	border-thickness: 2;
+	track-height: 9;
+}
+
+.progressGold, .progressGoldTransparent {
+	borderColorGradient1: #FFFF52;
+	borderColorGradient2: #5A3400;
+	barColorGradient1:#FFFFA5;
+	barColorGradient2:#292400;
+	barColorGradient3:#734D00;
+}
+
+.progressGoldTransparent {
+	barAlpha: 0.9;
+	corner-radius: 7;
+}
+
+.tooltip {
+	borderSkin: ClassReference('skins.RoundedBorderSkin');
+	corner-radius: 3;
+	border-thickness: 1;
+	borderColorGradient1: #CE9600;
+	borderColorGradient2: #C88C00;
+}
+
+.headerBar {
+	border-skin: Embed("../assets/top_bar.png");
+}
+
+.verticalBorder {
+	border-skin: Embed("../assets/vertical_border.png");
+}
+
+.startMenu {
+	border-skin: Embed("../assets/start.jpg");
+	borderStyle: inset;
+	borderColor: #000000;
+	borderThickness: 1;
+}
+
+.genericControlTransparent {
+	background-color: #15151D;
+	background-alpha: 0.75;
+	fontFamily: "common";
+	letterSpacing: 0.7;
+	font-weight:bold;
+	color: #FFFFFF;
+	selection-color: #0808A5;
+    roll-over-color: #212439;
+    text-roll-over-color:#FFFFFF;
+	text-selected-color:#F7D60D;
+	font-size: 12;
+}
+
+.questDescriptionPanel {
+	corner-radius:4;
+	background-color: #15151D;
+	background-alpha: 0.5;
+	border-color: #F7D60D;
+	border-thickness: 2;
+	border-style: solid;
+	vertical-align: top;
+	padding-left:4;
+	padding-right:4;
+}
+
+.boxBlue, .boxRed, .boxGold {
+	borderSkin: ClassReference('skins.RoundedBorderSkin');
+	corner-radius: 3;
+	border-thickness: 1;
+}
+
+.boxRed {
+	borderColorGradient1: #DD2200;
+	borderColorGradient2: #AA2200;
+}
+
+.boxBlue {
+	borderColorGradient1: #0022DD;
+	borderColorGradient2: #0022AA;
+}
+
+.boxGold {
+	borderColorGradient1: #CEAE00;
+	borderColorGradient2: #D69208;
+	corner-radius: 1;
+	border-thickness: 1;
+}
+
+.boxGoldInset {
+	border-thickness: 1;
+	border-color: #CEAE00;
+	border-style:inset;
+	background-color:#000000;
+}
+
+/* .paperBorder {
+	border-skin: Embed("../assets/paper_border.png", scaleGridTop="39", scaleGridBottom="42", scaleGridLeft="54", scaleGridRight="62");
+} */
+
+/* .crystal {
+	border-skin: Embed('../assets/crystal_small.png');
+} */
+
+ .gold {
+	border-skin: Embed('../assets/gold_small.png');
+}
+
+.food {
+	border-skin: Embed('../assets/food_small.png');
+}
+
+.armorTypeFortified {
+	border-skin: Embed('../assets/wall_ico.png');
+}
+
+.armorTypeHeavy {
+	border-skin: Embed('../assets/shield_gold_ico.png');
+}
+
+.armorTypeHero {
+	border-skin: Embed('../assets/shield_hero_ico.png');
+}
+
+.armorTypeNormal {
+	border-skin: Embed('../assets/shield_ico.png');
+}
+
+.armorTypeNone {
+	border-skin: Embed('../assets/noarmor_ico.png');
+}
+
+.armorTypeLight {
+	border-skin: Embed('../assets/cloth_ico.png');
+}
+
+.armorTypeDivine {
+	border-skin: Embed('../assets/magic_shield_ico.png');
+}
+
+.damageTypeNormal {
+	border-skin: Embed('../assets/sword_ico.png');
+}
+
+.damageTypeHero {
+	border-skin: Embed('../assets/sword_glow_ico.png');
+}
+
+.damageTypePiersing {
+	border-skin: Embed('../assets/arrow_ico.png');
+}
+
+.damageTypeSiedge {
+	border-skin: Embed('../assets/siedge_ico.png');
+}
+
+.damageTypeMagic {
+	border-skin: Embed('../assets/magic_ico.png');
+}
+
+.damageTypeAstral {
+	border-skin: Embed('../assets/astral_ico.png');
+}
+
+.simpleBoxGold, .skillPointsBox {
+	border-style: solid;
+	border-color: #E7BE39;
+	border-thickness: 1;
+	corner-radius: 5;
+}
+
+.skillPointsBox {
+	right: 0;
+	bottom: 0;
+	horizontal-align: center;
+	vertical-align: middle;
+	background-color: #000000;
+}
+

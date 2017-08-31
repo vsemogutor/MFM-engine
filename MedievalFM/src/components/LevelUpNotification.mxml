@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="200" height="80" styleName="dialogCommon" verticalAlign="middle" horizontalAlign="center"
+	creationComplete="{init()}" alpha="0">
+	<mx:Script>
+		<![CDATA[
+			import engine.heros.Hero;
+			import dialogs.SkillTreeDialog;
+			import controls.ImageButton;
+			import mx.controls.Image;
+			import mx.effects.easing.Linear;
+			import flash.utils.setTimeout;
+			import mx.core.UIComponent;
+			import images.Images;
+			
+			private var _parent:UIComponent;
+			private var _hero:Hero;
+			
+			public function show(parent:UIComponent, hero:Hero):void
+			{
+				_hero = hero;
+				_parent = parent;
+				_parent.addChild(this);	
+				showEffect.play([this]);			
+			}
+			
+			private function init():void
+			{
+				var self:LevelUpNotification = this;
+
+				this.x = _parent.width - this.width - 1;
+				this.y = _parent.height - this.height - 112;
+				
+				var img:ImageButton = new ImageButton();
+				img.setImage(Images.plusButtonImage);
+				var pos:Point = this.localToGlobal(new Point(image.x, image.y));
+				img.x = _parent.globalToLocal(pos).x;
+				img.y = _parent.globalToLocal(pos).y;
+				img.onClickHandler = function():void 
+				{
+					if (_hero && _hero.isActive)
+					{
+						var dlg:SkillTreeDialog = new SkillTreeDialog();
+						dlg.show(this.parent, _hero);
+					}
+				};
+				_parent.addChild(img);
+				
+				setTimeout(function hide():void {
+					hideEffect.play([self]);
+					moveEffect.play([img]);
+					setTimeout(function remove():void {
+						glowEffect.play([img]);
+					}, moveEffect.duration);					
+					setTimeout(function remove():void {
+						_parent.removeChild(img);
+					}, moveEffect.duration + 500);
+				}, 2000);
+				
+				setTimeout(function hide():void {
+					_parent.removeChild(self);
+				}, 2300);				
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Image id="image" source="{Images.plusButtonClass}"> </mx:Image>
+	<mx:Label text="New level gained!" styleName="labelGold12"></mx:Label>
+
+	<mx:AnimateProperty id="showEffect" duration="300" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+		
+	<mx:AnimateProperty id="hideEffect" duration="300" property="alpha"  
+		fromValue="1" toValue="0" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+
+	<mx:Parallel id="moveEffect" duration="1000">
+		<mx:AnimateProperty property="x"  
+			toValue="485" easingFunction="{Linear.easeOut}">
+		</mx:AnimateProperty>	
+		<mx:AnimateProperty property="y"  
+			toValue="590" easingFunction="{Linear.easeOut}">
+		</mx:AnimateProperty>				
+	</mx:Parallel>
+
+    <mx:Glow id="glowEffect" color="#F7D60D" alphaFrom="0.5" alphaTo="0.7" duration="500"
+    	blurXFrom="8" blurYFrom="8" blurXTo="14" blurYTo="14" 
+    	easingFunction="{Linear.easeIn}"/>
+	    			
+</mx:HBox>

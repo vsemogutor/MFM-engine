@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="200"
+	implements="mx.core.IToolTip" styleName="tooltip" 
+	horizontalScrollPolicy="off" verticalScrollPolicy="off">
+
+	
+	<mx:VBox backgroundColor="#152029" backgroundAlpha="0.7" width="100%" height="100%" verticalGap="0">
+		<mx:HBox horizontalGap="4">
+			<mx:Label styleName="labelGold10" text="{StringResources.get('ArmorType')}"></mx:Label>
+			<mx:Label id="txtArmorType" styleName="labelWhite10"></mx:Label>		
+		</mx:HBox>	
+		<mx:HBox horizontalGap="4">
+			<mx:Label styleName="labelGold10" text="{StringResources.get('DamageReduction')}"></mx:Label>
+			<mx:Label id="txtReduction" styleName="labelWhite10"></mx:Label>		
+		</mx:HBox>
+		<mx:HBox horizontalGap="4">
+			<mx:Label styleName="labelGold10" text="{StringResources.get('MovementSpeed')}"></mx:Label>
+			<mx:Label id="txtMoveSpeed" styleName="labelWhite10"></mx:Label>		
+		</mx:HBox>
+		<mx:Text id="txtDescription" width="100%" selectable="false" styleName="labelWhite10"></mx:Text>		
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import mx.formatters.NumberFormatter;
+			import engine.computers.ArmorAndDamage;
+			import textResources.TextResources;
+			import engine.util.Util;
+			import engine.units.DamageType;
+			import engine.units.UnitProperties;
+			import engine.game.Game;
+			import mx.events.ToolTipEvent;
+			import engine.units.Unit;
+			
+			private var _unit:Unit;
+			
+			public function get text():String { 
+	            return txtDescription.text; 
+	        } 
+	        public function set text(value:String):void {
+	        } 
+				
+		    public function get title():String { 
+	            return txtDescription.text; 
+	        } 
+	        public function set title(value:String):void {
+	        } 
+	        	        
+	        public function set dataSource(value:Unit):void
+	        {
+	        	_unit = value;
+	        }
+	        
+	        private function refresh():void
+	        {
+	        	if (_unit)
+	        	{
+	        		var formatter:NumberFormatter = new NumberFormatter();
+	        		formatter.precision = 2;
+	        		txtArmorType.text = TextResources.getArmorTypeCaption(_unit.properties[UnitProperties.ArmorType]);
+	        		var red:Number = ArmorAndDamage.getDamageReduction(_unit.properties[UnitProperties.Armor])*100;
+	        		txtReduction.text = formatter.format(red) + "%";
+	        		txtMoveSpeed.text = TextResources.getMoveSpeedCaption(_unit.properties[UnitProperties.MoveSpeed]);
+	        		txtDescription.text = TextResources.getArmorDescriptionCaption(_unit.properties[UnitProperties.ArmorType]);
+	        	}
+	        }
+	        
+	        protected override function childrenCreated():void
+	        {
+	        	refresh();
+	        }
+	        
+	        public static function create(evt:ToolTipEvent):void
+	        {
+	        	var tooltip:ArmorTypeTooltip = new ArmorTypeTooltip();
+	        	
+	        	tooltip.dataSource = Game.instance().selectionManager.selectedUnit;    		
+	        	evt.toolTip = tooltip;
+	        }
+	        	        
+		    public static function show(evt:ToolTipEvent):void
+	        {   
+	        	evt.toolTip.y = evt.toolTip.parent.height - evt.toolTip.height - 120;
+	        	evt.toolTip.x = evt.toolTip.parent.width - evt.toolTip.width - 3;
+	        }     
+		]]>
+	</mx:Script>
+</mx:Canvas>

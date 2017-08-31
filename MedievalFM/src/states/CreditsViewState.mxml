@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" width="100%" height="100%"
+	xmlns:cc="controls.*"
+	backgroundColor="0x000000" styleName="genericPanel">
+	
+	<mx:AnimateProperty id="showEffect" duration="1500" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+		
+	<mx:VBox id="pnlMain" width="100%" height="100%" verticalAlign="middle">
+		<mx:VBox width="100%" horizontalAlign="center">
+			<mx:Label styleName="headerWhite" text="{StringResources.get('Credits')}"></mx:Label>
+		</mx:VBox>
+		<mx:VBox id="credits1" verticalGap="20" width="100%" 
+			horizontalAlign="center" verticalAlign="middle" addedToStage="showEffect.play([pnlMain])">			
+			<mx:VBox horizontalAlign="center">
+				<mx:Label text="{StringResources.get('CreditsEngineAndGameDesign')}" styleName="labelGold14">
+				</mx:Label>
+				<mx:LinkButton label="{StringResources.get('IgorNovikov')}" styleName="labelWhite12" click="{onDevSiteClick()}">
+				</mx:LinkButton >			
+			</mx:VBox>
+	
+			<mx:VBox horizontalAlign="center">
+				<mx:Label text="{StringResources.get('CreditsGameArt')}" styleName="labelGold14"></mx:Label>
+				<mx:Label text="Reiner 'Tiles' Prokein" styleName="labelWhite12"></mx:Label>	
+				<mx:Label text="Clint Bellanger (http://pfunked.deviantart.com)" styleName="labelWhite12"></mx:Label>
+				<mx:Label text="bart (OpenGameArt.org user)" styleName="labelWhite12"></mx:Label>												
+			</mx:VBox>
+	
+			<mx:VBox horizontalAlign="center">
+				<mx:Label text="{StringResources.get('CreditsMusic')}" styleName="labelGold14"></mx:Label>	
+				<mx:Label text="Markus Schmidt" styleName="labelWhite12"></mx:Label>						
+			</mx:VBox>
+			
+			<mx:VBox horizontalAlign="center">
+				<mx:Label text="{StringResources.get('CreditsUI')}" styleName="labelGold14"></mx:Label>
+				<mx:Label text="Backgrounds and cursor design by Daniel Cook (Lostgarden.com)" styleName="labelWhite12"></mx:Label>	
+				<mx:Label text="UI style base on work of Hiponboy (OpenGameArt.org user)" styleName="labelWhite12"></mx:Label>
+				<mx:Label text="J. W. Bjerk (eleazzaar)" styleName="labelWhite12"></mx:Label>
+				<mx:Label text="Paulius Jurgelevicius" styleName="labelWhite12"></mx:Label>
+				<mx:Label text="Scrittl" styleName="labelWhite12"></mx:Label>
+				<mx:Label text="Ravenmore Krzysztof" styleName="labelWhite12"></mx:Label>
+				<mx:Label text="HorrorPen (OpenGameArt)" styleName="labelWhite12"></mx:Label>															
+			</mx:VBox>
+												
+		</mx:VBox>		
+		
+		<mx:VBox id="credits2" horizontalAlign="center" visible="false" includeInLayout="false"
+			width="100%" show="showEffect.play([pnlMain])">
+			<mx:Label text="{StringResources.get('CreditsSound')}" styleName="labelGold14"></mx:Label>
+			<mx:Label text="Paddy Uglow (Bristol Stories) (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="buzzbox (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="adcbicycle (http://www.adcbicycle.com/) (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="THE_bizniss (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="nirmatara (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="Wolfsinger (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="themfish (http://www.themfish.com)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="Reiner 'Tiles' Prokein" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="ryansnook (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="Joel Audio (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="gezortenplotz (freesound.org)" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="Joe Barlow" styleName="labelWhite12"></mx:Label>
+			<mx:Label text="Michel Baradari" styleName="labelWhite12"></mx:Label>					
+			<mx:Label text="Igor Novikov" styleName="labelWhite12"></mx:Label>	
+			
+			<mx:VBox horizontalAlign="center" width="100%">
+				<mx:Label text="{StringResources.get('CreditsSpecialThanks')}" styleName="labelGold14"></mx:Label>
+				<mx:Label text="Reiner 'Tiles' Prokein" styleName="labelWhite12"></mx:Label>
+				<mx:Label text="Clint Bellanger" styleName="labelWhite12"></mx:Label>	
+				<mx:Label text="Alice" styleName="labelWhite12"></mx:Label>														
+			</mx:VBox>			
+		</mx:VBox>
+	</mx:VBox>
+
+	<mx:HBox bottom="6" right="7">
+		<cc:ClickButton id="btnNext" styleName="mainMenuButton" label="{StringResources.get('Next')}" click="onNextClick(event)">
+		</cc:ClickButton>
+		<cc:ClickButton visible="false" includeInLayout="false" id="btnPrevious" 
+			styleName="mainMenuButton" label="{StringResources.get('Previous')}" click="onPreviousClick(event)">
+		</cc:ClickButton>
+		<cc:ClickButton styleName="mainMenuButton" label="{StringResources.get('Back')}" click="onBackClick(event)">
+		</cc:ClickButton>		
+	</mx:HBox>
+
+	<mx:Script>
+		<![CDATA[
+			import flash.net.navigateToURL;
+			import resources.StringResources;
+			import mx.effects.easing.Linear;
+			import mx.core.Application;
+			private function onBackClick(event:Event):void
+			{
+				Application.application.currentState = UIGameState.START_MENU;
+			}
+			private function onNextClick(event:Event):void
+			{
+				credits2.visible = credits2.includeInLayout = true;
+				credits1.visible = credits1.includeInLayout = false;
+				btnNext.visible = btnNext.includeInLayout = false;
+				btnPrevious.visible = btnPrevious.includeInLayout = true;
+			}
+			private function onPreviousClick(event:Event):void
+			{
+				credits1.visible = credits1.includeInLayout = true;
+				credits2.visible = credits2.includeInLayout = false;
+				btnNext.visible = btnNext.includeInLayout = true;
+				btnPrevious.visible = btnPrevious.includeInLayout = false;
+			}
+			private function onDevSiteClick():void
+			{
+				navigateToURL(new URLRequest("http://www.squirrelfm.com/"));
+			}
+			
+		]]>
+	</mx:Script>
+</mx:Module>

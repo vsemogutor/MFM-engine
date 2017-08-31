@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="380" height="410" paddingLeft="7" paddingRight="6" paddingTop="21"
+	creationComplete="{init()}">
+			
+	<mx:VBox width="100%" height="100%" verticalGap="0">
+		<mx:HBox width="100%" height="100%" horizontalGap="1">
+			<mx:Canvas id="pnlHeroDummy" styleName="genericPanelTransparent" width="50%" height="100%"
+				dragEnter="dragEnterHandler(event)" dragDrop="dragDropDummyHandler(event)"
+				dragOver="dragOverHandler(event)" dragExit="dragExitHandler(event)" >
+				<mx:Box width="100%" horizontalAlign="center" paddingTop="12">
+					<mx:Label styleName="labelWhite10" text="{StringResources.get('Inventory')}"></mx:Label>
+				</mx:Box>
+				<mx:Image top="35" left="50" source="@Embed(source='../assets/hero_dummy.png')">
+				</mx:Image>
+				<mx:Box styleName="simpleBoxGold" top="40" left="80" id="pnlHead">
+					<mx:Image width="30" height="30" toolTip="Head" id="imgHead"
+						toolTipCreate="ItemTypeTooltip.create(event)" toolTipShow="ItemTypeTooltip.show(event)"
+						mouseMove="mouseMoveHandler(event)"></mx:Image>						
+				</mx:Box>
+				<mx:Box styleName="simpleBoxGold" top="25" left="15" id="pnlRing">
+					<mx:Image width="30" height="30" toolTip="Ring" id="imgRing"
+						toolTipCreate="ItemTypeTooltip.create(event)" toolTipShow="ItemTypeTooltip.show(event)"
+						mouseMove="mouseMoveHandler(event)"></mx:Image>						
+				</mx:Box>
+				<mx:Box styleName="simpleBoxGold" top="25" left="140" id="pnlAmulet">
+					<mx:Image width="30" height="30" toolTip="Amulet" id="imgAmulet"
+						toolTipCreate="ItemTypeTooltip.create(event)" toolTipShow="ItemTypeTooltip.show(event)"
+						mouseMove="mouseMoveHandler(event)"></mx:Image>						
+				</mx:Box>
+				<mx:Box styleName="simpleBoxGold" top="100" left="80" id="pnlArmor">
+					<mx:Image width="30" height="30" toolTip="Armor" id="imgArmor"
+						toolTipCreate="ItemTypeTooltip.create(event)" toolTipShow="ItemTypeTooltip.show(event)"
+						mouseMove="mouseMoveHandler(event)"></mx:Image>						
+				</mx:Box>
+				<mx:Box styleName="simpleBoxGold" top="180" left="50" id="pnlLeftHand">
+					<mx:Image width="30" height="30" toolTip="Off Hand" id="imgLeftHand"
+						toolTipCreate="ItemTypeTooltip.create(event)" toolTipShow="ItemTypeTooltip.show(event)"
+						mouseMove="mouseMoveHandler(event)"></mx:Image>						
+				</mx:Box>
+				<mx:Box styleName="simpleBoxGold" top="180" left="122" id="pnlRightHand">
+					<mx:Image width="30" height="30" toolTip="Main Hand" id="imgRightHand"
+						toolTipCreate="ItemTypeTooltip.create(event)" toolTipShow="ItemTypeTooltip.show(event)"
+						mouseMove="mouseMoveHandler(event)"></mx:Image>						
+				</mx:Box>
+			</mx:Canvas>
+			
+			<mx:VBox styleName="genericPanelTransparent" width="50%" height="100%" horizontalAlign="center">
+				<mx:Label styleName="labelWhite10" text="Stats"></mx:Label>	
+				
+				<mx:HBox width="100%" height="100%">
+					<mx:VBox verticalGap="3">
+						<mx:Label styleName="labelGold10" text="Class:" toolTip="Hero Class."></mx:Label>
+						<mx:Label styleName="labelGold10" text="Level:" toolTip="Hero Level."></mx:Label>
+						<mx:Label styleName="labelGold10" text="Experience:" toolTip="Current experience and experience to next level."></mx:Label>
+
+						<mx:Label styleName="labelGold10" text="Strength:" toolTip="Increases melee damage and health."></mx:Label>
+						<mx:Label styleName="labelGold10" text="Intellect:" toolTip="Increases mana points and spells strength."></mx:Label>
+						<mx:Label styleName="labelGold10" text="Agility:" toolTip="Increases speed and armor."></mx:Label>												
+						
+						<mx:Label styleName="labelGold10" text="Damage:"></mx:Label>	
+						<mx:Label styleName="labelGold10" text="Armor:" toolTip="Absorbs damage from normal attacks."></mx:Label>	
+						<mx:Label styleName="labelGold10" text="Magic Resistance:" toolTip="Absorbs damage from spells and increases chance to ignore spell completely."></mx:Label>																								
+					</mx:VBox>
+					
+					<mx:VBox verticalGap="3">
+						<mx:Label styleName="labelGreen10" id="txtClass"></mx:Label>
+						<mx:Label styleName="labelGreen10" id="txtLevel"></mx:Label>
+						<mx:Label styleName="labelGreen10" id="txtExperience"></mx:Label>
+
+						<mx:Label styleName="labelGreen10" id="txtStrength"></mx:Label>
+						<mx:Label styleName="labelGreen10" id="txtIntellect"></mx:Label>
+						<mx:Label styleName="labelGreen10" id="txtAgility"></mx:Label>												
+						
+						<mx:Label styleName="labelGreen10" id="txtDamage"></mx:Label>	
+						<mx:Label styleName="labelGreen10" id="txtArmor"></mx:Label>	
+						<mx:Label styleName="labelGreen10" id="txtMagicResistance"></mx:Label>																								
+					</mx:VBox>										
+				</mx:HBox>
+			</mx:VBox>
+		</mx:HBox>
+
+		<mx:VBox styleName="genericPanelTransparent" height="112" width="100%">
+			<mx:Canvas width="100%" height="100%" id="itemsGrid" horizontalScrollPolicy="off"
+				verticalScrollPolicy="off" dragEnter="dragEnterHandler(event)" dragDrop="dragDropInventoryHandler(event)"
+				backgroundAlpha="0.3" backgroundColor="#152029">
+				<cc:TileListEx id="lstItems" width="100%" height="100%" backgroundAlpha="0" useRollOver="false" selectionAlpha="0.7"
+					paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0" itemRenderer="itemRenders.InventoryItemRender">
+				</cc:TileListEx>
+			</mx:Canvas>
+		</mx:VBox>
+	</mx:VBox>		
+			
+
+	
+	<cc:ClickButton width="50%" label="OK" styleName="menuButton" click="onReturnClick(event)">
+	</cc:ClickButton>
+	
+	<mx:Script>
+		<![CDATA[
+			import engine.core.GameTime;
+			import engine.core.events.GameEvent;
+			import engine.core.events.GameEvents;
+			import engine.game.Game;
+			import engine.units.UnitProperties;
+			import engine.heros.HeroProperties;
+			import engine.computers.ExperienceCalculator;
+			import engine.items.InventoryItemType;
+			import mx.core.UIComponent;
+			import engine.items.InventoryItem;
+			import mx.core.BitmapAsset;
+			import mx.controls.Image;
+			import mx.events.DragEvent;
+			import mx.managers.DragManager;
+			import mx.core.DragSource;
+			import controls.ItemTypeTooltip;
+			import engine.util.VectorCollection;
+			import engine.heros.Hero;
+			import mx.controls.HRule;
+			import mx.controls.VRule;
+			import resources.StringResources;
+			import images.Images;
+			import engine.timer.Timer;
+					
+			private var _hero:Hero;	
+			private var _itemHighlighted:UIComponent;	
+			private var _itemPanels:Array
+			private var _refreshTimer:engine.timer.Timer;
+					
+			public function show(parent:DisplayObject, hero:Hero, closeHandler:Function=null):void
+			{
+				_hero = hero;
+				_pauseGame = false;
+				_refreshTimer = new engine.timer.Timer("invTimer", new GameTime(0, 0.5), refresh);
+				Game.instance().timerManager.add(_refreshTimer, true);
+				
+				showDialog(parent, closeHandler);
+			}
+			
+			private function refresh(t:engine.timer.Timer):void
+			{
+				bindStats();					
+			}
+			
+			private function onReturnClick(evt:Event):void
+			{
+				_refreshTimer.remove();
+				close();
+			}
+				
+			private function init():void
+			{
+				// panels should be in order of items in InventoryItemType enum
+				_itemPanels = [null, null, null, imgHead, imgArmor, imgRightHand, imgLeftHand, imgRing, imgAmulet];
+				drawItemsGrid();
+				
+				bindItems();
+				bindStats();
+			}
+			
+			private function bindStats():void
+			{
+				txtClass.text = _hero.type.locName;
+				txtLevel.text = _hero.level.toString();
+				txtExperience.text = _hero.experience + "/" + ExperienceCalculator.getExperienceToNextLevel(_hero.level);
+				txtStrength.text = _hero.properties[HeroProperties.Stength].toString();
+				txtIntellect.text = _hero.properties[HeroProperties.Intellect].toString();
+				txtAgility.text = _hero.properties[HeroProperties.Agility].toString();
+				
+				txtDamage.text = _hero.properties[UnitProperties.AttackDmgMin] + "-" + _hero.properties[UnitProperties.AttackDmgMax];	
+				txtArmor.text = _hero.properties[UnitProperties.Armor].toString();
+				txtMagicResistance.text = _hero.properties[UnitProperties.MagicRes].toString();				
+			}
+			
+			private function bindItems():void
+			{
+				lstItems.dataProvider = new VectorCollection(_hero.items);
+				for (var i:int = InventoryItemType.EQUIPABLE; i < InventoryItemType.COUNT; ++i)
+				{
+					_itemPanels[i].data = _hero.equippedItems[i];
+					if (_hero.equippedItems[i])
+						_itemPanels[i].source = _hero.equippedItems[i].icon;
+					else
+						_itemPanels[i].source = null;
+				}
+			}
+			
+			private function drawItemsGrid():void
+			{
+				for (var i:int = 32; i < itemsGrid.width; i+= 32)
+				{
+					var rule:VRule = new VRule();
+					rule.setStyle("strokeColor", 0x000000);
+					rule.setStyle("shadowColor", 0x444444);					
+					rule.percentHeight = 100;
+					rule.x = i;
+					itemsGrid.addChild(rule);
+				}
+				
+				for (var i:int = 32; i < itemsGrid.height; i+= 32)
+				{
+					var hRule:HRule = new HRule();
+					hRule.setStyle("strokeColor", 0x000000);
+					hRule.setStyle("shadowColor", 0x444444);					
+					hRule.percentWidth = 100;
+					hRule.y = i;
+					itemsGrid.addChild(hRule);
+				}
+			}					
+			
+            private function mouseMoveHandler(event:MouseEvent):void 
+            {                
+                var dragInitiator:Image = Image(event.currentTarget);
+                var ds:DragSource = new DragSource();
+                
+                ds.addData(dragInitiator, "fromDummy");             
+
+				if (dragInitiator.data)
+                	DragManager.doDrag(dragInitiator, ds, event, dragInitiator.data.icon, 0, 0, 0.7);
+                else
+                	DragManager.doDrag(dragInitiator, ds, event);
+            }
+            
+            private function dragEnterHandler(event:DragEvent):void 
+            {
+                if (event.dragSource.hasFormat("fromDummy") || event.dragSource.hasFormat("fromInventory"))
+                {
+                    DragManager.acceptDragDrop(Canvas(event.currentTarget));
+                }
+            }
+
+            private function dragDropDummyHandler(event:DragEvent):void 
+            {            	
+            	var dragInitiator:Image = Image(event.dragInitiator);
+            	var item:InventoryItem = dragInitiator.data as InventoryItem;
+            	
+            	if (item.type == InventoryItemType.USABLE)
+            	{
+            		_hero.restoreProperties();
+            		_hero.useItem(item);
+            		_hero.backUpProperties();
+            	}
+            	else
+            	{
+            		_hero.equipItem(item);
+            	}
+            	bindItems();
+            	bindStats();
+            	
+            	dragExitHandler(null);
+            }	
+
+            private function dragDropInventoryHandler(event:DragEvent):void 
+            {            	
+            	var dragInitiator:Image = Image(event.dragInitiator);
+            	var item:InventoryItem = dragInitiator.data as InventoryItem;
+            	
+            	_hero.unEquipItem(item);
+            	bindItems();
+            	bindStats();
+            }	
+            
+            private function dragOverHandler(event:DragEvent):void 
+            {           
+                event.preventDefault();
+                
+            	var dragInitiator:Image = Image(event.dragInitiator);
+            	var item:InventoryItem = dragInitiator.data as InventoryItem;
+            	
+                var higlightItem:UIComponent;
+                
+                switch (item.type)
+                {
+                	case InventoryItemType.AMULET:
+                		higlightItem = pnlAmulet;
+                		break;
+                	case InventoryItemType.RING:
+                		higlightItem = pnlRing;
+                		break;
+                	case InventoryItemType.ARMOR:
+                		higlightItem = pnlArmor;
+                		break;
+                	case InventoryItemType.HAND:
+                		higlightItem = pnlRightHand;
+                		break;
+                	case InventoryItemType.OFF_HAND:
+                		higlightItem = pnlLeftHand;
+                		break;
+                	case InventoryItemType.HEAD:
+                		higlightItem = pnlHead;
+                		break;
+                }
+                
+                if (higlightItem && higlightItem != _itemHighlighted)
+                {
+	                higlightItem.setStyle('borderColor', 0x5FFF01);
+	                _itemHighlighted = higlightItem;
+                }
+            }
+            
+            private function dragExitHandler(event:DragEvent):void 
+            {
+            	if (_itemHighlighted)
+            	{
+	                _itemHighlighted.setStyle('borderColor', 0xE7BE39);          
+	            	_itemHighlighted = null;
+            	}
+            }           	
+		]]>
+	</mx:Script>
+		
+</DialogCommon>	

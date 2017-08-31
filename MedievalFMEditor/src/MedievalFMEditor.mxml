@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
+	xmlns:isometric="engine.display.*"
+	xmlns:view="UI.view.*"
+	xmlns:cc="controls.*"
+	creationComplete="{creationComplete()}" 
+	width="1250" height="700" 
+	showStatusBar="true" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+	creationPolicy="all" xmlns:components="components.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import components.UnitItemsDialog;
+			import mx.controls.Alert;
+			import mapSerializer.UnitTypesSerializer;
+			import mx.managers.PopUpManager;
+			import components.UnitTypesEditor;
+			import mx.core.Application;
+			import packDescription.MissionPack;
+			import components.MissionsDialog;
+			import engine.fraction.FractionControllerType;
+			import engine.fraction.PredefinedFractions;
+			import mx.utils.UIDUtil;
+			import utils.FileUtil;
+			import mapSerializer.MapSerializer;
+			import userAction.*;
+			import components.PropertiesGrid;
+			import mx.collections.ArrayCollection;
+			import engine.area.Area;
+			import engine.objects.ObjectType;
+			import engine.fraction.Fraction;
+			import engine.core.isometric.IsoTile;
+			import engine.tileset.TileType;
+			import mx.events.ListEvent;
+			import mx.controls.Text;
+			import resources.BitmapResources;
+			import engine.core.*;
+			import engine.core.events.*;
+			import engine.util.*;
+			import engine.animation.*;
+			import engine.objects.isometric.*;
+			import engine.units.*;
+			import engine.mission.Mission;
+			import engine.game.*;
+			import engine.userAction.*;
+			
+						
+			public var _game:Game;
+			public var selectedItem:Object;
+			public var selectedFraction:Fraction;
+			private var _mission:Mission;
+			
+			// Initialization --------------------------------------------------	
+			private function enterGameState():void
+			{
+				_game.initView(view);
+			}
+			
+			private function onGameInitialized(event:Event):void
+			{
+				_game.missionManager.addEventListener(EngineEvents.MISSION_LOADED, onMissionLoaded);
+				_game.missionManager.startMission(_mission);
+			}
+		
+			private function onMissionLoaded(event:Event):void
+			{
+				currentState = GameState.EDITING;
+				_game.currentState = GameState.EDITING;
+				selectedFraction = _game.fractionManager.fractions.get(PredefinedFractions.PassiveAgressive) as Fraction;
+				_game.world.minimap.init(minimap);
+				
+				// increase seed so ids won't collide with predefined objects
+				_game.idManager.incSeed();
+			}
+							
+			private function onEnterFrame(event:Event):void
+			{
+				var dt:Date = new Date();
+				_game.tick();
+				addStatus("Frame Rate:", (new Date().milliseconds - dt.milliseconds).toString());
+				
+				addStatus("Current Action:", _game.userActionManager.currentAction.toString()); 
+				addStatus("World Center:", "x:" + _game.world.xCenter + " y:" + _game.world.yCenter);
+			}
+			
+			private function creationComplete():void
+			{	
+				application.frameRate = Constants.FRAME_RATE;
+				systemManager.stage.nativeWindow.maximize();
+				GameManager.instance().setMissionPack(new MissionPack());
+				
+				var selectMission:MissionsDialog = new MissionsDialog();
+				selectMission.showDialog(this, GameManager.instance().missionPack, editMission);
+			}
+			
+			private function editMission(mission:Mission):void
+			{
+				if (!mission)
+					return;
+				
+				currentState = GameState.UNINITIALIZED;
+				_mission = mission;
+				_mission.stateBag.editor = true;
+				_game = Game.create();
+				_game.addEventListener(EngineEvents.GAME_INITIALIZED, onGameInitialized);
+				_game.init(BitmapResources.bitmaps);
+				_game.sceneManager.view.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyboard);
+				_game.sceneManager.view.addEventListener(KeyboardEvent.KEY_UP, handleKeyboardKeyUp);
+				_game.sceneManager.view.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+
+				_game.areaManager.addEventListener(EngineEvents.AREA_ADDED, bindAreas);
+				_game.selectionManager.addEventListener(EngineEvents.UNIT_SELECTED, onUnitSelected);
+																																				
+				databind();
+			}
+			
+			// Binding --------------------------------------------------
+			
+			private function databind(evt:Event=null):void
+			{
+				listUnitTypes.dataProvider = _game.unitManager.unitTypes.toValSet().toArray().sortOn(["type", "name"]);
+				listTileTypes.dataProvider = new VectorCollection(_game.world.tileset.tileTypes);
+				listObjectTypes.dataProvider = _game.objectManager.objectTypes.toValSet().toArray().sortOn("name");
+				listFractions.dataProvider = _game.fractionManager.fractions.toValSet().toArray();
+				listUnits.dataProvider = new VectorCollection(_game.unitManager.units);
+				
+				txtMapWidth.text = _game.world.xGridSize.toString();
+				txtMapHeight.text = _game.world.yGridSize.toString();				
+				bindAreas();
+			}
+			
+			private function bindAreas(evt:Event=null):void
+			{
+				listAreas.dataProvider = _game.areaManager.areas.toValSet().toArray();			
+			}
+			
+			// Misc --------------------------------------------------			
+			private function addStatus(param:String, _status:String):void
+			{
+				var newStatus:String = param + " " + _status + " |";
+				var regex:RegExp = new RegExp(param + ".*?\\|{1}","i");
+				if (status.search(regex) != -1)
+					status = status.replace(regex, newStatus);
+				else 
+					status += newStatus;
+			}
+			
+			public function showDescription(object:Object, editable:Boolean=true, editableProperties:Array=null):void
+			{
+				var propGrid:PropertiesGrid = new PropertiesGrid();
+				propGrid.object = object;
+				propGrid.init(editable, editableProperties);
+				
+				pnlProperties.removeAllChildren();
+				pnlProperties.addChild(propGrid);
+			}
+			
+			// Handlers --------------------------------------------------
+			
+			public function onToolboxIndxChanged(evt:Event):void
+			{
+				if (_mission)
+					databind();
+			}
+			
+			public function handleKeyboard(evt:KeyboardEvent): void
+			{
+				if (_game == null || _game.currentState != GameState.EDITING)
+					return;
+				
+				if (evt.keyCode == Keyboard.UP)
+					_game.sceneManager.setCameraScroll(Direction.UP);
+				if (evt.keyCode == Keyboard.LEFT)
+					_game.sceneManager.setCameraScroll(Direction.Left);
+				if (evt.keyCode == Keyboard.RIGHT)
+					_game.sceneManager.setCameraScroll(Direction.Right);
+				if (evt.keyCode == Keyboard.DOWN)
+					_game.sceneManager.setCameraScroll(Direction.Down);
+				if (evt.keyCode == Keyboard.DELETE)
+				{
+					if (!_game.selectionManager.selectedUnitGroup.isEmpty())
+					{
+						_game.unitManager.removeUnits(_game.selectionManager.selectedUnitGroup);
+					}
+				}		
+			}
+
+			public function handleKeyboardKeyUp(evt:KeyboardEvent): void
+			{
+				if (evt.keyCode == Keyboard.UP)
+					_game.sceneManager.stopCameraScroll(Direction.UP);
+				else if (evt.keyCode == Keyboard.LEFT)
+					_game.sceneManager.stopCameraScroll(Direction.Left);
+				else if (evt.keyCode == Keyboard.RIGHT)
+					_game.sceneManager.stopCameraScroll(Direction.Right);
+				else if (evt.keyCode == Keyboard.DOWN)
+					_game.sceneManager.stopCameraScroll(Direction.Down);					
+			}	
+					
+			public function handleMouseMove(evt:MouseEvent): void
+			{
+				if (_game == null || _game.currentState != GameState.EDITING)
+					return;
+					
+				var tile:IsoTile = _game.sceneManager.pickIsoTile(evt.localX, evt.localY);
+				if (tile)
+				{
+					addStatus("Tile Coordinates:", "x:" + tile.xindex + " y:" + tile.yindex);
+					addStatus("Cliff Type:", tile.cliffTypeVariation.toString());
+					addStatus("Region:", tile.region.toString());
+				} 
+				
+				var coord:Point = _game.sceneManager.screenToIso(evt.localX, evt.localY);
+				addStatus("Screen Coordinates:", "x:" + coord.x + " y:" + coord.y); 
+			}			
+	
+			public function onListItemClick(evt:ListEvent):void
+			{
+				selectedItem = mx.controls.List(evt.target).selectedItem;
+				showDescription(selectedItem);
+				
+				var action:UserActionBase;
+				if (selectedItem is UnitType)
+				{
+					action = new UserActionPlaceUnit(selectedItem as UnitType, selectedFraction);
+				}
+				else if (selectedItem is TileType)
+				{
+					action = new UserActionSetTile(selectedItem as TileType, numTileBrushSize.value);
+				}
+				else if (selectedItem is ObjectType)
+				{
+					action = new UserActionPlaceObject(selectedItem as ObjectType, numObjectBrushSize.value, chkRandom.selected);
+				}
+				else if (selectedItem is Unit)
+				{
+					var unit:Unit = selectedItem as Unit;
+					_game.sceneManager.cameraMove(unit.tile.xindex, unit.tile.yindex);
+					_game.selectionManager.selectUnit(unit);
+				}
+				
+				if (selectedItem is Area)
+				{
+					_game.areaManager.displayAreas();
+					chkShowAreas.selected = true;
+				}
+				
+				_game.userActionManager.setAction(action);
+				container.setFocus();
+			}
+
+			public function onFractionListItemClick(evt:ListEvent):void
+			{
+				selectedFraction = mx.controls.List(evt.target).selectedItem as Fraction;
+				showDescription(selectedFraction);
+			}
+			
+			public function onMapClick(evt:MouseEvent):void
+			{
+				if (view.visible)
+					container.setFocus();
+			}
+			
+			public function btnAddAreaClick(evt:Event):void
+			{
+				var action:UserActionAddArea = new UserActionAddArea();
+				_game.userActionManager.setAction(action);
+			}		
+			
+			public function onUnitSelected(evt:GameEvent):void
+			{
+				if (evt.properties.unit)
+					showDescription(evt.properties.unit, true, ["direction", "id", "name"]);
+			}
+			
+			public function onSaveClick(evt:Event):void
+			{
+				_game.world.calculateRegions();
+				var serializer:MapSerializer = new MapSerializer(_game);
+				var result:XML = serializer.serializeMap(chkSavePretty.selected);
+				
+				FileUtil.saveFile(result.toString(), _game.missionManager.currentMission.name);
+			}
+			
+			public function onLoadClick(evt:Event):void
+			{
+				var selectMission:MissionsDialog = new MissionsDialog();
+				selectMission.showDialog(this, GameManager.instance().missionPack, editMission);
+			}			
+			
+			public function onShowAreasChanged(evt:Event):void
+			{
+				_game.areaManager.displayAreas(chkShowAreas.selected);
+			}
+			
+			public function onAddFractionClick(evt:Event):void
+			{
+				var fraction:Fraction = new Fraction(UIDUtil.createUID(), FractionControllerType.Passive, 0xFFFFFF);
+				_game.fractionManager.addFraction(fraction);
+				databind();
+			}
+			
+			public function btnSelectionClick(evt:Event):void
+			{
+				_game.userActionManager.defaultAction();
+			}
+			
+			public function onDeleteClick(evt:Event):void
+			{
+				_game.unitManager.removeUnits(_game.selectionManager.selectedUnitGroup);
+			}
+			
+			public function onDeleteBrushClick(evt:Event):void
+			{
+				_game.userActionManager.setAction(new UserActionRemoveObject(numObjectBrushSize.value));
+			}
+			
+			public function onNumTileBrushSizeChange(evt:Event):void
+			{
+				if (_game.userActionManager.currentAction is UserActionSetTile)
+					_game.userActionManager.setAction(new UserActionSetTile(selectedItem as TileType, numTileBrushSize.value));
+				else if (_game.userActionManager.currentAction is UserActionSetBuildable)
+					_game.userActionManager.setAction(new UserActionSetBuildable(chkBuildable.selected, numTileBrushSize.value));
+				else if (_game.userActionManager.currentAction is UserActionSetPassable)
+					_game.userActionManager.setAction(new UserActionSetPassable(chkPassable.selected, numTileBrushSize.value));
+			}
+			
+			public function onNumObjectBrushSizeChange(evt:Event):void
+			{
+				if (listObjectTypes.selectedItem)
+				{
+					_game.userActionManager.setAction(
+						new UserActionPlaceObject(listObjectTypes.selectedItem as ObjectType, numObjectBrushSize.value, chkRandom.selected));
+				}
+			}
+			public function onObjectRandomChange(evt:Event):void
+			{
+				if (listObjectTypes.selectedItem)
+				{
+					_game.userActionManager.setAction(
+						new UserActionPlaceObject(listObjectTypes.selectedItem as ObjectType, numObjectBrushSize.value, chkRandom.selected));
+				}
+			}	
+	
+			public function onMapSetClick(evt:Event):void
+			{	
+				_mission.mapXml.@width = txtMapWidth.text;
+				_mission.mapXml.@height = txtMapHeight.text;				
+			
+				editMission(_mission);
+			}
+			
+			public function onShowUnitTypesEditor(evt:Event):void
+			{
+				_game.pause();
+				typesEditor.visible = typesEditor.includeInLayout = true;
+				view.visible = view.includeInLayout = false;
+			}
+			
+			public function onHideUnitTypesEditor(evt:Event):void
+			{
+				if (typesEditor.isChanged)
+					Alert.show("Do you want to save changes?", "Save", 1|2, null, onSaveUnitTypesEditor); 
+				_game.currentState = GameState.EDITING;
+				typesEditor.visible = typesEditor.includeInLayout = false;
+				view.visible = view.includeInLayout = true;
+			}
+			
+			public function onSaveUnitTypesEditor(evt:Event=null):void
+			{
+				var serializer:UnitTypesSerializer = new UnitTypesSerializer(_game);
+				var result:String = serializer.serialize();
+				
+				FileUtil.saveFile(result, _game.missionManager.currentMission.name + "UnitTypes.txt");
+				typesEditor.isChanged = false;
+			}
+
+			public function btnPassableBrushClick(evt:Event):void
+			{
+				_game.userActionManager.setAction(new UserActionSetPassable(chkPassable.selected, numTileBrushSize.value));
+			}
+			
+			public function btnBuildableBrushClick(evt:Event):void
+			{
+				_game.userActionManager.setAction(new UserActionSetBuildable(chkBuildable.selected, numTileBrushSize.value));
+			}	
+
+			public function btnRemoveCliffBrushClick(evt:Event):void
+			{
+				_game.userActionManager.setAction(new UserActionRemoveCliff(numTileBrushSize.value));
+			}	
+				
+			public function onRecalculatePathMapClick(evt:Event):void
+			{
+				for (var i:int = 0; i < _game.world.tiles.length; ++i)
+				{	
+					_game.world.tilesetMapEditor.resetTile(_game.world.tiles[i]);	
+				}
+			}
+				
+			public function onUnitItemsClick(evt:Event):void
+			{
+				var dlg:UnitItemsDialog = new UnitItemsDialog();
+				if (_game.selectionManager.selectedUnit)
+					dlg.showDialog(this, _game.selectionManager.selectedUnit, null);
+			}	
+						
+		]]>
+	</mx:Script>
+	
+	<mx:states>
+		<mx:State name="{GameState.EDITING}" enterState="{enterGameState();}" basedOn="">
+			<mx:AddChild relativeTo="{container}" position="first">
+				<isometric:IsometricView x="0" y="0" id="view" visible="true" enterFrame="onEnterFrame(event)"/>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="{GameState.UNINITIALIZED}">
+		</mx:State>		
+	</mx:states>
+	
+	<mx:HBox paddingLeft="0" height="100%">
+		<mx:VBox>
+			<mx:HBox>
+				<mx:Button id="btnSelection" label="Selection" click="btnSelectionClick(event)"></mx:Button>
+				<mx:Button id="btnDelete" label="Delete" click="onDeleteClick(event)"></mx:Button>
+				<mx:Button id="btnDeleteBrush" label="DeleteBrush" click="onDeleteBrushClick(event)"></mx:Button>
+			</mx:HBox>
+			<mx:Accordion id="toolbox" width="250" height="450" change="onToolboxIndxChanged(event)">
+				<mx:VBox width="100%" height="100%" label="Fractions:" >
+					<mx:Button id="btnAddFraction" label="Add Fraction" click="onAddFractionClick(event)"></mx:Button>
+					<mx:List id="listFractions" labelField="name" width="100%" height="100%" itemClick="onFractionListItemClick(event)"></mx:List>
+				</mx:VBox>
+				<mx:VBox width="100%" height="100%" label="Unit Types:">
+					<mx:List id="listUnitTypes" labelField="name" width="100%" height="100%" itemClick="onListItemClick(event)"></mx:List>
+				</mx:VBox>
+				<mx:VBox width="100%" height="100%" label="Tile Types:">
+					<mx:HBox>
+						<mx:Text text="Brush size:"></mx:Text>
+						<mx:NumericStepper id="numTileBrushSize" value="1" minimum="1" maximum="10" change="onNumTileBrushSizeChange(event)"></mx:NumericStepper>					
+					</mx:HBox>
+					<mx:HBox>
+						<mx:Button id="btnPassableBrush" label="Passable brush" click="btnPassableBrushClick(event)"></mx:Button>
+						<mx:CheckBox id="chkPassable" label="passable:"></mx:CheckBox>
+					</mx:HBox>
+					<mx:HBox>
+						<mx:Button id="btnBuildableBrush" label="Buildable brush" click="btnBuildableBrushClick(event)"></mx:Button>
+						<mx:CheckBox id="chkBuildable" label="buildable:"></mx:CheckBox>
+					</mx:HBox>
+					<mx:HBox>
+						<mx:Button id="btnRemoveCliffBrush" label="Remove cliff brush" click="btnRemoveCliffBrushClick(event)"></mx:Button>
+					</mx:HBox>
+					<mx:List id="listTileTypes" labelField="name" width="100%" height="100%" itemClick="onListItemClick(event)"></mx:List>
+				</mx:VBox>
+				<mx:VBox width="100%" height="100%" label="Object Types:">
+					<mx:HBox>
+						<mx:Text text="Brush size:"></mx:Text>
+						<mx:NumericStepper id="numObjectBrushSize" value="1" minimum="1" maximum="5" change="onNumObjectBrushSizeChange(event)"></mx:NumericStepper>					
+						<mx:CheckBox id="chkRandom" change="onObjectRandomChange(event)" label="Random:"></mx:CheckBox>
+					</mx:HBox>
+					<mx:List id="listObjectTypes" labelField="name" width="100%" height="100%" itemClick="onListItemClick(event)"></mx:List>
+				</mx:VBox>
+				<mx:VBox width="100%" height="100%" label="Areas:">
+					<mx:Button id="btnAddArrea" label="Add area" click="btnAddAreaClick(event)"></mx:Button>
+					<mx:CheckBox id="chkShowAreas" label="Show areas" selected="false" change="onShowAreasChanged(event)"></mx:CheckBox>
+					<mx:List id="listAreas" height="100%" labelField="name" width="100%" itemClick="onListItemClick(event)"></mx:List>
+				</mx:VBox>
+				<mx:VBox width="100%" height="100%" label="Units:">
+					<mx:List id="listUnits" labelField="id" width="100%" height="100%" itemClick="onListItemClick(event)"></mx:List>
+				</mx:VBox>
+				<mx:VBox width="100%" height="100%" label="Save/Load:">
+					<mx:HBox>
+						<mx:Button label="Save" click="onSaveClick(event)"></mx:Button>
+						<mx:CheckBox id="chkSavePretty" label="Use pretty printing" selected="true"></mx:CheckBox>
+					</mx:HBox>
+					<mx:Button label="Load" click="onLoadClick(event)"></mx:Button>
+				</mx:VBox>	
+				<mx:VBox width="100%" height="100%" label="Map:">
+					<mx:VBox>
+						<mx:HBox>
+							<mx:Label text="Width:"></mx:Label>
+							<mx:TextInput id="txtMapWidth" restrict="0123456789"></mx:TextInput>
+						</mx:HBox>
+						<mx:HBox>
+							<mx:Label text="Height:"></mx:Label>
+							<mx:TextInput id="txtMapHeight" restrict="0123456789"></mx:TextInput>
+						</mx:HBox>
+					</mx:VBox>
+					<mx:Button label="Set" click="onMapSetClick(event)"></mx:Button>
+					<mx:Button label="Recalculate path map" click="onRecalculatePathMapClick(event)"></mx:Button>
+				</mx:VBox>	
+				<mx:VBox width="100%" height="100%" label="Types Editor:">
+					<mx:Button id="btnUnitTypesEditor" label="Show" click="onShowUnitTypesEditor(event)"></mx:Button>
+					<mx:Button label="Hide" click="onHideUnitTypesEditor(event)"></mx:Button>
+					<mx:Button label="Save" click="onSaveUnitTypesEditor(event)"></mx:Button>					
+				</mx:VBox>		
+				<mx:VBox id="pnlMisc" width="250" height="250" label="Misc:">
+					<mx:Button label="Unit Items" click="onUnitItemsClick(event)">
+					</mx:Button>
+				</mx:VBox>
+			</mx:Accordion>	
+			<mx:Panel id="pnlProperties" width="250" height="200" title="Properties:"></mx:Panel>
+		</mx:VBox>
+		<mx:HBox horizontalAlign="right">
+			<mx:Canvas id="container" click="onMapClick(event)" width="800" height="600">
+				<components:UnitTypesEditor x="0" y="0" id="typesEditor" includeInLayout="false" visible="false">
+				</components:UnitTypesEditor>
+			</mx:Canvas>
+			<mx:Canvas width="98" height="98">
+				<mx:Canvas id="minimap" width="98" height="98">
+				</mx:Canvas>				
+			</mx:Canvas>
+		</mx:HBox>
+	</mx:HBox>
+</mx:WindowedApplication>

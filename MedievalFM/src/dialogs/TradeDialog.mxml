@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="380" height="410" paddingLeft="7" paddingRight="6" paddingTop="21"
+	creationComplete="{init()}">
+
+	<mx:GlowFilter color="#1F1F00" id="glow" ></mx:GlowFilter>
+		
+	<mx:VBox width="100%" height="100%" horizontalAlign="center">
+		<mx:HBox width="100%" height="100%">
+			<mx:VBox styleName="genericPanelTransparent" height="100%" width="100%" horizontalAlign="center">
+				<mx:Label id="txtHeroName" styleName="labelGold11">
+				</mx:Label>
+				<mx:Canvas width="100%" height="100%" id="heroItemsGrid" horizontalScrollPolicy="off"
+					verticalScrollPolicy="off" dragEnter="dragEnterHandler(event)" dragDrop="dragDropHandler(event)"
+					backgroundAlpha="0.3" backgroundColor="#152029">
+					<cc:TileListEx id="lstHeroItems" width="100%" height="100%" backgroundAlpha="0" useRollOver="false" selectionAlpha="0.5"
+						paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0" itemRenderer="itemRenders.InventoryItemRender"
+						itemClick="onItemClick(event)">
+					</cc:TileListEx>
+					<mx:Label  color="0xFF0000" width="100%" height="50" top="80" left="5" fontSize="12" id="txtWarning" 
+						visible="false" text="Hero is too far to trade" selectable="false" textAlign="center" filters="{[glow]}">
+					</mx:Label>
+				</mx:Canvas>
+				<cc:ClickButton id="btnSell" width="70" label="Sell" styleName="menuButton" click="onSellClick(event)" enabled="false">
+				</cc:ClickButton>
+			</mx:VBox>
+			
+			<mx:VBox styleName="genericPanelTransparent" height="100%" width="100%" horizontalAlign="center">
+				<mx:Label id="txtTraderName" styleName="labelGold11">
+				</mx:Label>
+				<mx:Canvas width="100%" height="100%" id="traderItemsGrid" horizontalScrollPolicy="off"
+					verticalScrollPolicy="off" dragEnter="dragEnterHandler(event)" dragDrop="dragDropHandler(event)"
+					backgroundAlpha="0.3" backgroundColor="#152029">
+					<cc:TileListEx id="lstTraderItems" width="100%" height="100%" backgroundAlpha="0" useRollOver="false" selectionAlpha="0.5"
+						paddingBottom="0" paddingTop="0" paddingLeft="0" paddingRight="0" itemRenderer="itemRenders.InventoryItemRender"
+						itemClick="onItemClick(event)">
+					</cc:TileListEx>
+				</mx:Canvas>
+				<cc:ClickButton id="btnBuy" width="70" label="Buy" styleName="menuButton" click="onBuyClick(event)" enabled="false">
+				</cc:ClickButton>
+			</mx:VBox>	
+		</mx:HBox>
+					
+		<cc:ClickButton width="50%" label="Close" styleName="menuButton" click="onReturnClick(event)" enabled="true">
+		</cc:ClickButton>	
+		
+	</mx:VBox>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import controls.ImageButton;
+			import mx.core.UIComponent;
+			import engine.game.Game;
+			import engine.core.GameTime;
+			import engine.util.TileUtil;
+			import engine.game.GameManager;
+			import engine.fraction.ResourceType;
+			import engine.items.InventoryItem;
+			import mx.controls.Image;
+			import mx.managers.DragManager;
+			import mx.events.DragEvent;
+			import engine.util.VectorCollection;
+			import mx.controls.HRule;
+			import mx.controls.VRule;
+			import engine.heros.Hero;
+			import engine.units.Unit;
+			import engine.timer.Timer;
+						
+			private var _hero:Hero;
+			private var _trader:Unit;
+			private var _refreshTimer:engine.timer.Timer;
+			private var _enabled:Boolean = false;
+						
+			public function show(parent:DisplayObject, hero:Hero, trader:Unit, closeHandler:Function=null):void
+			{
+				_hero = hero;
+				_trader = trader;
+				_pauseGame = false;
+				_refreshTimer = new engine.timer.Timer("tradeTimer", new GameTime(0, 0.4), refresh);
+				Game.instance().timerManager.add(_refreshTimer, true);
+												
+				showDialog(parent, closeHandler);
+			}
+
+			private function refresh(t:engine.timer.Timer):void
+			{
+				_enabled = _hero && TileUtil.getTileDist(_hero.tile, _trader.tile) <= 4;		
+				txtWarning.visible = !_enabled;
+				lstHeroItems.enabled = _enabled;
+				lstHeroItems.alpha = (_enabled ? 1 : 0.6);
+				
+				if (lstTraderItems.selectedIndex != -1)
+				{
+					btnBuy.enabled = _enabled;
+				}
+				
+				refreshAvaliable();
+			}
+			
+			private function refreshAvaliable():void
+			{
+				var items:Array = lstTraderItems.getChildren();
+				
+				if (_hero)
+				{
+					var heroGold:int = _hero.fraction.getResource(ResourceType.Gold);
+					for (var i:int = 0; i < items.length; ++i)
+					{
+						var item:Object = items[i];
+						if (item.data.goldCost > heroGold) item.alpha = 0.3;
+					}
+				}			 
+			}
+						
+			private function onReturnClick(evt:Event):void
+			{
+				_refreshTimer.remove();
+				close();
+			}
+			
+			private function init():void
+			{
+				drawItemsGrid();
+				bindItems();
+				
+				txtTraderName.text = _trader.type.name.replace(/\(.*\)/, "");
+				if (_hero)
+				{
+					txtHeroName.text = _hero.name;
+				}
+				else
+				{
+					txtWarning.text = "Hero is not selected";
+				}
+			}
+			
+			private function bindItems():void
+			{
+				if (_hero) lstHeroItems.dataProvider = new VectorCollection(_hero.items);
+				lstTraderItems.dataProvider = new VectorCollection(_trader.items);			
+			}
+
+			private function drawItemsGrid():void
+			{
+				for (var i:int = 32; i < heroItemsGrid.width; i+= 32)
+				{
+					if (_hero) heroItemsGrid.addChild(createVRule(i));
+					traderItemsGrid.addChild(createVRule(i));
+				}
+					
+				heroItemsGrid.setChildIndex(txtWarning, heroItemsGrid.numChildren - 1);
+				
+				for (var i:int = 32; i < heroItemsGrid.height; i+= 32)
+				{
+					if (_hero) heroItemsGrid.addChild(createHRule(i));
+					traderItemsGrid.addChild(createHRule(i));
+				}
+			}
+			
+			private function createHRule(y:int):HRule
+			{
+				var hRule:HRule = new HRule();
+				hRule.setStyle("strokeColor", 0x000000);
+				hRule.setStyle("shadowColor", 0x444444);					
+				hRule.percentWidth = 100;
+				hRule.y = y;
+				return hRule;			
+			}
+	
+			private function createVRule(x:int):VRule
+			{
+				var rule:VRule = new VRule();
+				rule.setStyle("strokeColor", 0x000000);
+				rule.setStyle("shadowColor", 0x444444);					
+				rule.percentHeight = 100;
+				rule.x = x;
+				return rule;
+			}
+					
+            private function dragEnterHandler(event:DragEvent):void 
+            {
+                if (_enabled && event.dragSource.hasFormat("fromInventory"))
+                {
+                    DragManager.acceptDragDrop(Canvas(event.currentTarget));
+                }
+            }
+
+            private function dragDropHandler(event:DragEvent):void 
+            {       
+            	if (!_enabled) return;
+            	     	
+            	var dragInitiator:Image = Image(event.dragInitiator);
+            	var item:InventoryItem = dragInitiator.data as InventoryItem;
+            	
+            	if (event.currentTarget == traderItemsGrid)
+            	{
+					sellItem(item);
+            	}
+            	else if (event.currentTarget == heroItemsGrid)
+            	{
+					buyItem(item);      		
+            	}
+            }
+            
+			private function onSellClick(evt:Event):void
+			{
+				if (lstHeroItems.selectedItem)
+				{
+					var item:InventoryItem = lstHeroItems.selectedItem as InventoryItem;     	
+					sellItem(item);
+				}
+			}
+			
+			private function onBuyClick(evt:Event):void
+			{
+				if (lstTraderItems.selectedItem)
+				{
+					var item:InventoryItem = lstTraderItems.selectedItem as InventoryItem;     	
+					buyItem(item);
+				}
+			}
+			
+			private function buyItem(item:InventoryItem):void
+			{
+				if (!_hero.hasItem(item))
+            	{
+            		if (_hero.fraction.getResource(ResourceType.Gold) >= item.goldCost)
+            		{
+	             		_hero.addItem(item);
+	            		_trader.removeItem(item);  
+	            		_hero.fraction.addResource(ResourceType.Gold, -item.goldCost);
+	            		
+	            		bindItems();  
+            		}    
+            		else
+            		{
+            			var warn:MessageBoxDialog = new MessageBoxDialog();
+            			warn.show(this.parent, "Not enough gold!"); 
+            		} 		
+            	}
+			}
+			
+			private function sellItem(item:InventoryItem):void
+			{
+            	if (_hero.hasItem(item))
+            	{
+            		_hero.removeItem(item);
+            		_trader.addItem(item);
+            		_hero.fraction.addResource(ResourceType.Gold, item.goldCost*0.9); 
+            	
+            		bindItems();
+            	}
+			}			
+
+			private function onItemClick(evt:Event):void
+			{
+				if (!_enabled) return;
+				
+				if (evt.currentTarget == lstHeroItems)
+				{
+					btnBuy.enabled = false;
+					btnSell.enabled = true;
+					lstTraderItems.selectedIndex = -1;
+				}
+				else if (evt.currentTarget == lstTraderItems)
+				{
+					btnBuy.enabled = true;
+					btnSell.enabled = false;
+					lstHeroItems.selectedIndex = -1;			
+				}
+				
+				refreshAvaliable();
+			}												
+		]]>
+	</mx:Script>
+	
+</DialogCommon>

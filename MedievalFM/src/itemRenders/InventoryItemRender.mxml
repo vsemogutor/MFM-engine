@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle" horizontalAlign="center" width="32" height="32">
+	<mx:Box styleName="simpleBoxGold" width="30" height="30" creationComplete="{initRenderer()}">
+		<mx:Script>
+			<![CDATA[
+				import mx.events.ListEvent;
+				import controls.TileListEx;
+				import mx.events.FlexEvent;
+				import mx.managers.DragManager;
+				import mx.core.DragSource;
+				import controls.ItemTypeTooltip;
+
+			    private var outerList:TileListEx;
+			     
+			    private function initRenderer():void
+			    {
+			       this.outerList = (this.parent.parent as TileListEx);
+			       this.outerList.addEventListener(ListEvent.CHANGE, updateSelected);
+			       this.addEventListener(FlexEvent.DATA_CHANGE, checkSelected);
+			    }
+			     
+			    private function checkSelected(event:FlexEvent):void
+			    {
+			       if (this.outerList.selectedItem == this.data)
+			         this.img.alpha = outerList.selectionAlpha;
+			       else
+			         this.img.alpha = 1;
+			    }
+			     
+			    private function updateSelected(event:ListEvent):void
+			    {
+			       if (event.itemRenderer == this)
+			         this.img.alpha = outerList.selectionAlpha;
+			       else
+			         this.img.alpha = 1;
+			    }
+     				
+				private function mouseMoveHandler(event:MouseEvent):void 
+	            {                
+	                var dragInitiator:Image = Image(event.currentTarget);
+	                var ds:DragSource = new DragSource();
+	                ds.addData(dragInitiator, "fromInventory");             
+	
+					if (dragInitiator.data)
+	                	DragManager.doDrag(dragInitiator, ds, event, dragInitiator.data.icon, 0, 0, 0.7);
+	                else
+	                	DragManager.doDrag(dragInitiator, ds, event);
+	            }
+			]]>
+		</mx:Script>
+		<mx:Image id="img" source="{data.icon}" data="{data}" width="30" height="30" 
+			toolTipCreate="ItemTypeTooltip.create(event)" toolTipShow="ItemTypeTooltip.show(event)" toolTip=" "
+			mouseMove="mouseMoveHandler(event)">
+		</mx:Image>
+	</mx:Box>
+</mx:Box>

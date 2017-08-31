@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="vertical" width="100%" height="100%"
+	verticalAlign="middle" horizontalAlign="center"
+	backgroundColor="#000000" creationComplete="init()" click="{onClick()}" buttonMode="true" >
+	
+	<mx:Sequence id="clip" effectEnd="{onEffectEnd()}">
+		<mx:Parallel target="{txtPresents}" duration="2700">
+			<mx:Fade alphaFrom="0" alphaTo="1" easingFunction="{Linear.easeOut}"></mx:Fade>
+			<mx:Blur blurXFrom="1" blurXTo="0" blurYFrom="1" blurYTo="0"></mx:Blur>
+		</mx:Parallel>
+		<mx:Pause duration="700"></mx:Pause>
+		<mx:Fade target="{txtPresents}" alphaFrom="1" alphaTo="0" duration="2000" easingFunction="{Linear.easeOut}"></mx:Fade>
+		<mx:Pause duration="300"></mx:Pause>
+	</mx:Sequence>
+	
+	<mx:Label id="txtPresents" text="{StringResources.get('SquirrelPresents')}" styleName="labelWhite" fontSize="18" alpha="0" buttonMode="true">
+	</mx:Label>					
+		
+	<mx:Script>
+		<![CDATA[
+			import flash.net.navigateToURL;
+			import resources.StringResources;
+			import engine.game.GameManager;
+			import resources.MusicResources;
+			import engine.sound.SoundManager;
+			import com.greensock.easing.Linear;
+			import mx.core.Application;
+			
+			private function init():void
+			{
+				clip.play([this]);
+			}
+		
+			private function onEffectEnd():void
+			{
+				Application.application.currentState = UIGameState.START_MENU;
+			}
+			
+			private function onClick():void
+			{
+				navigateToURL(new URLRequest("http://www.squirrelfm.com/"));
+			}
+		]]>
+	</mx:Script>
+	
+</mx:Module>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="250" height="150" 
+	verticalScrollPolicy="off" horizontalScrollPolicy="off">
+
+	<mx:Style source="..\styles\common.css"/>	
+	
+	<mx:Box width="100%" height="100%" verticalAlign="middle">
+		<mx:Text id="txtCaption" text="{_caption}" styleName="labelWhite14" width="100%" selectable="false" textAlign="center">
+		</mx:Text>	
+	</mx:Box>
+
+	
+	<mx:HBox width="100%" horizontalAlign="center">
+		<cc:ClickButton width="60%" label="Ok" id="btnYes" styleName="menuButton" click="onOkClick(event)">
+		</cc:ClickButton>		
+	</mx:HBox>
+
+	<mx:Script>
+		<![CDATA[
+			import resources.StringResources;
+			import mx.core.UIComponent;
+			import mx.managers.PopUpManager;
+
+			[Bindable]
+			private var _caption:String;
+			
+			
+			public function show(parent:DisplayObject, caption:String):void
+			{
+				_caption = caption;
+				
+				super.showDialog(parent);
+			}
+			
+			public override function close():void
+			{
+				super.close();	
+			}	
+			
+			private function onOkClick(evt:Event):void
+			{				
+				close();
+			}			
+		]]>
+	</mx:Script>
+</DialogCommon>

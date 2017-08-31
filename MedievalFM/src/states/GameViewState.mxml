@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" height="100%" width="100%" backgroundColor="0x000000"
+	xmlns:isometric="engine.display.*"
+	xmlns:cc="components.*"
+	xmlns:view="UI.view.*"
+	addedToStage="{create()}" xmlns:controls="controls.*"
+	horizontalScrollPolicy="off"
+	verticalScrollPolicy="off">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.newgrounds.API;
+			import engine.util.PortalsUtil;
+			import engine.game.GameManager;
+			import kongregate.KongApi;
+			import engine.game.GameState;
+			import engine.util.Util;
+			import engine.sound.SoundManager;
+			import resources.SoundResources;
+			import util.Connector;
+			import engine.shapes.UIShape;
+			import mx.core.UIComponent;
+			import dialogs.YesNoDialog;
+			import engine.sound.BuildInSounds;
+			import engine.units.UnitProperties;
+			import flash.utils.setTimeout;
+			import components.LevelUpNotification;
+			import mx.controls.ButtonLabelPlacement;
+			import mx.controls.Label;
+			import mx.containers.VBox;
+			import flash.Boot;
+			import engine.heros.Hero;
+			import dialogs.TradeDialog;
+			import dialogs.SkillTreeDialog;
+			import resources.StringResources;
+			import controls.ClickButton;
+			import __AS3__.vec.Vector;
+			import mx.controls.Button;
+			import engine.units.Unit;
+			import engine.units.UnitType;
+			import dialogs.InGameMenu;
+			import dialogs.EndMissionDialog;
+			import dialogs.UnitDialog;
+			import engine.cursor.CursorType;
+			import engine.cursor.CursorManager;
+			import engine.userAction.UserActionOrderUnitAttack;
+			import mx.controls.Image;
+			import images.Images;
+			import engine.userAction.UserActionOrderUnitLink;
+			import engine.userAction.UserActionBase;
+			import sound.Sounds;
+			import engine.userAction.UserActionOrderUnitConstruct;
+			import engine.dashboard.DashboardType;
+			import engine.dashboard.Dashboard;
+			import mx.effects.easing.Linear;
+			import dialogs.Information;
+			import dialogs.QuestsDialog;
+			import engine.units.groups.UnitGroup;
+			import engine.core.events.EngineEvents;
+			import engine.core.events.GameEvents;
+			import mx.events.FlexEvent;
+			import engine.game.Game;
+			import engine.core.events.GameEvent;
+								
+			private var _game:Game;
+			private var _mouseOver:Boolean = false;	
+			private var _summonsButtons:Array = [];				
+									
+			private function onEnterFrame(event:Event):void
+			{								
+				processUnitSelection();
+				//processFreeWorkers();
+				processHeroes();
+			}
+			
+			private function create(evt:Event=null):void
+			{	
+				if (view && processedDescriptors)
+				{	
+					_game = Game.instance();
+					
+					_summonsButtons = [btnSummon1, btnSummon2, btnSummon3];
+					for (var i:int = 0; i < _summonsButtons.length; ++i)
+						_summonsButtons[i].visible = false;
+					
+					pnlCinematicTop.visible = false;
+					pnlCinematicBottom.visible = false;
+					pnlDashboard.visible = false;
+					pnlCamera.visible = false;
+					btnSnapCamera.setImage(Images.anchorImage);
+					
+					_game.initView(view);
+					_game.eventManager.addEventListener(GameEvents.SHOW_QUEST, onShowQuest);
+					_game.eventManager.addEventListener(GameEvents.SHOW_INFORMATION, onShowInformation);
+					_game.eventManager.addEventListener(GameEvents.SHOW_UNIT_DIALOG, onShowUnitDialog);
+					_game.eventManager.addEventListener(GameEvents.SHOW_YES_NO_DIALOG, onShowYesNoDialog);					
+					_game.eventManager.addEventListener(GameEvents.ADD_DASHBOARD, onAddDashboard);
+					_game.eventManager.addEventListener(GameEvents.REMOVE_DASHBOARD, onRemoveDashboard);					
+					_game.eventManager.addEventListener(GameEvents.DASHBOARD_CHANGED, onDashboardChanged);
+					_game.eventManager.addEventListener(GameEvents.USER_ACTION_COMPLETE, onActionComplete);
+					_game.eventManager.addEventListener(GameEvents.ENTER_CINEMATIC_MODE, onCinematicModeEnter);
+					_game.eventManager.addEventListener(GameEvents.EXIT_CINEMATIC_MODE, onCinematicModeExit);	
+					_game.eventManager.addEventListener(GameEvents.SHOW_IN_GAME_MENU, onInGameMenuDialog);	
+					_game.eventManager.addEventListener(GameEvents.SHOW_TUTORIAL, onShowTutorial);	
+					_game.eventManager.addEventListener(GameEvents.SHOW_SKILLS_DIALOG, onShowSkillsDialog);	
+					_game.eventManager.addEventListener(GameEvents.SHOW_TRADE_DIALOG, onShowTradeDialog);
+					_game.eventManager.addEventListener(GameEvents.HERO_LEVEL_UP, onHeroLevelUp);	
+					_game.eventManager.addEventListener(GameEvents.CUSTOM, onCustomEvent);												
+					_game.selectionManager.addEventListener(EngineEvents.UNIT_SELECTED, onUnitSelected);
+					_game.eventManager.addEventListener(EngineEvents.PLAY_BUILD_IN_SOUND, onBuildInSoundSound);
+					_game.eventManager.addEventListener(EngineEvents.ADD_SHAPE, onAddShape);					
+					_game.addEventListener(EngineEvents.MISSION_ENDED, onMissionEnded);
+					
+					pnlHeader.init(_game.fractionManager.player);
+					pnlMinimap.init();
+								
+					setUpEngineLocalization();		
+					_game.start();
+					validateNow();
+					showEffect.play([pnlMain]);
+					removeEventListener(FlexEvent.CREATION_COMPLETE, create);
+				}
+				else
+				{
+					addEventListener(FlexEvent.CREATION_COMPLETE, create);
+				}
+			}
+			
+			private function cleanUp():void
+			{
+				_game.eventManager.removeEventListener(GameEvents.SHOW_QUEST, onShowQuest);
+				_game.eventManager.removeEventListener(GameEvents.SHOW_INFORMATION, onShowInformation);
+				_game.eventManager.removeEventListener(GameEvents.SHOW_UNIT_DIALOG, onShowUnitDialog);
+				_game.eventManager.removeEventListener(GameEvents.SHOW_YES_NO_DIALOG, onShowYesNoDialog);					
+				_game.eventManager.removeEventListener(GameEvents.ADD_DASHBOARD, onAddDashboard);
+				_game.eventManager.removeEventListener(GameEvents.REMOVE_DASHBOARD, onRemoveDashboard);					
+				_game.eventManager.removeEventListener(GameEvents.DASHBOARD_CHANGED, onDashboardChanged);
+				_game.eventManager.removeEventListener(GameEvents.USER_ACTION_COMPLETE, onActionComplete);
+				_game.eventManager.removeEventListener(GameEvents.ENTER_CINEMATIC_MODE, onCinematicModeEnter);
+				_game.eventManager.removeEventListener(GameEvents.EXIT_CINEMATIC_MODE, onCinematicModeExit);	
+				_game.eventManager.removeEventListener(GameEvents.SHOW_IN_GAME_MENU, onInGameMenuDialog);	
+				_game.eventManager.removeEventListener(GameEvents.SHOW_TUTORIAL, onShowTutorial);	
+				_game.eventManager.removeEventListener(GameEvents.SHOW_SKILLS_DIALOG, onShowSkillsDialog);	
+				_game.eventManager.removeEventListener(GameEvents.SHOW_TRADE_DIALOG, onShowTradeDialog);
+				_game.eventManager.removeEventListener(GameEvents.HERO_LEVEL_UP, onHeroLevelUp);
+				_game.eventManager.removeEventListener(GameEvents.CUSTOM, onCustomEvent);											
+				_game.selectionManager.removeEventListener(EngineEvents.UNIT_SELECTED, onUnitSelected);
+				_game.eventManager.removeEventListener(EngineEvents.PLAY_BUILD_IN_SOUND, onBuildInSoundSound);
+				_game.eventManager.removeEventListener(EngineEvents.ADD_SHAPE, onAddShape);					
+				_game.removeEventListener(EngineEvents.MISSION_ENDED, onMissionEnded);				
+			}
+			
+			private function onCustomEvent(evt:GameEvent):void
+			{
+				if (evt.properties.duel)
+				{
+					API.unlockMedal("Duelist");
+				}
+			}			
+			
+			private function onAddShape(evt:GameEvent):void
+			{
+				var shape:UIShape = evt.properties.shape;
+				var shapeControl:UIComponent = pnlMain.getChildByName(shape.id) as UIComponent;
+				
+				if (evt.properties.show)
+				{
+					var uic:UIComponent = new UIComponent();
+					uic.name = shape.id;				
+					var connector:Shape = Connector.getConnectorShape(evt.properties.from, evt.properties.dest);
+					
+					uic.addChild(connector);
+					pnlMain.addChild(uic);
+					pnlMain.setChildIndex(uic, pnlMain.numChildren - 1);
+					
+					glowEffect.play([connector]);
+				}
+				else if (shapeControl)
+				{
+					pnlMain.removeChild(shapeControl);
+				}
+			}
+					
+			private function setUpEngineLocalization():void
+			{
+				_game.fractionManager.passive.locName = StringResources.get("FracPassive");
+				_game.fractionManager.passiveAgressive.locName = StringResources.get("FracPassiveAgressive");
+			}
+
+			private function onBuildInSoundSound(evt:GameEvent):void
+			{
+				var sound:int = evt.properties.sound;
+				if (sound == BuildInSounds.MOUSE_CLICK)
+					SoundManager.instance().playSound(Sounds.mouseClick1);
+				else if (sound == BuildInSounds.LEVEL_UP)
+					SoundManager.instance().playSound(SoundResources.heal);
+				else if (sound == BuildInSounds.USE_ITEM)
+					SoundManager.instance().playSound(SoundResources.heal);
+			}
+						
+			private function onUnitSelected(evt:GameEvent):void
+			{
+				_game.userActionManager.defaultAction();
+				pnlUnitControls.reset();
+			}
+			
+			private function processUnitSelection():void
+			{
+				if (_game && _game.currentState != GameState.STOPPED && pnlUnitControls && pnlUnitDetails)
+				{		
+					var unitGroup:UnitGroup = _game.selectionManager.selectedUnitGroup;
+					pnlUnitControls.dataSource = unitGroup;
+					pnlUnitDetails.dataSource = unitGroup;
+					pnlSpells.dataSource = unitGroup;
+					pnlItems.dataSource = unitGroup;
+				}
+			}
+			
+			private function processFreeWorkers():void
+			{
+/* 				if (_game && pnlFreeWorkers && _game.gameTime.value % 20 == 0)
+				{
+					var workers:Vector.<Unit> = _game.fractionManager.player.getFreeWorkers();
+					pnlFreeWorkers.visible = workers.length && !_game.sceneManager.isInCinematicMode;
+					if (pnlFreeWorkers.visible)
+					{
+						var worker:Unit = workers[0];
+						btnFreeWorkers.image = worker.type.icon;
+						btnFreeWorkers.label = workers.length.toString();
+						btnFreeWorkers.data = worker;
+					}
+				} */
+			}
+
+			private function processHeroes():void
+			{
+				if (_game && pnlHero && _game.gameTime.value % 20 == 0)
+				{
+					var heroes:Vector.<Hero> = _game.fractionManager.player.heroes;
+					var wasWisible:Boolean = pnlHero.visible;
+					pnlHero.visible = heroes.length && !_game.sceneManager.isInCinematicMode;
+					if (pnlHero.visible)
+					{
+						var hero:Hero = heroes[0];
+						btnHero.setImage(hero.type.icon);
+						btnHero.enabled = hero.isActive;
+						btnHero.data = hero;
+						btnSnapCamera.data = hero;
+						if (!wasWisible) glowEffect.play([pnlHero], true);
+						
+						healthIndicator.width = (hero.properties[UnitProperties.Health] / hero.properties[UnitProperties.MaxHealth] * healthIndicator.parent.width);
+						manaIndicator.width = (hero.properties[UnitProperties.Mana] / hero.properties[UnitProperties.MaxMana] * manaIndicator.parent.width);
+						
+						for (var i:int = 0; i < _summonsButtons.length; ++i)
+						{
+							var summonButton:ImageButton = _summonsButtons[i];
+							
+							if ( i < hero.summons.length)
+							{
+								var summon:Unit = hero.summons[i];
+								summonButton.visible = summon.isActive;
+								summonButton.setImage(summon.type.icon);
+								summonButton.data = summon;
+								summonButton.label = Util.framesToSec(summon.summonLifeTime).toString();
+							}
+							else
+							{
+								summonButton.visible = false;
+							}
+						}					
+					}
+					else
+					{
+						glowEffect.stop();
+					}
+				}
+				else if (!pnlHero.visible)
+				{
+					btnSummon1.visible = false;
+					btnSummon2.visible = false;
+					btnSummon3.visible = false;
+				}
+			}
+						
+			private function onFreeWorkerClick(btn:ClickButton):void
+			{
+				_game.selectionManager.selectUnit(btn.data as Unit);
+			}
+
+			private function onFreeWorkerDblClick(btn:ClickButton):void
+			{
+				_game.selectionManager.selectUnit(btn.data as Unit);
+				_game.sceneManager.cameraCenterOnUnit(btn.data as Unit);
+			}
+
+			private function onSelectHeroClick(btn:ClickButton):void
+			{
+				_game.selectionManager.selectUnit(btn.data as Unit);
+			}
+			
+			private function onCameraClick(btn:ClickButton):void
+			{
+				var unit:Unit = btn.data as Unit;
+				if (_game.sceneManager.snapToUnit != unit && unit.isActive)
+				{
+					_game.sceneManager.cameraSnapTo(unit);
+					_game.selectionManager.selectUnit(unit);
+				}
+				else
+					_game.sceneManager.cameraFree();
+			}
+			
+			private function onHeroButtonMouseOver(evt:Event):void
+			{
+				_mouseOver = true;
+				pnlCamera.visible = true;
+			}
+
+			private function onHeroButtonMouseOut(evt:Event):void
+			{
+				_mouseOver = false;
+				setTimeout(function():void {
+					pnlCamera.visible = _mouseOver;
+				}, 1500);
+			}
+			
+			private function onSelectHeroDblClick(btn:ClickButton):void
+			{
+				_game.selectionManager.selectUnit(btn.data as Unit);
+				_game.sceneManager.cameraCenterOnUnit(btn.data as Unit);
+			}
+									
+			private function onShowQuest(evt:GameEvent):void
+			{
+				var questsDialog:QuestsDialog = new QuestsDialog();
+				questsDialog.show(this.parent, evt.properties.quest, evt.properties.closeHandler);
+			}
+			
+			private function onShowInformation(evt:GameEvent):void
+			{
+				var informationDialog:Information = new Information();
+				informationDialog.show(this.parent, evt.properties.caption, evt.properties.text,
+					evt.properties.closeHandler);
+			}
+
+			private function onShowYesNoDialog(evt:GameEvent):void
+			{
+				var dialog:YesNoDialog = new YesNoDialog();
+				dialog.show(this.parent, evt.properties.caption, evt.properties.subCaption, evt.properties.closeHandler);
+			}
+						
+			private function onShowUnitDialog(evt:GameEvent):void
+			{
+				var unitDialog:UnitDialog = new UnitDialog();
+				unitDialog.show(this.parent, evt.properties.caption, evt.properties.text,
+					evt.properties.unitIcon, evt.properties.closeHandler);
+			}
+						
+			private function onAddDashboard(evt:GameEvent):void
+			{
+				var dashboard:Dashboard = evt.properties.dashboard;
+				if (dashboard)
+				{
+					pnlDashboard.visible = true;
+				}
+			}
+
+			private function onRemoveDashboard(evt:GameEvent):void
+			{
+				var dashboard:Dashboard = evt.properties.dashboard;
+				if (dashboard)
+				{
+					pnlDashboard.visible = false;
+				}				
+			}			
+			
+			private function onDashboardChanged(evt:GameEvent):void
+			{
+				var dashboard:Dashboard = evt.properties.dashboard;
+				if (dashboard)
+				{
+					if (dashboard.type == DashboardType.INFO_PANEL)
+					{
+						//pnlInformation.change(dashboard.caption, dashboard.value);
+					}
+					else
+					{
+						lblDashboardText.text = dashboard.value;
+					}
+				}				
+			}
+			
+			private function onActionComplete(evt:GameEvent):void
+			{
+				var action:UserActionBase = evt.properties.action;
+				if (action.success)
+				{
+					if (action is UserActionOrderUnitConstruct)
+						Sounds.play(Sounds.placeBuilding);
+					else if (action is UserActionOrderUnitLink)
+						Sounds.play(Sounds.link);
+				}
+			}
+			
+			private function onCinematicModeEnter(evt:GameEvent):void
+			{
+				effEnterCinematic.play([this]);
+			}	
+			
+			private function onCinematicModeExit(evt:GameEvent):void
+			{
+				effExitCinematic.play([this]);
+			}	
+			
+			private function onMissionEnded(evt:GameEvent):void
+			{
+				if (evt.properties.showDialog)
+				{
+					var dialog:EndMissionDialog = new EndMissionDialog();
+					dialog.show(this, evt.properties.results);
+				}
+				
+				cleanUp();
+			}	
+			
+			private function onInGameMenuDialog(evt:Event):void
+			{
+				var dialog:InGameMenu = new InGameMenu();
+				dialog.showDialog(this);
+			}
+			
+			private function onShowTutorial(evt:Event):void
+			{
+			}	
+			
+			private function onShowSkillsDialog(evt:GameEvent):void
+			{
+				var dialog:SkillTreeDialog = new SkillTreeDialog();
+				dialog.show(this.parent, evt.properties.unit);
+			}
+
+			private function onHeroLevelUp(evt:GameEvent):void
+			{
+				if (evt.properties.unit.fraction.isCurrentPlayer())
+				{
+					_game.selectionManager.selectUnit(evt.properties.unit);
+					_game.sceneManager.cameraCenterOnUnit(evt.properties.unit);
+					var notification:LevelUpNotification = new LevelUpNotification();
+					notification.show(this, evt.properties.unit as Hero);
+					
+					if (PortalsUtil.isKongregate())
+					{
+						KongApi.stats.submit("HighScore", evt.properties.unit.level);
+					}
+					else if (PortalsUtil.isNewgrounds())
+					{
+						API.postScore("High Score", evt.properties.unit.level); 
+					}
+				}
+			}
+			
+			private function onShowTradeDialog(evt:GameEvent):void
+			{
+				var dialog:TradeDialog = new TradeDialog();
+				dialog.show(this.parent, evt.properties.unit, evt.properties.trader);
+			}
+		]]>
+	</mx:Script>
+    
+    <mx:Glow id="glowEffect" color="#6EE4F5" alphaFrom="0.8" alphaTo="0.7" duration="4000" 
+    	blurXFrom="4" blurYFrom="4" blurXTo="6" blurYTo="6"
+    	easingFunction="{Linear.easeInOut}" repeatCount="0">
+    </mx:Glow>	
+	
+	<mx:Parallel id="effEnterCinematic" duration="2100">
+		<mx:SetPropertyAction name="visible" value="false" target="{pnlControls}"></mx:SetPropertyAction>
+		<mx:SetPropertyAction name="visible" value="true" target="{pnlCinematicTop}"></mx:SetPropertyAction>
+		<mx:SetPropertyAction name="visible" value="true" target="{pnlCinematicBottom}"></mx:SetPropertyAction>
+		<mx:AnimateProperty property="y" fromValue="{-pnlCinematicTop.height}" toValue="{0}" target="{pnlCinematicTop}"></mx:AnimateProperty>
+		<mx:AnimateProperty property="y" fromValue="{pnlMain.height}" toValue="{pnlMain.height - pnlCinematicBottom.height}" target="{pnlCinematicBottom}"></mx:AnimateProperty>
+	</mx:Parallel>
+
+	<mx:Sequence id="effExitCinematic" duration="1500">
+		<mx:SetPropertyAction name="visible" value="true" target="{pnlControls}"></mx:SetPropertyAction>
+		<mx:Parallel>
+			<mx:AnimateProperty property="y" fromValue="{0}" toValue="{-pnlCinematicTop.height}" target="{pnlCinematicTop}"></mx:AnimateProperty>
+			<mx:AnimateProperty property="y" fromValue="{pnlMain.height - pnlCinematicBottom.height}" toValue="{pnlMain.height}" target="{pnlCinematicBottom}"></mx:AnimateProperty>			
+		</mx:Parallel>
+		<mx:SetPropertyAction name="visible" value="false" target="{pnlCinematicTop}"></mx:SetPropertyAction>
+		<mx:SetPropertyAction name="visible" value="false" target="{pnlCinematicBottom}"></mx:SetPropertyAction>
+	</mx:Sequence>
+		
+	<mx:AnimateProperty id="showEffect" duration="1100" property="alpha"  
+		fromValue="0" toValue="1" easingFunction="{Linear.easeOut}">
+	</mx:AnimateProperty>
+	
+	<mx:Canvas height="640" id="pnlMain" verticalScrollPolicy="off" horizontalScrollPolicy="off">	
+		<mx:VBox horizontalAlign="right" verticalGap="0">
+			<cc:HeaderToolbar id="pnlHeader">
+			</cc:HeaderToolbar>
+			
+			<mx:Canvas id="gameCanvas" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<isometric:IsometricView id="view" x="0" y="0" width="640" height="530" visible="true" enterFrame="onEnterFrame(event)"/>
+			</mx:Canvas>
+		</mx:VBox>
+		
+<!--		<mx:Box id="pnlFreeWorkers" width="30" height="30" bottom="114" visible="false" left="2" backgroundColor="#000000">
+			<controls:ImageButton id="btnFreeWorkers" quickButton="w" toolTip="{StringResources.get('TooltipFreeWorker')}"
+				onClickHandler="{onFreeWorkerClick}" onDoubleClickHandler="{onFreeWorkerDblClick}"
+				width="30" height="30" styleName="labelWhite10">
+			</controls:ImageButton>			
+		</mx:Box>-->
+
+		<mx:VBox id="pnlHero" width="40" height="50" top="22" visible="false" left="5" backgroundColor="#000000" 
+			verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" mouseOver="onHeroButtonMouseOver(event)" mouseOut="onHeroButtonMouseOut(event)">
+			<controls:ImageButton id="btnHero" quickButton="h" toolTip="{StringResources.get('TooltipSelectHero')}"
+				onClickHandler="{onSelectHeroClick}" onDoubleClickHandler="{onSelectHeroDblClick}"
+				width="40" height="40" styleName="labelWhite10">
+			</controls:ImageButton>	
+			<mx:Canvas borderColor="#042400" borderThickness="1" width="100%" height="4">
+				<mx:Canvas id="healthIndicator" backgroundColor="#00BF11" height="100%" width="0"></mx:Canvas>				
+			</mx:Canvas>
+			<mx:Canvas borderColor="#042400" borderThickness="1" width="100%" height="4">
+				<mx:Canvas id="manaIndicator" backgroundColor="#0011BF" height="100%" width="0"></mx:Canvas>				
+			</mx:Canvas>			
+		</mx:VBox>
+		
+		<controls:ImageButton id="btnSummon1" toolTip="Select unit." left="5" top="76" 
+			onClickHandler="{onSelectHeroClick}" onDoubleClickHandler="{onSelectHeroDblClick}"
+			width="30" height="30" color="0x5FFF01" paddingLeft="0" paddingRight="0" visible="false">
+		</controls:ImageButton>
+
+		<controls:ImageButton id="btnSummon2" toolTip="Select unit." left="5" top="110" 
+			onClickHandler="{onSelectHeroClick}" onDoubleClickHandler="{onSelectHeroDblClick}"
+			width="30" height="30" color="0x5FFF01" paddingLeft="0" paddingRight="0" styleName="labelWhite10" visible="false">
+		</controls:ImageButton>
+		
+		<controls:ImageButton id="btnSummon3" toolTip="Select unit." left="5" top="144" 
+			onClickHandler="{onSelectHeroClick}" onDoubleClickHandler="{onSelectHeroDblClick}"
+			width="30" height="30" color="0x5FFF01" paddingLeft="0" paddingRight="0" styleName="labelWhite10" visible="false">
+		</controls:ImageButton>							
+		
+		<mx:VBox id="pnlCamera" width="30" height="30" top="22" left="50" visible="false" mouseOver="onHeroButtonMouseOver(event)" mouseOut="onHeroButtonMouseOut(event)">
+			<controls:ImageButton id="btnSnapCamera" quickButton="space" toolTip="Snap/unsnap camera to hero (c)."
+				onClickHandler="{onCameraClick}" width="30" height="30" styleName="labelWhite10">
+			</controls:ImageButton>			
+		</mx:VBox>
+		
+		<mx:VBox id="pnlDashboard" styleName="genericPanelTransparent" width="160" right="1" top="20">
+			<mx:VBox width="100%" height="100%" backgroundColor="#152040" backgroundAlpha="0.4">
+				<mx:Text id="lblDashboardText" selectable="false" styleName="labelWhite10">
+				</mx:Text>			
+			</mx:VBox>
+		</mx:VBox>		
+		
+		<cc:SpellsToolbar id="pnlSpells" bottom="110" left="190"></cc:SpellsToolbar>
+		<cc:ItemsToolbar id="pnlItems" bottom="110" right="10"></cc:ItemsToolbar>
+		<mx:HBox id="pnlControls" width="640" height="112" bottom="0" horizontalScrollPolicy="off" verticalScrollPolicy="off"
+			horizontalAlign="right" horizontalGap="0" verticalAlign="bottom">			
+<!--			<cc:InformationPanel id="pnlInformation">
+			</cc:InformationPanel>-->
+
+			<cc:Minimap id="pnlMinimap">
+			</cc:Minimap>			
+
+			<cc:UnitDetails id="pnlUnitDetails">
+			</cc:UnitDetails>
+			
+			<cc:UnitControls id="pnlUnitControls">
+			</cc:UnitControls>
+		</mx:HBox>
+						
+		<mx:Canvas id="pnlCinematicTop" visible="false" height="70" width="100%" backgroundColor="0x000000"></mx:Canvas>
+		<mx:Canvas id="pnlCinematicBottom" visible="false" height="100" width="100%" backgroundColor="0x000000"></mx:Canvas>
+	</mx:Canvas>
+		
+</mx:Canvas>

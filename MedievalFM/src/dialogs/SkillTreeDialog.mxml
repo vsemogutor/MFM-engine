@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="460" height="420" paddingLeft="10" paddingRight="9" paddingTop="36"
+	creationComplete="{init()}">
+	
+	<mx:GlowFilter color="#E7BE39" id="glowSkill" blurX="10" blurY="10"></mx:GlowFilter>	
+	<mx:GlowFilter color="#241E1F" id="glow" ></mx:GlowFilter>	
+	<mx:ColorMatrixFilter id="blackAndWhite" matrix="{_bwMatrix}" />
+		
+	<mx:HBox width="100%" horizontalAlign="right" horizontalGap="0">
+		<mx:Label text="Avaliable Skill Points:" styleName="labelWhite11"></mx:Label>
+		<mx:Label id="txtSkillPoints" styleName="labelGreen11"></mx:Label>
+	</mx:HBox>
+	<mx:HBox id="pnlTree" height="100%" width="100%">
+	</mx:HBox>
+	
+	<cc:ClickButton width="200" label="OK" styleName="menuButton" click="onReturnClick(event)">
+	</cc:ClickButton>
+	
+	<mx:Script>
+		<![CDATA[
+			import engine.sound.SoundManager;
+			import sound.Sounds;
+			import controls.SkillTooltip;
+			import mx.events.ToolTipEvent;
+			import __AS3__.vec.Vector;
+			import mx.controls.Label;
+			import mx.containers.Box;
+			import mx.core.UIComponent;
+			import mx.containers.VBox;
+			import mx.controls.Image;
+			import engine.heros.Skill;
+			import mx.core.Container;
+			import engine.heros.SkillTreeNode;
+			import engine.heros.SkillBranch;
+			import mx.containers.Canvas;
+			import engine.heros.Hero;
+			import engine.game.Game;
+			import engine.heros.SkillTree;
+	
+	        private var rLum:Number = 0.2225;
+            private var gLum:Number = 0.7169;
+            private var bLum:Number = 0.0606;
+
+            [Bindable]
+            private var _bwMatrix:Array = [rLum, gLum, bLum, 0, 0,
+                            rLum, gLum, bLum, 0, 0,
+                            rLum, gLum, bLum, 0, 0,
+                            0, 0, 0, 1, 0];
+                            	
+			private var _hero:Hero;	
+			private var _skillButtonsDict:Dictionary = new Dictionary(true);
+					
+			public function show(parent:DisplayObject, hero:Hero, closeHandler:Function=null):void
+			{
+				_hero = hero;
+				_pauseGame = false;
+				showDialog(parent, closeHandler);
+			}
+			
+			private function onReturnClick(evt:Event):void
+			{
+				close();
+			}
+		
+			private function init():void
+			{
+				buildTree();
+				bindSkillPoints();
+			}
+			
+			private function bindSkillPoints():void
+			{
+				txtSkillPoints.text = _hero.skillPoints.toString();
+			}
+			
+			private function buildTree():void
+			{
+				pnlTree.removeAllChildren();
+				
+				var skillTree:SkillTree = Game.instance().skillTree.getTreeForHero(_hero.type);
+				this.width = 190 * skillTree.skillsBranches.length; 
+				if (skillTree.skillsBranches.length == 1) this.width += 60;
+				
+				for (var i:int = 0; i < skillTree.skillsBranches.length; ++i)
+				{
+					var branch:SkillBranch = skillTree.skillsBranches[i];
+					var container:Container = buildBranchPanel(branch);
+					pnlTree.addChild(container);
+					
+					traverseTree(branch.head, container, 1);
+				}
+				
+				validateNow();
+				for (var i:int = 0; i < skillTree.skillsBranches.length; ++i)
+				{
+					var branch:SkillBranch = skillTree.skillsBranches[i];
+					for (var j:int = 0; j < branch.skills.length; ++j)
+					{
+						var skill:Skill = branch.skills[j];
+						if (skill.dependsOnSkill)
+							buildSkillLink(skill, skill.dependsOnSkill, container);
+					}
+				}
+			}
+			
+			private function traverseTree(node:SkillTreeNode, container:Container, depth:int = 0):void
+			{
+				if (!node) return;
+				
+				var treeLevel:Container = Container(Container(container.getChildAt(0)).getChildAt(depth - 1));
+				treeLevel.addChild(buildSkillButton(node.value));
+				
+				var newDepth:int = depth + 1;
+				for (var i:int = 0; i < node.children.length; ++i)
+				{
+					traverseTree(node.children[i], container, newDepth);
+				}
+			}
+			
+			private function buildSkillButton(skill:Skill):UIComponent
+			{
+				var canvas:Canvas = new Canvas();
+				canvas.width = 44;
+				canvas.height = 37;
+				
+				var image:Image = new Image();
+				image.width = 30;
+				image.height = 30;
+				image.source = skill.icon;
+				image.data = {skill:skill, hero:_hero};
+				image.toolTip = " ";
+				image.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, SkillTooltip.create);
+				image.addEventListener(ToolTipEvent.TOOL_TIP_SHOW, SkillTooltip.show);				
+				
+				var box:Box = new Box();
+				box.styleName = "simpleBoxGold";
+				box.setStyle("backgroundColor", 0x000000);
+				
+				box.addChild(image);
+				
+				var pointsBox:Box = new Box();
+				pointsBox.styleName = "simpleBoxGold";
+				pointsBox.width = 20;
+				pointsBox.height = 17;
+				pointsBox.styleName = "skillPointsBox";
+				
+				var label:Label = new Label();
+				label.styleName = "labelWhite";
+				label.setStyle("fontSize", 9);
+				
+				var skillLevel:int = _hero.getSkillLevel(skill);
+				if (skill.isAvaliable(_hero, skillLevel + 1))
+				{
+					if (_hero.skillPoints > 0)
+						image.addEventListener(MouseEvent.MOUSE_DOWN, onSkillClick);
+					else
+						box.filters = [blackAndWhite];
+						
+					label.text = skillLevel + "/" + skill.maxLevel;
+				}
+				else if (skillLevel == skill.maxLevel)
+				{
+					label.text = skillLevel + "/" + skill.maxLevel;
+					label.styleName = "labelGreen";
+					box.filters = [glowSkill];
+				}
+				else
+				{
+					label.text = skillLevel + "/" + skill.maxLevel;
+					box.filters = [blackAndWhite];
+				}
+				
+				pointsBox.addChild(label);	
+				canvas.addChild(box);			
+				canvas.addChild(pointsBox);
+				
+				_skillButtonsDict[skill] = box;
+				
+				return canvas;
+			}
+			
+			private function buildSkillLink(child:Skill, parent:Skill, container:Container):void
+			{
+				var control1:UIComponent = _skillButtonsDict[child];
+				var control2:UIComponent = _skillButtonsDict[parent];	
+				
+				if (control1 && control2)
+				{
+					var from:Point;
+					var dest:Point;
+					
+					if (control1.parent.parent != control2.parent.parent)
+					{
+						from = control2.parent.localToGlobal(new Point(control2.x + control2.width/2, control2.y + control2.height));
+						dest = control1.parent.localToGlobal(new Point(control1.x + control1.width/2, control1.y));
+					}
+					else
+					{
+						from = control2.parent.localToGlobal(new Point(control2.x + control2.width, control2.y + control2.height/2));
+						dest = control1.parent.localToGlobal(new Point(control1.x, control1.y + control1.height/2));						
+					}
+					
+					dest = container.globalToLocal(dest);	
+					from = container.globalToLocal(from);
+										
+					container.graphics.lineStyle(1, 0xE7BE39);			
+					container.graphics.beginFill(0xE7BE39);
+					container.graphics.moveTo(from.x, from.y);
+					container.graphics.lineTo(dest.x, dest.y);
+				}		
+			}
+			
+			private function buildBranchPanel(branch:SkillBranch):Container
+			{
+				var canvas:Canvas = new Canvas();
+				canvas.percentHeight = 100;
+				canvas.percentWidth = 100;
+				
+				var branchLabelBox:Box = new Box();
+				branchLabelBox.percentWidth = 100;	
+				branchLabelBox.setStyle("horizontalAlign", "center");
+				
+				var branchLabelBorder:Box = new Box();	
+				branchLabelBorder.styleName = "genericPanel";
+				branchLabelBorder.setStyle("backgroundColor", 0x000000);
+				branchLabelBorder.setStyle("horizontalAlign", "center");
+				branchLabelBorder.setStyle("paddingTop", 6);		
+				branchLabelBorder.setStyle("paddingLeft", 6);	
+				branchLabelBorder.setStyle("paddingRight", 6);			
+				branchLabelBorder.minWidth = 60;
+				branchLabelBorder.height = 22;
+				branchLabelBorder.filters = [glow];
+				
+				var branchNameLabel:Label = new Label();
+				branchNameLabel.percentWidth = 100;
+				branchNameLabel.text = branch.name;
+				branchNameLabel.setStyle("textAlign", "center");
+				branchNameLabel.styleName = "labelGold11";
+				
+				branchLabelBorder.addChild(branchNameLabel);
+				branchLabelBox.addChild(branchLabelBorder);
+				
+				var vbox:VBox = new VBox();
+				vbox.percentHeight = 100;
+				vbox.percentWidth = 100;
+				vbox.styleName = "genericPanelTransparent";
+				vbox.setStyle("paddingTop", 20);
+				vbox.setStyle("top", 10);
+				vbox.filters = [glow];
+								
+				var depth:int = branch.maxDepth;
+				for (var i:int = 0; i < depth; ++i)
+				{
+					var hbox:HBox = new HBox();
+					hbox.height = 50;
+					hbox.percentWidth = 100;
+					hbox.setStyle("horizontalAlign", "center");
+					vbox.addChild(hbox);					
+				}
+
+				canvas.addChild(vbox);	
+				canvas.addChild(branchLabelBox);				
+	
+				return canvas;
+			}
+			
+			private function onSkillClick(evt:Event):void
+			{
+				var skill:Skill = evt.target.data.skill as Skill;
+				if (skill)
+				{
+					_hero.addSkill(skill);
+					buildTree();
+					bindSkillPoints();
+					SoundManager.instance().playSound(Sounds.buttonClick);
+				}
+			}		
+		]]>
+	</mx:Script>
+		
+</DialogCommon>	

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actionScriptProperties mainApplicationPath="MedievalFM.mxml" version="3">
+<compiler additionalCompilerArguments="-locale en_US -target-player=10.0. -show-unused-type-selector-warnings=false -compiler.warn-duplicate-variable-def=false" copyDependentFiles="true" enableModuleDebug="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="true" htmlHistoryManagement="true" htmlPlayerVersion="9.0.124" htmlPlayerVersionCheck="true" outputFolderPath="bin-debug" sourceFolderPath="src" strict="true" useApolloConfig="false" verifyDigests="true" warn="true">
+<compilerSourcePath/>
+<libraryPath defaultLinkType="1">
+<libraryPathEntry kind="4" path=""/>
+<libraryPathEntry kind="1" linkType="1" path="libs"/>
+<libraryPathEntry kind="3" linkType="1" path="/MedievalFMMissionPack1/bin/MedievalFMMissionPack1.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="/MedievalFMEngine/bin/MedievalFMEngine.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="/greensock/bin/greensock.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="/MedievalFMResources/bin/MedievalFMResources.swc" useDefaultLinkType="false"/>
+</libraryPath>
+<sourceAttachmentPath/>
+</compiler>
+<applications>
+<application path="MedievalFM.mxml"/>
+</applications>
+<modules>
+<module application="src/MedievalFM.mxml" destPath="states/CustomGameViewState.swf" optimize="true" sourcePath="src/states/CustomGameViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/GameViewState.swf" optimize="true" sourcePath="src/states/GameViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/AchievementsViewState.swf" optimize="true" sourcePath="src/states/AchievementsViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/ScoresViewState.swf" optimize="true" sourcePath="src/states/ScoresViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/LockWarningViewState.swf" optimize="true" sourcePath="src/states/LockWarningViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/CreditsViewState.swf" optimize="true" sourcePath="src/states/CreditsViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/SponsorSplashState.swf" optimize="true" sourcePath="src/states/SponsorSplashState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/OptionsViewState.swf" optimize="true" sourcePath="src/states/OptionsViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/MissionLoadingViewState.swf" optimize="true" sourcePath="src/states/MissionLoadingViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/LogoViewState.swf" optimize="true" sourcePath="src/states/LogoViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/MissionResultViewState.swf" optimize="true" sourcePath="src/states/MissionResultViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/StartMenuViewState.swf" optimize="true" sourcePath="src/states/StartMenuViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/HeroSelectionState.swf" optimize="true" sourcePath="src/states/HeroSelectionState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/MissionConfigurationViewState.swf" optimize="true" sourcePath="src/states/MissionConfigurationViewState.mxml"/>
+<module application="src/MedievalFM.mxml" destPath="states/PresetsViewState.swf" optimize="true" sourcePath="src/states/PresetsViewState.mxml"/>
+</modules>
+<buildCSSFiles/>
+</actionScriptProperties>

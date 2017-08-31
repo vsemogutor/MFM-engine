@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="415" height="109" horizontalGap="0" verticalAlign="bottom"
+	xmlns:cc="controls.*" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	
+	<mx:Style source="..\styles\common.css"/>	
+
+    <mx:Style>        
+        .paramBox {
+        	cornerRadius: 4;
+        	backgroundColor: #000000;
+        	borderStyle: solid;
+        	borderThickness:0;
+        	horizontalAlign: center;
+        }
+        
+		.btnInventory, .btnSpellBook, .btnSpellBookPlus  {
+			skin: ClassReference("skins.ImageButtonSkin");
+		}
+
+		.btnInventory {
+			image: Embed("../../assets/backpack_ico.gif");
+		}
+		
+		.btnSpellbook {
+			image: Embed("../../assets/spellbook_ico.gif");
+		}
+		
+		.btnSpellBookPlus {
+			image: Embed("../../assets/plus_orange.png");
+		}
+    </mx:Style>	
+
+    <mx:GlowFilter blurX="4" blurY="4" alpha="0.5" id="glow" color="#534742"></mx:GlowFilter>
+    <mx:Canvas styleName="genericPanel" width="80" height="109" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+	 	<mx:VBox id="pnlAvatar" width="80" height="109" verticalGap="0" styleName="genericInnerPanle"
+	 		verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="middle">
+				<cc:ImageButton id="btnAvatar" width="38" height="38" click="btnAvatarClick(event)" filters="{[glow]}"></cc:ImageButton>		 	
+			</mx:VBox>
+			<mx:HBox width="80" height="17" horizontalAlign="center" 
+				borderColor="#534742" borderThickness="2" borderStyle="solid" 
+				cornerRadius="2" filters="{[glow]}">
+				<mx:Label id="txtHealth" styleName="labelGreen10">
+				</mx:Label>	
+			</mx:HBox>
+			<mx:HBox width="80" height="18" horizontalAlign="center">
+				<mx:Label id="txtMana" styleName="labelWhite10" color="#BDDBFF">
+				</mx:Label>
+			</mx:HBox>		
+		</mx:VBox>   	
+    </mx:Canvas>
+    
+	<mx:Box styleName="unitDetailsPanel" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:VBox height="100%" width="100%" verticalGap="4" id="pnlDetails">
+			<mx:VBox width="100%" horizontalAlign="center" verticalGap="0" 
+				verticalScrollPolicy="off" horizontalScrollPolicy="off">
+				<mx:Label styleName="labelWhite12" id="txtName" truncateToFit="true"></mx:Label>
+				<mx:Label styleName="labelGold9" id="txtFraction" height="15" paddingTop="-5"></mx:Label>
+			</mx:VBox>
+			<mx:Canvas width="100%" height="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+				<mx:VBox width="100%" height="100%" id="pnlUnitDetails" paddingBottom="3">
+					<mx:HBox width="100%" height="100%">
+						<mx:Box borderStyle="solid" id="damageFrame" borderColor="#E7BE39" borderThickness="1" 
+							cornerRadius="5">
+							<mx:Canvas id="damageIco" styleName="damageTypeNormal" width="27" height="27" toolTip=" "
+								toolTipCreate="DamageTypeTooltip.create(event)" toolTipShow="DamageTypeTooltip.show(event)"></mx:Canvas>						
+						</mx:Box>
+						<mx:VBox width="100%" id="pnlDamage" verticalGap="0">
+							<mx:Label text="{StringResources.get('Damage')}" styleName="labelGold10" height="12" fontSize="9"></mx:Label>
+							<mx:HBox horizontalAlign="left" horizontalGap="0">
+								<mx:Label id="txtDamage" styleName="labelWhite11" paddingLeft="10" height="12"></mx:Label>
+								<mx:Label id="txtDamageBonus" styleName="labelGreen11" height="12" paddingLeft="-3"></mx:Label>								
+							</mx:HBox>			
+						</mx:VBox>
+						<mx:Box borderStyle="solid" borderColor="#E7BE39" borderThickness="1" 
+							cornerRadius="5">
+							<mx:Canvas id="armorIco" styleName="armorTypeNormal" width="27" height="27" toolTip=" "
+								toolTipCreate="ArmorTypeTooltip.create(event)" toolTipShow="ArmorTypeTooltip.show(event)"></mx:Canvas>						
+						</mx:Box>
+						<mx:VBox width="100%" verticalGap="0">
+							<mx:Label text="{StringResources.get('Armor')}" styleName="labelGold10" height="12" fontSize="9"></mx:Label>
+							<mx:HBox horizontalAlign="left" horizontalGap="0">
+								<mx:Label id="txtArmor" styleName="labelWhite11" paddingLeft="10" height="12"></mx:Label>
+								<mx:Label id="txtArmorBonus" styleName="labelGreen11" height="12" paddingLeft="-7"></mx:Label>								
+							</mx:HBox>				
+						</mx:VBox>
+					</mx:HBox>
+					<mx:HBox width="100%" verticalAlign="middle" id="pnlExperience">
+						<mx:Label text="{StringResources.get('Experience')}" styleName="labelWhite11" fontSize="10" paddingLeft="20"></mx:Label>
+						<mx:ProgressBar width="120" height="8" id="progressExperience"
+							 	mode="manual" label="" styleName="progressGold"></mx:ProgressBar>
+					</mx:HBox>
+				</mx:VBox>
+				
+				<mx:VBox id="pnlUnderConstruction" height="100%" width="100%" verticalGap="0" 
+					paddingLeft="10" paddingRight="10" visible="false">
+					<mx:HBox verticalAlign="middle" width="100%">
+						<cc:ImageButton id="btnCurrentlyConstructed"></cc:ImageButton>
+						<mx:VBox id="pnlConstructionProgress" horizontalAlign="center" 
+							width="100%" verticalGap="9">
+							<mx:Label id="txtConstructionType" styleName="labelGold10" height="12"></mx:Label>
+							<mx:ProgressBar id="constructionProgress" width="75%" height="14"  
+							 	mode="manual" label="" styleName="progressGold"></mx:ProgressBar>					
+						</mx:VBox>
+					</mx:HBox>
+					<mx:Tile id="lstUnderConstruction" width="100%" height="32"
+						verticalGap="4" horizontalGap="3" 
+						verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					</mx:Tile>		
+				</mx:VBox>
+				
+				<mx:VBox id="pnlUnitsSelection" height="100%" width="100%" verticalGap="0" visible="false">
+					<mx:Tile id="lstUnitsSelection" width="100%" height="100%" verticalGap="3" horizontalGap="1" 
+						verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					</mx:Tile>	
+				</mx:VBox>		
+			</mx:Canvas>
+		</mx:VBox>		
+	</mx:Box>	
+   
+   	<mx:VBox styleName="genericPanel" id="pnlHero" width="50" height="109" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+		horizontalAlign="center" paddingTop="19">
+	   	<cc:ImageButton styleName="btnInventory" id="btnInventory" enabled="false" width="32" height="32" click="btnInventoryClick(event)" 
+	   		toolTip="{StringResources.get('Inventory')}"></cc:ImageButton>
+	   	<cc:ImageButton styleName="btnSpellBook" id="btnSkillTree" enabled="false" width="32" height="32" click="btnSkillTreeClick(event)" 
+	   		toolTip="{StringResources.get('Skills')}"></cc:ImageButton>
+	</mx:VBox> 
+	<mx:Script>
+		<![CDATA[
+			import engine.computers.ExperienceCalculator;
+			import engine.display.DisplayUnitSelection;
+			import engine.heros.Hero;
+			import dialogs.SkillTreeDialog;
+			import engine.heros.SkillTree;
+			import dialogs.InventoryDialog;
+			import resources.StringResources;
+			import engine.fraction.Fraction;
+			import mx.containers.Panel;
+			import engine.units.DamageType;
+			import controls.ArmorTypeTooltip;
+			import engine.units.ArmorType;
+			import controls.DamageTypeTooltip;
+			import mx.events.ToolTipEvent;
+			import controls.TypeTooltip;
+			import mx.controls.Button;
+			import mx.skins.RectangularBorder;
+			import engine.units.upgrade.UnitUpgrade;
+			import engine.units.UnitType;
+			import __AS3__.vec.Vector;
+			import controls.ImageButton;
+			import engine.units.UnitOrders.UnitOrderConstruct;
+			import engine.units.UnitOrders.UnitOrderTrainUpgrade;
+			import engine.units.groups.UnitGroup;
+			import engine.units.UnitProperties;
+			import engine.game.Game;
+			import engine.units.Unit;
+			
+			private var _group:UnitGroup;
+			private var _game:Game = Game.instance();
+			
+			public function get dataSource():UnitGroup{
+				return _group;
+			}
+
+			public function set dataSource(value:UnitGroup):void{
+				_group = value;
+				refreshChildren();
+			}
+			
+			private function refreshChildren():void
+			{	
+				if (_group == null || _group.isEmpty())
+				{	
+					pnlDetails.visible = pnlAvatar.visible = false;
+					return;
+				}
+				
+				pnlDetails.visible = pnlAvatar.visible = true;
+
+				var unit:Unit = _group.selectedUnit;
+				pnlUnderConstruction.visible = (_group.length == 1) && unit.fraction.isCurrentPlayer() && unit.order is UnitOrderTrainUpgrade;
+				pnlUnitDetails.visible = (_group.length == 1) && !pnlUnderConstruction.visible;
+				pnlUnitsSelection.visible = (_group.length > 1);
+				
+				if (unit is Hero)
+				{
+					var hero:Hero = unit as Hero;
+					btnInventory.enabled = btnSkillTree.enabled = unit.fraction.isCurrentPlayer();
+					if (hero.skillPoints > 0)
+					{
+						btnSkillTree.styleName = "btnSpellBookPlus";
+						btnSkillTree.label = hero.skillPoints.toString();
+					}
+					else
+					{
+						btnSkillTree.styleName = "btnSpellbook";
+						btnSkillTree.label = "";
+					}
+						
+					pnlExperience.visible = pnlExperience.includeInLayout = true;
+					var exptToNext:int = ExperienceCalculator.getExperienceToNextLevel(hero.level);
+					progressExperience.setProgress(hero.experience, exptToNext);
+					pnlExperience.toolTip = hero.experience + "/" + exptToNext;
+				}
+				else
+				{
+					btnInventory.enabled = btnSkillTree.enabled = false;
+					pnlExperience.visible = pnlExperience.includeInLayout = false;
+				}
+
+				refreshUnitDetails(unit);
+				refreshUnitConstructionList(unit);
+				refreshUnitsSelection();
+			}
+			
+			private function refreshUnitsSelection():void
+			{
+				if (!pnlUnitsSelection.visible)
+					return;
+					
+				for (var i:int = 0; i < _group.units.length; ++i)
+				{
+					var button:ImageButton;
+					if (i < lstUnitsSelection.numChildren)
+					{
+						button = lstUnitsSelection.getChildAt(i) as ImageButton;
+					}
+					else 
+					{
+						button = new ImageButton();
+						button.addEventListener(MouseEvent.CLICK, onUnitSelectedClick);
+						button.toolTip = " ";
+						button.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, TypeTooltip.create);
+						button.addEventListener(ToolTipEvent.TOOL_TIP_SHOW, TypeTooltip.show);
+						lstUnitsSelection.addChild(button);
+					}
+					
+					button.data = _group.units[i];
+					button.setImage(_group.units[i].type.icon);
+					button.width = 27;
+					button.height = 27;
+					button.visible = true;
+					button.selected = (_group.units[i] == _group.selectedUnit);
+				}
+				
+				var len:int = lstUnitsSelection.numChildren;
+				for (var i:int = _group.units.length; i < len; ++i)
+				{
+					lstUnitsSelection.getChildAt(i).visible = false;
+				}			
+			}
+
+			private function refreshUnitConstructionList(unit:Unit):void
+			{
+				if (!pnlUnderConstruction.visible)
+					return;
+				
+				var order:UnitOrderTrainUpgrade = unit.order as UnitOrderTrainUpgrade;
+				
+				btnCurrentlyConstructed.data = order.current;
+				if (order.current)
+					btnCurrentlyConstructed.setImage(order.current.icon);
+				pnlConstructionProgress.visible = (order.current != null);
+				if (pnlConstructionProgress.visible)
+				{
+					txtConstructionType.text = order.current is UnitUpgrade ? "Upgrading" : "Training";
+					constructionProgress.setProgress(order.current.constructionTime - order.constructionTime, order.current.constructionTime);
+				}
+				
+				var costructedUnits:Vector.<UnitType> = order.constructionQueue;		
+				for (var i:int = 0; i < costructedUnits.length; ++i)
+				{
+					var button:ImageButton;
+					if (i < lstUnderConstruction.numChildren)
+					{
+						button = lstUnderConstruction.getChildAt(i) as ImageButton;
+					}
+					else 
+					{
+						button = new ImageButton();
+						button.addEventListener(MouseEvent.CLICK, onConstructedUnitClick);
+						button.toolTip = " ";
+						button.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, TypeTooltip.create);
+						button.addEventListener(ToolTipEvent.TOOL_TIP_SHOW, TypeTooltip.show);
+						lstUnderConstruction.addChild(button);
+					}
+					
+					button.data = costructedUnits[i];
+					button.width = 28;
+					button.height = 28;
+					button.visible = true;
+					button.setImage(costructedUnits[i].icon);
+				}
+				
+				var len:int = lstUnderConstruction.getChildren().length;
+				for (var i:int = costructedUnits.length; i < len; ++i)
+				{
+					lstUnderConstruction.getChildAt(i).visible = false;
+				}
+				
+			}
+			
+			private function refreshUnitDetails(unit:Unit):void
+			{ 
+				if (pnlUnitDetails.visible)
+				{		
+					pnlDamage.visible = damageFrame.visible = unit.type.canAttack();
+					if (pnlDamage.visible)
+					{
+						txtDamage.text = unit.baseProperties[UnitProperties.AttackDmgMin] + " - " + 
+							unit.baseProperties[UnitProperties.AttackDmgMax];
+						damageIco.styleName = getDamageTypeStyle(unit.properties[UnitProperties.AttackDmgType]);
+						var damageBonus:int = unit.properties[UnitProperties.AttackDmgMin] - unit.baseProperties[UnitProperties.AttackDmgMin];
+						if (damageBonus)
+						{
+							var damageBonusString:String = damageBonus.toString();
+							if (damageBonus > 0) damageBonusString = "+" + damageBonusString;
+							txtDamageBonus.text = damageBonusString;
+							txtDamageBonus.visible = true;
+						}
+						else
+						{
+							txtDamageBonus.visible = false;						
+						}
+					
+					}
+					txtArmor.text = unit.baseProperties[UnitProperties.Armor].toString();
+					var armorBonus:int = unit.properties[UnitProperties.Armor] - unit.baseProperties[UnitProperties.Armor];
+					if (armorBonus)
+					{
+						var armorBonusString:String = armorBonus.toString();
+						if (armorBonus > 0) armorBonusString = "+" + armorBonusString;
+						txtArmorBonus.text = armorBonusString;
+						txtArmorBonus.visible = true;
+					}
+					else
+					{
+						txtArmorBonus.visible = false;						
+					}
+					armorIco.styleName = getArmorTypeStyle(unit.properties[UnitProperties.ArmorType]);
+				}
+				
+				if (unit is Hero)
+					txtName.text = (Hero(unit).name || unit.type.locName) + " (" + Hero(unit).level + ")";
+				else
+					txtName.text = unit.type.locName;
+					
+				txtHealth.text = unit.properties[UnitProperties.Health] + "/" + 
+					unit.properties[UnitProperties.MaxHealth];		
+				txtMana.text = unit.properties[UnitProperties.Mana] + "/" + 
+					unit.properties[UnitProperties.MaxMana];
+					
+				btnAvatar.data = unit;
+				btnAvatar.setImage(unit.type.icon);
+				
+				txtFraction.visible = txtFraction.includeInLayout = !unit.fraction.isCurrentPlayer();
+				if (txtFraction.visible)
+				{
+					txtFraction.text = unit.fraction.locName;
+					var fraction:Fraction = _game.fractionManager.player;
+					if (unit.fraction.isEnemyOf(fraction))
+						txtFraction.setStyle("color", DisplayUnitSelection.SELECTION_COLOR_ENEMY);
+					else if (unit.fraction.isAllyOf(fraction))
+						txtFraction.setStyle("color", DisplayUnitSelection.SELECTION_COLOR);
+					else
+						txtFraction.setStyle("color", DisplayUnitSelection.SELECTION_COLOR_NEUTRAL);						
+				}
+			}
+			
+			public function btnAvatarClick(evt:Event):void
+			{
+				Game.instance().sceneManager.cameraCenterOnUnit(Button(evt.target).data as Unit);
+			}
+			
+			public function onUnitSelectedClick(evt:Event):void
+			{
+				var unit:Unit = Button(evt.target).data as Unit;
+				if (_group.selectedUnit == unit)
+					_game.sceneManager.cameraCenterOnUnit(unit);
+				else
+					_group.selectUnit(unit);
+			}
+			
+			public function onConstructedUnitClick(evt:Event):void
+			{
+				var indx:int = lstUnderConstruction.getChildIndex(evt.target as Button);
+				
+				if (indx >= 0)
+				{
+					(_group.selectedUnit.order as UnitOrderTrainUpgrade).removeFromConstruction(indx);
+				}
+			}
+			
+			private function getDamageTypeStyle(type:int):String
+			{
+				if (type == DamageType.Normal)
+					return "damageTypeNormal";
+				else if (type == DamageType.Hero)
+					return "damageTypeHero";
+				else if (type == DamageType.Magic)
+					return "damageTypeMagic";
+				else if (type == DamageType.Piersing)
+					return "damageTypePiersing";
+				else if (type == DamageType.Siedge)
+					return "damageTypeSiedge";
+				else 
+					return "damageTypeAstral";													
+			}
+			
+			private function getArmorTypeStyle(type:int):String
+			{
+				if (type == ArmorType.HERO)
+					return "armorTypeHero";
+				else if (type == ArmorType.NONE)
+					return "armorTypeNone";
+				else if (type == ArmorType.LIGHT)
+					return "armorTypeLight";
+				else if (type == ArmorType.NORMAL)
+					return "armorTypeNormal";
+				else if (type == ArmorType.HEAVY)
+					return "armorTypeHeavy";
+				else if (type == ArmorType.FORTIFIED)
+					return "armorTypeFortified";
+				else return "armorTypeDivine";				
+			}
+			
+			public function btnInventoryClick(evt:Event):void
+			{
+				var dialog:InventoryDialog = new InventoryDialog();
+				dialog.show(this.parent.parent, _group.selectedUnit as Hero);
+			}
+			
+			public function btnSkillTreeClick(evt:Event):void
+			{
+				var dialog:SkillTreeDialog = new SkillTreeDialog();
+				dialog.show(this.parent.parent, _group.selectedUnit as Hero);
+			}			
+		]]>
+	</mx:Script>
+</mx:HBox>

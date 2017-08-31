@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  
+	width="100%" height="100%"
+	xmlns:cc="controls.*"
+	styleName="startMenu" creationComplete="{init()}" addedToStage="{init()}">
+
+	<mx:DropShadowFilter id="shadow" angle="0" distance="1">
+	</mx:DropShadowFilter>
+		
+	<mx:VBox width="100%" y="100" horizontalAlign="center">
+		<mx:Label id="txtResult" styleName="headerGold" text="{StringResources.get('Victory')}" filters="{[shadow]}">
+		</mx:Label>			
+	</mx:VBox>
+			
+	<mx:VBox width="100%" height="100%" horizontalAlign="center" verticalAlign="bottom" paddingBottom="20">	
+		<mx:Canvas width="85%" height="70%">
+			<mx:Canvas width="100%" height="100%" styleName="paperBorder" alpha="0.9"></mx:Canvas>
+			<mx:VBox width="100%" height="100%"  verticalGap="1" paddingTop="50" horizontalAlign="center" paddingBottom="10">
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('UnitsKilled')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtUnitsKilled" styleName="labelGold11" text="100"></mx:Label>
+				</mx:HBox>
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('BuildingsDestroyed')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtBuildingDestroyed" styleName="labelGold11" text="100"></mx:Label>
+				</mx:HBox>			
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('UnitsLost')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtUnitsLost" styleName="labelGold11" text="0"></mx:Label>
+				</mx:HBox>	
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('BuildingsLost')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtBuildingsLost" styleName="labelGold11" text="0"></mx:Label>
+				</mx:HBox>	
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('UnitsTrained')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtUnitsTrained" styleName="labelGold11" text="0"></mx:Label>
+				</mx:HBox>
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('BuildingsConstructed')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtBuildingsConstructed" styleName="labelGold11" text="0"></mx:Label>
+				</mx:HBox>
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('GoldCollected')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtGoldCollected" styleName="labelGold11" text="30000"></mx:Label>
+				</mx:HBox>
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('CrystalsCollected')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtCrystalsCollected" styleName="labelGold11" text="10"></mx:Label>
+				</mx:HBox>
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelWhite11" text="{StringResources.get('TimeElapsed')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtTime" styleName="labelGold11" text="1:50:17"></mx:Label>
+				</mx:HBox>
+				<mx:Spacer height="20%"></mx:Spacer>
+				
+				<mx:HBox styleName="boxGold" filters="{[shadow]}" paddingTop="4" paddingBottom="4" width="70%">
+					<mx:Label styleName="labelGold12" text="{StringResources.get('Total')}"></mx:Label>
+					<mx:Spacer width="100%"></mx:Spacer>
+					<mx:Label id="txtTotal" styleName="labelGold11" text="38860"></mx:Label>
+				</mx:HBox>
+				
+				<mx:Spacer height="10%"></mx:Spacer>
+				<cc:ClickButton styleName="mainMenuButton" width="70" label="Ok" click="onBackClick(event)">
+				</cc:ClickButton>					
+			</mx:VBox>		
+		</mx:Canvas>
+	</mx:VBox>
+	
+	<mx:Script>
+		<![CDATA[
+			import com.newgrounds.components.MedalPopup;
+			import com.newgrounds.API;
+			import engine.util.PortalsUtil;
+			import engine.game.GameResultType;
+			import kongregate.KongApi;
+			import engine.scores.PlayerScoreProvider;
+			import resources.StringResources;
+			import engine.game.GameManager;
+			import engine.game.GameResults;
+			import mx.effects.easing.Linear;
+			import mx.core.Application;
+			
+			private function init():void
+			{
+				if (!this.processedDescriptors)
+					return;
+					
+				var result:GameResults = GameManager.instance().currentPlayer.misssionResults;
+					
+				txtResult.text = StringResources.get(result.result);
+				if (txtResult.text) txtResult.text += "!";
+				else txtResult.text = "Overview";
+					
+				txtBuildingDestroyed.text = result.buildingsDestroyed.toString();
+				txtBuildingsLost.text = result.buildingsLost.toString();
+				txtUnitsKilled.text = result.unitsKilled.toString();
+				txtUnitsLost.text = result.unitsLost.toString();
+				txtUnitsTrained.text = result.unitsTrained.toString();
+				txtBuildingsConstructed.text = result.buildingsConstructed.toString();
+				txtGoldCollected.text = result.goldCollected.toString();
+				txtCrystalsCollected.text = result.crystalCollected.toString();
+				txtTime.text = result.timeElapsed.toString();
+				txtTotal.text = result.total.toString();
+				
+				if (PortalsUtil.isKongregate())
+				{
+					KongApi.stats.submit("HighScore", result.total);
+					KongApi.stats.submit("TotalTime", result.timeElapsed.seconds);
+					KongApi.stats.submit("Gold", result.goldCollected);
+					KongApi.stats.submit("EnemiesKilled", result.unitsKilled);	
+					
+					if (result.result == GameResultType.VICTORY)			
+						KongApi.stats.submit("GameCompleted", 1);
+				}
+				else
+				{
+					API.postScore("High Score", result.total);
+					
+					if (result.result == GameResultType.VICTORY)
+					{
+/* 						var popup:MedalPopup = new MedalPopup();
+						addChild(popup);	 */
+						API.unlockMedal("Aeon Defender"); 
+						
+						if (result.unitsKilled >= 400)
+						{
+							API.unlockMedal("Juggernaut"); 
+						}
+					}
+				}
+/* 				else
+				{																
+	 				PlayerScoreProvider.submitScore(GameManager.instance().currentPlayer.name, 
+						result.total, 
+						GameManager.instance().currentMission.name);
+				} */
+			}
+			
+			private function onBackClick(event:Event):void
+			{
+				Application.application.currentState = UIGameState.START_MENU;
+			}		
+		]]>
+	</mx:Script>
+</mx:Module>

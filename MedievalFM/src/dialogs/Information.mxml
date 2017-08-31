@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DialogCommon xmlns="dialogs.*" xmlns:cc="controls.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="370" height="320">
+
+	<mx:Style source="..\styles\common.css"/>	
+	
+	<mx:Label id="txtCaption" text="{_caption}" styleName="headerWhite"></mx:Label>
+	
+	<mx:TextArea borderColor="0xF7D60D" borderStyle="solid" cornerRadius="4" borderThickness="2"
+		id="txtText" backgroundAlpha="0.1" backgroundColor="0x0000FF"
+		height="100%" width="100%" 
+		styleName="labelWhite11" horizontalScrollPolicy="off" 
+		editable="false" selectable="false" text="{_text}">
+	</mx:TextArea>
+	
+	<cc:ClickButton width="60%" label="OK" styleName="menuButton" click="onReturnClick(event)">
+	</cc:ClickButton>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			
+			[Bindable]
+			private var _caption:String;
+			[Bindable]
+			private var _text:String;
+			
+			public function show(parent:DisplayObject, caption:String, text:String, closeHanfler:Function=null):void
+			{
+				_caption = caption;
+				_text = text;
+				
+				super.showDialog(parent, closeHanfler);
+			}	
+			
+			private function onReturnClick(evt:Event):void
+			{
+				close();
+			}
+		]]>
+	</mx:Script>
+	
+</DialogCommon>
